@@ -18,5 +18,5 @@ app.use(cookieParser());
 app.use(cors());
 
 // Roteamentos
-app.use(alunosRouter); 
+app.use(alunosRouter);
 export default app;

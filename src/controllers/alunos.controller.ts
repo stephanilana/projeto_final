@@ -5,8 +5,8 @@ const alunosController = {
     createAlunos: async (req: Request, res: Response): Promise<void> => {
         const { nome, cpf } = req.body;
         try {
-            const ret = await alunoService.createAluno(nome, cpf);
-            if (!ret) {
+            const retorno = await alunoService.createAluno(nome, cpf);
+            if (!retorno) {
                 res.status(500).send('Não foi possível cadastrar o aluno.');
             } else {
                 res.status(200).send('Cadastro realizado com sucesso');
@@ -20,12 +20,6 @@ const alunosController = {
     updateAlunos: async (req: Request, res: Response): Promise<void> => {
         const { nome, cpf } = req.body;
         const id = req.params.id; 
-
-        if (!id || !nome || !cpf) {
-            res.status(400).send('ID, Nome e CPF são obrigatórios.');
-            return;
-        }
-
         try {
             const ret = await alunoService.updateAluno(id, nome, cpf);
             if (!ret) {
