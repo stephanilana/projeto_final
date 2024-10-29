@@ -4,13 +4,16 @@ async function createActivity(
   title: string,
   description: string,
   value: string,
-  deliveryDate: Date,
-  matrice: { students: { id: string }[] }
+  deliveryDate: Date
 ): Promise<string> {
   try {
     if (!title || !description || !value || !deliveryDate) {
       return 'Todos os campos são obrigatórios.'
     }
+
+    const matriceStudents = await db.query(
+      `SELECT matrice.students.id FROM matrice`
+    )
 
     const result = await db.query(
       `INSERT INTO activities (title, description, value, delivery_date) 
@@ -20,7 +23,7 @@ async function createActivity(
 
     const activityId = result.rows[0].id
 
-    for (const student of matrice.students) {
+    for (const student of matriceStudents) {
       await db.query(
         `INSERT INTO activity_student (student_id, activity_id) 
          VALUES ($1, $2)`,
@@ -46,7 +49,6 @@ export const activityService = {
     title: string,
     description: string,
     value: string,
-    deliveryDate: Date,
-    matrice: { students: { id: string }[] }
-  ) => createActivity(title, description, value, deliveryDate, matrice),
+    deliveryDate: Date
+  ) => createActivity(title, description, value, deliveryDate),
 }

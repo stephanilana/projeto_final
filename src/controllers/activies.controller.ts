@@ -3,14 +3,13 @@ import { activityService } from '../services/activity.service'
 
 const activiesController = {
   createActivity: async (req: Request, res: Response): Promise<void> => {
-    const { title, description, value, deliveryDate, grade } = req.body
+    const { title, description, value, deliveryDate } = req.body
     try {
       const ret = await activityService.createActivity(
         title,
         description,
         value,
-        deliveryDate,
-        grade
+        deliveryDate
       )
       if (!ret) {
         res.status(500).send('Não foi possível cadastrar a atividade.')
@@ -25,3 +24,5 @@ const activiesController = {
     }
   },
 }
+
+export default activiesController
