@@ -5,10 +5,11 @@ import cookieParser from 'cookie-parser';
 import bodyParser from 'body-parser'; 
 import alunosRouter from './routes/alunos.routes'; 
 import lessonPlanRouter from './routes/lessonPlan.routes'
+import courseRouter from './routes/course.routes';
+
 
 
 dotenv.config();
-
 const app = express();
 
 // Configurações do middleware
@@ -22,5 +23,6 @@ app.use(cors());
 // Roteamentos
 app.use(alunosRouter);
 app.use(lessonPlanRouter);
+app.use(courseRouter);
 
 export default app;
