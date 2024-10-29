@@ -12,6 +12,11 @@ const activiesController = {
         deliveryDate,
         grade
       )
+      if (!ret) {
+        res.status(500).send('Não foi possível cadastrar a atividade.')
+      } else {
+        res.status(200).send('Atividade cadastrada com sucesso.')
+      }
     } catch (err) {
       console.error('Erro criando atividade:', err)
       res
