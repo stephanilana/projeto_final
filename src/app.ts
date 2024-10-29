@@ -4,6 +4,8 @@ import cors from 'cors';
 import cookieParser from 'cookie-parser';
 import bodyParser from 'body-parser'; 
 import alunosRouter from './routes/alunos.routes'; 
+import courseRouter from './routes/course.routes';
+
 
 dotenv.config();
 
@@ -19,4 +21,5 @@ app.use(cors());
 
 // Roteamentos
 app.use(alunosRouter);
+app.use(courseRouter);
 export default app;
