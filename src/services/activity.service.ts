@@ -2,18 +2,29 @@ async function createActivity(
   title: string,
   description: string,
   value: string,
-  deliveryDate: Date
-) {
+  deliveryDate: Date,
+  grade: number
+): Promise<string> {
   try {
-    let resposta = ''
+    let res = ''
     if (!title || !description || !value || !deliveryDate) {
-      resposta = 'Todos os campos são obrigatórios.'
-      return resposta
+      res = 'Todos os campos são obrigatórios.'
+      return res
     }
-    resposta = `A atividade que preenchemos é ${title} com a descrição ${description}, valor ${value} e data de entrega ${deliveryDate}`
-    return resposta
+    res = `A atividade que preenchemos é ${title} com a descrição ${description}, valor ${value} e data de entrega ${deliveryDate}`
+    return res
   } catch (error) {
     console.error('Erro ao cadastrar atividade:', error)
     return 'Erro ao cadastrar atividade'
   }
+}
+
+export const activityService = {
+  createActivity: (
+    title: string,
+    description: string,
+    value: string,
+    deliveryDate: Date,
+    grade: number
+  ) => createActivity(title, description, value, deliveryDate, grade),
 }
