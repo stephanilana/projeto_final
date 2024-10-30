@@ -6,5 +6,6 @@ const router = Router();
 router.post('/materia', materiasController.createMateria);
 router.put('/materia/:id', materiasController.updateMateria);
 router.delete('/materia/:id', materiasController.deleteMateria);
+router.get('/materia/:id', materiasController.getMateriaById);
 
 export default router;

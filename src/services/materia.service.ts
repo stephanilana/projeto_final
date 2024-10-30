@@ -13,7 +13,7 @@ async function createMateria(
             resposta = 'ID, Nome da matéria, carga horária, data de início, data de fim e ID do professor são obrigatórios.';
             return resposta;
         }else{
-            resposta = `Matéria ${nomeMatéria} com carga horária de ${cargaHorária}, de ${dataInício} a ${dataFim}, e professor com ID ${idProfessor} foi criada com sucesso.`;
+            resposta = `Matéria ${nomeMatéria} com carga horária de ${cargaHorária}, de ${dataInício} a ${dataFim}, e professor com ID ${idProfessor} foi cadastrada com sucesso.`;
         
             console.log(resposta);
             return resposta;
@@ -69,6 +69,22 @@ async function deleteMateria(id: string, nomeMatéria: string): Promise<string> 
         return 'Erro ao deletar matéria';
     }
 }
+async function getMateriaById(id: string): Promise<string> {
+    try {
+        if (!id) {
+            return "ID da matéria é obrigatório";
+        }
+        // const query = 'SELECT * FROM materias WHERE id = ?';
+        // const result = await db.query(query, [id]);
+        
+        const response = `Matéria com ID ${id} encontrada com sucesso.`;
+        console.log(response);
+        return response;
+    } catch (error) {
+        console.error("Erro ao buscar matéria:", error);
+        return "Erro ao buscar matéria";
+    }
+}
 
 export const materiaService = {
     createMateria: (
@@ -89,6 +105,7 @@ export const materiaService = {
         idProfessor: string
     ) => updateMateria(id, nomeMatéria, cargaHorária, dataInício, dataFim, idProfessor),
 
-    deleteMateria: (id: string, nomeMatéria: string) => deleteMateria(id, nomeMatéria)
+    deleteMateria: (id: string, nomeMatéria: string) => deleteMateria(id, nomeMatéria),
+    getMateriaById: (id: string) => getMateriaById(id)
 };
 
