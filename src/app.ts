@@ -6,7 +6,7 @@ import bodyParser from 'body-parser';
 import alunosRouter from './routes/alunos.routes'; 
 import lessonPlanRouter from './routes/lessonPlan.routes'
 import courseRouter from './routes/course.routes';
-import materiasRouter from './routes/materia.routes';
+import subjectsRouter from './routes/subjects.routes';
 
 
 
@@ -25,6 +25,6 @@ app.use(cors());
 app.use(alunosRouter);
 app.use(lessonPlanRouter);
 app.use(courseRouter);
-app.use(materiasRouter); 
+app.use(subjectsRouter); 
 
 export default app;

@@ -1,5 +1,5 @@
 import { Request, Response } from 'express';
-import { materiaService } from '../services/materia.service';
+import { materiaService } from '../services/subjects.service';
 
 const materiasController = {
     createMateria: async (req: Request, res: Response): Promise<void> => {
