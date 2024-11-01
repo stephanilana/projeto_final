@@ -1,23 +1,25 @@
-async function createCourseSyllabus(ementa: string): Promise<string> {
+
+
+async function createCourseSyllabus(syllabus: string): Promise<string> {
     try {
-        if (!ementa) {
+        if (!syllabus) {
             return 'A ementa é obrigatória.'
         }
-        console.log(`Ementa inserida: ${ementa}`)
-        return `Ementa criada com o conteúdo: ${ementa}`
+        console.log(`Ementa inserida: ${syllabus}`)
+        return `Ementa criada com o conteúdo: ${syllabus}`
     } catch (error) {
         console.error('Erro ao criar ementa:', error)
         return 'Erro ao cadastrar ementa'
     }
 }
  
-async function updateCourseSyllabus(ementa: string): Promise<string> {
+async function updateCourseSyllabus(syllabus: string): Promise<string> {
     try {
-        if (!ementa) {
+        if (!syllabus) {
             return 'A ementa é obrigatória.'
         }
-        console.log(`Ementa atualizada para: ${ementa}`)
-        return `Ementa atualizada com o conteúdo: ${ementa}`
+        console.log(`Ementa atualizada para: ${syllabus}`)
+        return `Ementa atualizada com o conteúdo: ${syllabus}`
     } catch (error) {
         console.error('Erro ao atualizar ementa:', error)
         return 'Erro ao atualizar ementa'
@@ -41,11 +43,9 @@ async function getCourseSyllabus(id : string): Promise<string> {
     try {
         if(!id){
            return "id nao encontrado"
-
         }
-
-        const ementa = `Ementa encontrada com id: ${id} encontrado`
-        return ementa
+        const syllabus = `Ementa encontrada com id: ${id} encontrado`
+        return syllabus
     } catch (error) {
         console.error('Erro ao buscar ementa:', error)
         return 'Erro ao buscar ementa'
