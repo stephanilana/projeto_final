@@ -1,11 +1,11 @@
 import { Request, Response } from 'express'
-import { ementaMateriaService } from '../services/ementaMateria.service'
+import { courseSyllabusService } from '../services/courseSyllabus.service'
  
-const ementaMateriaController = {
-    createEmenta: async (req: Request, res: Response): Promise<void> => {
-        const { ementa } = req.body
+const courseSyllabusController = {
+    createSyllabus: async (req: Request, res: Response): Promise<void> => {
+        const { Syllabus } = req.body
         try {
-            const retorno = await ementaMateriaService.createEmentaMateria(ementa)
+            const retorno = await courseSyllabusService.createCourseSyllabus(Syllabus)
             if (retorno === 'A ementa é obrigatória.') {
                 res.status(400).send(retorno)
             } else {
@@ -17,10 +17,10 @@ const ementaMateriaController = {
         }
     },
  
-    updateEmenta: async (req: Request, res: Response): Promise<void> => {
-        const { ementa } = req.body
+    updateSyllabus: async (req: Request, res: Response): Promise<void> => {
+        const { Syllabus } = req.body
         try {
-            const retorno = await ementaMateriaService.updateEmentaMateria(ementa)
+            const retorno = await courseSyllabusService.updateCourseSyllabus(Syllabus)
             if (retorno === 'A ementa é obrigatória.') {
                 res.status(400).send(retorno)
             } else {
@@ -32,19 +32,26 @@ const ementaMateriaController = {
         }
     },
  
-    deleteEmenta: async (req: Request, res: Response): Promise<void> => {
+    deleteSyllabus: async (req: Request, res: Response): Promise<void> => {
+        const { id } = req.params;
         try {
-            const retorno = await ementaMateriaService.deleteEmentaMateria()
-            res.status(200).send(retorno)
+            const retorno = await courseSyllabusService.deleteCourseSyllabus(id)
+            if(!retorno) {
+            res.status(200).send("curso nao encontrado")
+            } else{
+                res.status(200).send(retorno)
+            }
         } catch (error) {
             console.error('Erro ao excluir ementa:', error)
             res.status(500).send('Ocorreu um erro no servidor ao tentar excluir a ementa.')
         }
     },
  
-    getEmenta: async (req: Request, res: Response): Promise<void> => {
+    getSyllabus: async (req: Request, res: Response): Promise<void> => {
+
+        const{ id } = req.params
         try {
-            const retorno = await ementaMateriaService.getEmentaMateria()
+            const retorno = await courseSyllabusService.getCourseSyllabus(id)
             res.status(200).send(retorno)
         } catch (error) {
             console.error('Erro ao buscar ementa:', error)
@@ -53,4 +60,4 @@ const ementaMateriaController = {
     }
 }
  
-export default ementaMateriaController
+export default courseSyllabusController

@@ -1,4 +1,4 @@
-async function createEmentaMateria(ementa: string): Promise<string> {
+async function createCourseSyllabus(ementa: string): Promise<string> {
     try {
         if (!ementa) {
             return 'A ementa é obrigatória.'
@@ -11,7 +11,7 @@ async function createEmentaMateria(ementa: string): Promise<string> {
     }
 }
  
-async function updateEmentaMateria(ementa: string): Promise<string> {
+async function updateCourseSyllabus(ementa: string): Promise<string> {
     try {
         if (!ementa) {
             return 'A ementa é obrigatória.'
@@ -24,9 +24,12 @@ async function updateEmentaMateria(ementa: string): Promise<string> {
     }
 }
  
-async function deleteEmentaMateria(): Promise<string> {
+async function deleteCourseSyllabus(id: string): Promise<string> {
     try {
-        console.log('Todas as ementas foram excluídas.')
+        if(!id){
+            console.log(`O id ${id} não foi encontrado`);
+        }
+        console.log(`a ementas com o id ${id} foram excluídas.`)
         return 'Todas as ementas foram excluídas.'
     } catch (error) {
         console.error('Erro ao excluir ementas:', error)
@@ -34,19 +37,24 @@ async function deleteEmentaMateria(): Promise<string> {
     }
 }
  
-async function getEmentaMateria(): Promise<string> {
+async function getCourseSyllabus(id : string): Promise<string> {
     try {
-        const ementa = "Ementa de exemplo"
-        return `Ementa encontrada: ${ementa}`
+        if(!id){
+           return "id nao encontrado"
+
+        }
+
+        const ementa = `Ementa encontrada com id: ${id} encontrado`
+        return ementa
     } catch (error) {
         console.error('Erro ao buscar ementa:', error)
         return 'Erro ao buscar ementa'
     }
 }
  
-export const ementaMateriaService = {
-    createEmentaMateria: (ementa: string) => createEmentaMateria(ementa),
-    updateEmentaMateria: (ementa: string) => updateEmentaMateria(ementa),
-    deleteEmentaMateria: () => deleteEmentaMateria(),
-    getEmentaMateria: () => getEmentaMateria()
+export const courseSyllabusService = {
+    createCourseSyllabus: (syllabus: string) => createCourseSyllabus(syllabus),
+    updateCourseSyllabus: (syllabus: string) => updateCourseSyllabus(syllabus),
+    deleteCourseSyllabus: (id: string) => deleteCourseSyllabus(id),
+    getCourseSyllabus: (id : string) => getCourseSyllabus(id)
 }
