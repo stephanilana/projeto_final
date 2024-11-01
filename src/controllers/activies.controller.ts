@@ -23,6 +23,18 @@ const activiesController = {
         .send('Ocorrey um erro enquanto estava criando uma atividade.')
     }
   },
+  updateActivityGrades: async (req: Request, res: Response): Promise<void> => {
+    const { grade } = req.body
+    const activityId = parseInt(req.params.activityId, 10)
+    try {
+      const ret = await activityService.updateActivityGrades(activityId, grade)
+    } catch (err) {
+      console.error('Erro atualizando atividade:', err)
+      res
+        .status(500)
+        .send('Ocorreu um erro enquanto estava atualizando uma atividade.')
+    }
+  },
 }
 
 export default activiesController
