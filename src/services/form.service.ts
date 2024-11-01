@@ -1,11 +1,11 @@
-const createForm = async (
+async function createForm(
   id: number,
   title: string,
   postingDate: Date,
   closingDate: Date,
   classes: string[],
   answers: any[]
-) => {
+) {
   try {
     const query = `
       INSERT INTO forms (id, title, posting_date, closing_date, classes, answers)
@@ -25,17 +25,20 @@ const createForm = async (
   }
 }
 
-const getFormById = async (id: number) => {
+async function getFormById(id: number) {
   try {
     const query = 'SELECT * FROM forms WHERE id = $1'
     const result = await db.query(query, id)
+    if (!id) {
+      return console.log('Id e obrigatorio')
+    }
     return result
   } catch (error) {
     console.error('Error pegar o form pelo id:', error)
   }
 }
 
-const getAllForms = async () => {
+async function getAllForms() {
   try {
     const query = 'SELECT * FROM forms'
     const result = await db.query(query)
@@ -45,21 +48,24 @@ const getAllForms = async () => {
   }
 }
 
-const deleteForm = async (id: number) => {
+async function deleteForm(id: number) {
   try {
     const query = 'DELETE FROM forms WHERE id = $1'
     await db.query(query, id)
+    if (!id) {
+      return console.log('Id e obrigatorio')
+    }
   } catch (error) {
     console.error('Erro ao deletar o formulario:', error)
   }
 }
 
-const updateForm = async (
+async function updateForm(
   id: number,
   title: string,
   closingDate: Date,
   classes: string[]
-) => {
+) {
   try {
     const query = `
       UPDATE forms
@@ -68,12 +74,15 @@ const updateForm = async (
     `
     const values = [title, closingDate, JSON.stringify(classes), id]
     await db.query(query, values)
+    if (!title || !closingDate || !classes) {
+      return console.log('Titulo, Data de fechamento, turmas  sao obrigatorios')
+    }
   } catch (error) {
     console.error('Erro ao atualizar o formulario:', error)
   }
 }
 
-export const formService = {
+const formService = {
   createForm: (
     id: number,
     title: string,

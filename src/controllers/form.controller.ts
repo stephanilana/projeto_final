@@ -1,5 +1,4 @@
 import { Request, Response } from 'express'
-import { formService } from '../services/form.service'
 
 const formController = {
   createForm: async (req: Request, res: Response): Promise<void> => {
@@ -30,13 +29,6 @@ const formController = {
     const { title, closingDate, classes } = req.body
     const id = Number(req.params.id)
 
-    if (!title || !closingDate || !classes) {
-      res
-        .status(400)
-        .send('Titulo, Data de fechamento, turmas  sao obrigatorios')
-      return
-    }
-
     try {
       const ret = await formService.updateForm(id, title, closingDate, classes)
       if (!ret) {
@@ -55,11 +47,6 @@ const formController = {
   deleteForm: async (req: Request, res: Response): Promise<void> => {
     const id = Number(req.params.id)
 
-    if (!id) {
-      res.status(400).send('Id e obrigatorio')
-      return
-    }
-
     try {
       const ret = await formService.deleteForm(id)
       if (!ret) {
@@ -77,11 +64,6 @@ const formController = {
 
   getFormById: async (req: Request, res: Response): Promise<void> => {
     const id = Number(req.params.id)
-
-    if (!id) {
-      res.status(400).send('Id e obrigatorio')
-      return
-    }
 
     try {
       const ret = await formService.getFormById(id)
