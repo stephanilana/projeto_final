@@ -1,4 +1,4 @@
-import Router from 'express-promise-router' // Importação padrão
+import Router from 'express-promise-router'
 import activiesController from '../controllers/activies.controller'
 
 const router = Router()

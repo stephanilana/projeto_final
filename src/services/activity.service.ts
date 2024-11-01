@@ -9,10 +9,8 @@ async function createActivity(
       return 'Todos os campos são obrigatórios.'
     }
 
-    // Obter todos os alunos da tabela matrice
     const matriceStudents = (await db.query(`SELECT id FROM students`)).rows
 
-    // Inserir nova atividade
     const result = await db.query(
       `INSERT INTO activities (title, description, value, delivery_date) 
        VALUES ($1, $2, $3, $4) RETURNING id`,
