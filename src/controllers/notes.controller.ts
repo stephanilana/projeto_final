@@ -78,6 +78,25 @@ const noteController = {
         .send('Ocorreu um erro no servidor ao tentar buscar a nota.')
     }
   },
+
+  getAverage: async (req: Request, res: Response): Promise<void> => {
+    const studentId = Number(req.params.studentId)
+    const activityId = Number(req.params.activityId)
+
+    try {
+      const average = await notaService.getAverage(studentId, activityId)
+      if (typeof average === 'string') {
+        res.status(404).send(average)
+      } else {
+        res.status(200).json(average)
+      }
+    } catch (error) {
+      console.error('Erro ao calcular a média das notas:', error)
+      res
+        .status(500)
+        .send('Ocorreu um erro no servidor ao tentar calcular a média.')
+    }
+  },
 }
 
 export default noteController

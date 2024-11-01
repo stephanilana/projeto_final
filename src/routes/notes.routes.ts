@@ -7,5 +7,6 @@ router.post('/note/:studentId/:activityId', noteController.createNote)
 router.put('/note/edit/:studentId/:activityId', noteController.updateNote)
 router.delete('/note/delete/:studentId/:activityId', noteController.deleteNote)
 router.get('/note/get/:studentId/:activityId', noteController.getNote)
+router.get('/note/average/:studentId/:activityId', noteController.getAverage)
 
 export default router
