@@ -1,5 +1,5 @@
 import Router from 'express-promise-router'
-import formController from '../controllers/pergunta-form.controller'
+import formController from '../controllers/question-form-controller'
 
 const router = Router()
 

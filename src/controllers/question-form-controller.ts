@@ -1,14 +1,14 @@
 import { Request, Response } from 'express'
-import { questionService } from '../services/pergunta-form.service'
+import { questionService } from '../services/question-form-service'
 
 const formController = {
   questionForm: async (req: Request, res: Response): Promise<void> => {
-    const { descricao, ordemExibicao, tipoResposta } = req.body
+    const { description, displayOrder, tipeAnswer } = req.body
     try {
       const ret = await questionService.createQuestion(
-        descricao,
-        ordemExibicao,
-        tipoResposta
+        description,
+        displayOrder,
+        tipeAnswer
       )
       if (!ret) {
         res.status(500).send('Não foi possível cadastrar a pergunta.')
@@ -24,20 +24,20 @@ const formController = {
   },
 
   uptadeQuestions: async (req: Request, res: Response): Promise<void> => {
-    const { descricao, ordemExibicao, tipoResposta } = req.body
+    const { description, displayOrder, tipeAnswer } = req.body
     const id = req.params.id
 
-    if (!descricao || !ordemExibicao || tipoResposta || id) {
+    if (!description || !displayOrder || tipeAnswer || id) {
       res.status(400).send('Os atributos são obrigatórios para o update')
       return
     }
 
     try {
       const ret = await questionService.uptadeQuestion(
-        descricao,
+        description,
         id,
-        ordemExibicao,
-        tipoResposta
+        displayOrder,
+        tipeAnswer
       )
       if (!ret) {
         res.status(500).send('Não foi possível atualizar o pergunta.')
