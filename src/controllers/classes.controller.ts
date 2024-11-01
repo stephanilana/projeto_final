@@ -1,5 +1,5 @@
 import { Request, Response } from 'express'
-import { turmaService } from '../services/turmas.servises'
+import { turmaService } from '../services/classes.servises'
 
 const turmasController = {
   createTurma: async (req: Request, res: Response): Promise<void> => {
