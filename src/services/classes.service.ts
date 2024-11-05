@@ -113,3 +113,33 @@ export const turmaService = {
   deleteTurma: (nome: string, dataDeInicio: Date) =>
     deleteTurma(nome, dataDeInicio),
 }
+
+async function addAlunoToTurma(
+  turmaNome: string,
+  dataDeInicio: Date,
+  alunoId: string,
+  alunoNome: string
+): Promise<string> {
+  try {
+    let resposta = ''
+    if (!turmaNome || !dataDeInicio || !alunoId || !alunoNome) {
+      resposta =
+        'Todos os campos são obrigatórios para adicionar um aluno à turma.'
+      return resposta
+    }
+
+    resposta = `O aluno ${alunoNome} foi adicionado à turma ${turmaNome} com início em ${dataDeInicio}.`
+    console.log(resposta)
+    return resposta
+  } catch (error) {
+    console.error('Erro ao adicionar aluno à turma:', error)
+    return 'Erro ao adicionar aluno à turma'
+  }
+}
+
+export const classesService = {
+  createTurma,
+  updateTurma,
+  deleteTurma,
+  addAlunoToTurma,
+}

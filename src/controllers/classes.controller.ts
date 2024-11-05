@@ -82,4 +82,26 @@ const turmasController = {
   },
 }
 
+addAlunoToTurma: async (req: Request, res: Response): Promise<void> => {
+  const { turmaNome, dataDeInicio, alunoId, alunoNome } = req.body
+  try {
+    const retorno = await turmaService.addAlunoToTurma(
+      turmaNome,
+      dataDeInicio,
+      alunoId,
+      alunoNome
+    )
+    if (!retorno) {
+      res.status(500).send('Não foi possível adicionar o aluno à turma.')
+    } else {
+      res.status(200).send(retorno)
+    }
+  } catch (error) {
+    console.error('Erro ao adicionar aluno à turma:', error)
+    res
+      .status(500)
+      .send('Ocorreu um erro no servidor ao tentar adicionar o aluno à turma.')
+  }
+}
+
 export default turmasController
