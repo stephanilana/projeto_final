@@ -3,8 +3,8 @@ const app = express()
 
 async function createUser(id: string, nome: string, cpf: string, senha: string, email: string): Promise<string> {
     let res;
-    try {
-        if (!cpf || !senha || !nome || !email) {
+    try { 
+        if (!cpf || !senha || !nome || !email) { 
             res = 'Campo obrigatório';
             return res;
         }
@@ -15,11 +15,11 @@ async function createUser(id: string, nome: string, cpf: string, senha: string, 
         return res;
     }
 }
-async function updateUser(id: string, nome: string, cpf: string): Promise<string>{
+async function updateUser(id: string, nome: string, cpf: string, email: string): Promise<string>{
     try {
         let resposta = "";
-        if (!id || !nome || !cpf) {
-            resposta = 'ID, Nome e CPF são obrigatórios.';
+        if (!id || !nome || !cpf || !email) {
+            resposta = 'ID, Nome, email e CPF são obrigatórios.';
             return resposta;
         }
         resposta = `O usuario com id: ${id} que atualizamos é ${nome} que possui o CPF ${cpf}`;
@@ -29,19 +29,25 @@ async function updateUser(id: string, nome: string, cpf: string): Promise<string
         return 'Erro ao atualizar usuario'; 
     }
 }
-async function updateDelete(id: string, nome: string, cpf: string): Promise<string>{
+async function deleteUser(id: string, nome: string, cpf: string, email: string): Promise<string>{
     let resposta = "";
-    try {
-
-        
-        
-        resposta = `O usuario com id: ${id} que atualizamos é ${nome} que possui o CPF ${cpf}`;
-        return resposta;
+    try {                                            
+        if(!id){
+            resposta = `Usuario não encontrado`
+            return resposta;
+        }
+        else{
+            resposta = `Usuario com o id: ${id} e email ${email} foi deletado`;
+            return resposta;
+        }
     } catch (error) {
-        console.error('Erro ao atualizar usuario:', error);
-        return 'Erro ao atualizar usuario'; 
+        console.error('Erro ao deletar usuario:', error);
+        return 'Erro ao deletar usuario'; 
     }
 }
+
 export const usuarioService = {
-    createUser: (id: string, nome: string, cpf: string, senha: string, email: string) => createUser(id, nome, cpf, senha, email)
+    createUser: (id: string, nome: string, cpf: string, senha: string, email: string) => createUser(id, nome, cpf, senha, email),
+    updateUser: (id: string, nome: string, cpf: string, email: string) => updateUser(id, nome, cpf, email),
+    deleteUser: (id: string, nome: string, cpf: string, email: string) => deleteUser(id, nome, cpf, email)
 };

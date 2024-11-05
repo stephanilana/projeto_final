@@ -1,8 +1,8 @@
 import Router from 'express-promise-router';
+import usuarioController from '../controllers/usuario.controller'
 
 const router = Router();
 
-/*router.post('/alunos', alunosController.createAlunos);
-router.put('/alunos/:id', alunosController.updateAlunos); 
-Fazer controller primeiro
-*/
+router.post('/usuario', usuarioController.CreateUser);
+router.put('/usuario/:id', usuarioController.updateUser);
+router.delete('/usuario/:id', usuarioController.deleteUser); 
