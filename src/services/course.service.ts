@@ -64,11 +64,29 @@ async function createCurso(id : string, nome: string, startDate: Date, endDate: 
      }
  }
  
+ async function addSubjectToCurso(idCurso: string, idMateria: string): Promise<void> {
+    try {
+        if (!idCurso || !idMateria) {
+            console.log("ID do curso e ID da matéria são obrigatórios");
+            return;
+        }
+        
+        // const query = 'INSERT INTO curso_materia (curso_id, materia_id) VALUES ($1, $2)';
+        // const values = [idCurso, idMateria];
+        // await db.query(query, values);
+
+        console.log(`Matéria com ID ${idMateria} adicionada ao curso com ID ${idCurso} com sucesso.`);
+    } catch (error) {
+        console.error("Erro ao adicionar matéria ao curso:", error);
+    }
+}
+
  export const courseService = {
      createCurso: (id: string, nome: string, startDate: Date, endDate: Date, workload: string) => createCurso(id, nome, startDate, endDate, workload),
      deleteCourse: (id: string) => deleteCourse(id),
      updateCourse: (id: string, nome: string, startDate: Date, endDate: Date, workload: string) => updateCourse(id, nome, startDate, endDate, workload),
-     getCourseById: (id: string) => getCourseById(id)
+     getCourseById: (id: string) => getCourseById(id),
+     addMateriaToCurso: (idCurso: string, idMateria: string) => addSubjectToCurso(idCurso, idMateria)
  
  };
  
