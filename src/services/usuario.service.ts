@@ -29,7 +29,7 @@ async function updateUser(id: string, nome: string, cpf: string, email: string):
         return 'Erro ao atualizar usuario'; 
     }
 }
-async function deleteUser(id: string, nome: string, cpf: string, email: string): Promise<string>{
+async function deleteUser(id: string): Promise<string>{
     let resposta = "";
     try {                                            
         if(!id){
@@ -37,7 +37,7 @@ async function deleteUser(id: string, nome: string, cpf: string, email: string):
             return resposta;
         }
         else{
-            resposta = `Usuario com o id: ${id} e email ${email} foi deletado`;
+            resposta = `Usuario`;
             return resposta;
         }
     } catch (error) {
@@ -45,9 +45,26 @@ async function deleteUser(id: string, nome: string, cpf: string, email: string):
         return 'Erro ao deletar usuario'; 
     }
 }
+async function getUser(id: string): Promise<string> {
+    let resposta;
+    try {                                            
+        if(!id){
+            resposta = `Usuario não encontrado`
+            return resposta;
+        }
+        else{
+            resposta = `Usuario encontrado com sucesso`;
+            return resposta;
+        }
+    } catch (error) {
+        console.error('Erro ao buscar o usuario:', error);
+        return 'Erro ao buscar o usuario'; 
+    }
+}
 
 export const usuarioService = {
     createUser: (id: string, nome: string, cpf: string, senha: string, email: string) => createUser(id, nome, cpf, senha, email),
     updateUser: (id: string, nome: string, cpf: string, email: string) => updateUser(id, nome, cpf, email),
-    deleteUser: (id: string, nome: string, cpf: string, email: string) => deleteUser(id, nome, cpf, email)
+    deleteUser: (id: string) => deleteUser(id),
+    getUser: (id: string) => getUser(id)
 };
