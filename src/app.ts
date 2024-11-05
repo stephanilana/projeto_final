@@ -5,12 +5,12 @@ import cookieParser from 'cookie-parser';
 import bodyParser from 'body-parser'; 
 import alunosRouter from './routes/alunos.routes'; 
 import courseRouter from './routes/course.routes';
-import courseSyllabus from './routes/course-syllabus.routes
+import courseSyllabus from './routes/course-syllabus.routes'
 
 
 dotenv.config();
 
-const app = express();
+const app = express();+
 
 app.use(express.urlencoded({ extended: true }));
 app.use(express.json({ type: 'application/vnd.api+json' }));
