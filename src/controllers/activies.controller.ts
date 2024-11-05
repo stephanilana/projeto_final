@@ -35,6 +35,22 @@ const activiesController = {
         .send('Ocorreu um erro enquanto estava atualizando uma atividade.')
     }
   },
+  getActivity: async (req: Request, res: Response): Promise<void> => {
+    const activityId = parseInt(req.params.activityId, 10)
+    try {
+      const activity = await activityService.getActivity(activityId)
+      if (!activity) {
+        res.status(404).send('Atividade não encontrada.')
+      } else {
+        res.status(200).send(activity)
+      }
+    } catch (err) {
+      console.error('Erro buscando atividade:', err)
+      res
+        .status(500)
+        .send('Ocorreu um erro enquanto estava buscando uma atividade.')
+    }
+  },
 }
 
 export default activiesController
