@@ -76,6 +76,24 @@ async function updateActivityGrades(
   }
 }
 
+async function deleteActivity(
+  activity_id: string
+): Promise<string> {
+  try {
+    await db.query(`DELETE FROM activity_student WHERE activity_id = $1`, [
+      activity_id,
+    ])
+    await db.query(`DELETE FROM activity_grade WHERE activity_id = $1`, [
+      activity_id,
+    ])
+    await db.query(`DELETE FROM activities WHERE id = $1`, [activity_id])
+    return `Atividade excluída com sucesso. ID: ${activity_id}`
+  } catch (error) {
+    console.error('Erro ao excluir atividade:', error)
+    return 'Erro ao excluir atividade'
+  }
+}
+
 export const activityService = {
   createActivity: (
     title: string,
@@ -85,4 +103,6 @@ export const activityService = {
   ) => createActivity(title, description, value, deliveryDate),
   updateActivityGrades: (activityId: number, grade: string) =>
     updateActivityGrades(activityId, grade),
+  deleteActivity: (activityId: string) =>
+    deleteActivity(activityId),
 }
