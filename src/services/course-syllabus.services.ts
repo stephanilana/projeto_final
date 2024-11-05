@@ -1,60 +1,59 @@
-async function createCourseSyllabus(syllabus: string): Promise<string> {
+async function createCourseSyllabus(courseId: string, subjectId: string, syllabus: string): Promise<string> {
     try {
         if (!syllabus) {
-            return 'A ementa é obrigatória.'
+            return 'A ementa é obrigatória.';
         }
-        console.log(`Ementa inserida: ${syllabus}`)
-        return `Ementa criada com o conteúdo: ${syllabus}`
+        console.log(`Ementa inserida para o curso ${courseId}, matéria ${subjectId}: ${syllabus}`);
+        return `Ementa criada com o conteúdo: ${syllabus}`;
     } catch (error) {
-        console.error('Erro ao criar ementa:', error)
-        return 'Erro ao cadastrar ementa'
+        console.error('Erro ao criar ementa:', error);
+        return 'Erro ao cadastrar ementa';
     }
 }
- 
-async function updateCourseSyllabus(syllabus: string): Promise<string> {
+
+async function updateCourseSyllabus(courseId: string, subjectId: string, syllabus: string): Promise<string> {
     try {
         if (!syllabus) {
-            return 'A ementa é obrigatória.'
+            return 'A ementa é obrigatória.';
         }
-        console.log(`Ementa atualizada para: ${syllabus}`)
-        return `Ementa atualizada com o conteúdo: ${syllabus}`
+        console.log(`Ementa atualizada para o curso ${courseId}, matéria ${subjectId}: ${syllabus}`);
+        return `Ementa atualizada com o conteúdo: ${syllabus}`;
     } catch (error) {
-        console.error('Erro ao atualizar ementa:', error)
-        return 'Erro ao atualizar ementa'
+        console.error('Erro ao atualizar ementa:', error);
+        return 'Erro ao atualizar ementa';
     }
 }
- 
-async function deleteCourseSyllabus(id: string): Promise<string> {
-    try {
-        if(!id){
-            console.log(`O id ${id} não foi encontrado`);
-        }
-        console.log(`a ementas com o id ${id} foram excluídas.`)
-        return 'Todas as ementas foram excluídas.'
-    } catch (error) {
-        console.error('Erro ao excluir ementas:', error)
-        return 'Erro ao excluir ementas'
-    }
-}
- 
-async function getCourseSyllabus(id : string): Promise<string> {
-    try {
-        if(!id){
-           return "id nao encontrado"
 
+async function deleteCourseSyllabus(courseId: string, subjectId: string): Promise<string> {
+    try {
+        if (!courseId || !subjectId) {
+            console.log(`O curso ${courseId} e/ou a matéria ${subjectId} não foram encontrados.`);
+            return `Ementa não encontrada para o curso ${courseId}, matéria ${subjectId}.`;
         }
-
-        const syllabus = `Ementa encontrada com id: ${id} encontrado`
-        return syllabus
+        console.log(`A ementa para o curso ${courseId}, matéria ${subjectId} foi excluída.`);
+        return `Ementa excluída com sucesso para o curso ${courseId}, matéria ${subjectId}.`;
     } catch (error) {
-        console.error('Erro ao buscar ementa:', error)
-        return 'Erro ao buscar ementa'
+        console.error('Erro ao excluir ementa:', error);
+        return 'Erro ao excluir ementa';
     }
 }
- 
+
+async function getCourseSyllabus(courseId: string, subjectId: string): Promise<string> {
+    try {
+        if (!courseId || !subjectId) {
+            return "Curso ou matéria não encontrados";
+        }
+        const syllabus = `Ementa encontrada para o curso ${courseId}, matéria ${subjectId}`;
+        return syllabus;
+    } catch (error) {
+        console.error('Erro ao buscar ementa:', error);
+        return 'Erro ao buscar ementa';
+    }
+}
+
 export const courseSyllabusService = {
-    createCourseSyllabus: (syllabus: string) => createCourseSyllabus(syllabus),
-    updateCourseSyllabus: (syllabus: string) => updateCourseSyllabus(syllabus),
-    deleteCourseSyllabus: (id: string) => deleteCourseSyllabus(id),
-    getCourseSyllabus: (id : string) => getCourseSyllabus(id)
-}
+    createCourseSyllabus,
+    updateCourseSyllabus,
+    deleteCourseSyllabus,
+    getCourseSyllabus
+};
