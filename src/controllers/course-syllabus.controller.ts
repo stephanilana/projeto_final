@@ -1,5 +1,5 @@
 import { Request, Response } from 'express'
-import { courseSyllabusService } from '../services/courseSyllabus.service'
+import { courseSyllabusService } from '../services/course-syllabus.services'
  
 const courseSyllabusController = {
     createSyllabus: async (req: Request, res: Response): Promise<void> => {
