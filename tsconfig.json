@@ -9,6 +9,5 @@
     "skipLibCheck": true,
     "forceConsistentCasingInFileNames": true
   },
-  "include": ["src/**/*", "src/services/course-syllabus.services.ts"],
   "exclude": ["node_modules", "**/*.spec.ts"]
 }
