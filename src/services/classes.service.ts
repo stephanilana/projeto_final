@@ -75,45 +75,6 @@ async function deleteTurma(nome: string, dataDeInicio: Date): Promise<string> {
   }
 }
 
-export const turmaService = {
-  createTurma: (
-    nome: string,
-    turno: string,
-    dataDeInicio: Date,
-    dataDeTermino: Date,
-    cargaHoraria: number,
-    professor: string
-  ) =>
-    createTurma(
-      nome,
-      turno,
-      dataDeInicio,
-      dataDeTermino,
-      cargaHoraria,
-      professor
-    ),
-
-  updateTurma: (
-    nome: string,
-    turno: string,
-    dataDeInicio: Date,
-    dataDeTermino: Date,
-    cargaHoraria: number,
-    professor: string
-  ) =>
-    updateTurma(
-      nome,
-      turno,
-      dataDeInicio,
-      dataDeTermino,
-      cargaHoraria,
-      professor
-    ),
-
-  deleteTurma: (nome: string, dataDeInicio: Date) =>
-    deleteTurma(nome, dataDeInicio),
-}
-
 async function addAlunoToTurma(
   turmaNome: string,
   dataDeInicio: Date,
