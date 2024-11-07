@@ -118,9 +118,7 @@ async function getActivity(activityId: number): Promise<any> {
   }
 }
 
-async function deleteActivity(
-  activity_id: string
-): Promise<string> {
+async function deleteActivity(activity_id: number): Promise<string> {
   try {
     await db.query(`DELETE FROM activity_student WHERE activity_id = $1`, [
       activity_id,
@@ -145,7 +143,6 @@ export const activityService = {
   ) => createActivity(title, description, value, deliveryDate),
   updateActivityGrades: (activityId: number, grade: string) =>
     updateActivityGrades(activityId, grade),
-  deleteActivity: (activityId: string) =>
-    deleteActivity(activityId),
+  deleteActivity: (activityId: number) => deleteActivity(activityId),
   getActivity: (activityId: number) => getActivity(activityId),
 }

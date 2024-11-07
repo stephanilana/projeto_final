@@ -51,6 +51,22 @@ const activiesController = {
         .send('Ocorreu um erro enquanto estava buscando uma atividade.')
     }
   },
+  deleteActivity: async (req: Request, res: Response) => {
+    const activityId = parseInt(req.params.activityId, 10)
+    try {
+      const ret = await activityService.deleteActivity(activityId)
+      if (!ret) {
+        res.status(404).send('Atividade não encontrada.')
+      } else {
+        res.status(200).send('Atividade deletada com sucesso.')
+      }
+    } catch (err) {
+      console.error('Erro deletando atividade:', err)
+      res
+        .status(500)
+        .send('Ocorreu um erro enquanto estava deletando uma atividade.')
+    }
+  },
 }
 
 export default activiesController
