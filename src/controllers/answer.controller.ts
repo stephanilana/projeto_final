@@ -11,23 +11,29 @@ export class AnswerController {
     async createAnswer(req: Request, res: Response): Promise<void> {
         try {
             const newAnswer = await this.answerService.createAnswer(req.body);
-             res.status(201).json(newAnswer);
-        } catch (error: any) {
-             res.status(400).json({ message: error.message });
+            if (!newAnswer) {
+                res.status(500).send('Não foi possível criar uma resposta');
+            } else {
+                res.status(200).send('Resposta criada com sucesso!');
+            }
+        } catch (error) {
+            console.error('Erro ao criar uma resposta:', error)
+             res.status(500).send('Houve um erro no servidor ao tentar criar uma repsosta');
         }
     }
 
     async searchAnswerByStudent(req: Request, res: Response): Promise<void> {
         try {
             const studentId = Number(req.body.studentId);
-            if (isNaN(studentId)) {
-                throw new Error("Please provide a valid value");
-            }
-
             const answers = await this.answerService.searchAnswerByStudent(studentId);
-             res.status(200).json(answers);
-        } catch (error: any) {
-             res.status(400).json({ message: error.message });
+            if(!answers) {
+                res.status(500).send('Não foi possível encontrar a resposta');
+            } else {
+                res.status(200).send('Resposta encontrada com sucesso!');
+            }
+        } catch (error) {
+            console.error('Erro ao buscar uma resposta:', error)
+             res.status(500).send('Houve um erro no servidor ao tentar encontrar a resposta');
         }
     } 
 
@@ -35,9 +41,14 @@ export class AnswerController {
         try {
             const id = Number(req.body.id);
             const updatedAnswer = await this.answerService.updateAnswer(id, req.body);
-             res.status(200).json(updatedAnswer);
-        } catch (error: any) {
-             res.status(400).json({ message: error.message });
+            if (!updatedAnswer) {
+                res.status(500).send('Não foi possível atualizar uma resposta');
+            } else {
+                res.status(200).send('Resposta atualizada com sucesso!');
+            }
+        } catch (error) {
+            console.error('Erro ao atualizar uma resposta', error)
+            res.status(500).send('Houve um erro no servidor ao tentar atualizar uma resposta');
         }
     }
 
@@ -45,9 +56,14 @@ export class AnswerController {
         try {
             const id = Number(req.body.id);
             const message = await this.answerService.deleteAnswer(id);
-             res.status(200).json(message);
-        } catch (error: any) {
-             res.status(400).json({ message: error.message });
+            if (!message) {
+             res.status(500).send('Não foi possível deletar a resposta');
+            } else {
+                res.status(200).send('Resposta excluída com sucesso!');
+            }
+        } catch (error) {
+            console.error('Erro ao excluir uma resposta', error)
+             res.status(500).send('Houve um erro no servidor ao tentar deletar a resposta');
         }
     }
 }
