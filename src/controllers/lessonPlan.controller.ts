@@ -1,11 +1,11 @@
 import { Request, Response } from 'express';
-import { lessonPlanService } from '../services/lessonPlan.service';
+import * as lessonPlanService from '../services/lessonPlan.service';
 
 const LessonPlanController = {
     createLessonPlan: async (req: Request, res: Response): Promise<void> => {
-        const { data, inicio, fim, conteudoFormativo, modoDeEnsino, recursosDidaticos } = req.body;
+        const { subjectId, data, inicio, fim, conteudoFormativo, modoDeEnsino, recursosDidaticos } = req.body;
         try {
-            const retorno = await lessonPlanService.createLessonPlan(data, inicio, fim, conteudoFormativo, modoDeEnsino, recursosDidaticos);
+            const retorno = await lessonPlanService.createLessonPlan(subjectId, data, inicio, fim, conteudoFormativo, modoDeEnsino, recursosDidaticos);
             if (!retorno) {
                 res.status(500).send('Não foi possível cadastrar o plano de aula.');
             } else {
@@ -18,10 +18,11 @@ const LessonPlanController = {
     },
 
     updateLessonPlan: async (req: Request, res: Response): Promise<void> => {
-        const { data, inicio, fim, conteudoFormativo, modoDeEnsino, recursosDidaticos } = req.body;
+        const { subjectId, data, inicio, fim, conteudoFormativo, modoDeEnsino, recursosDidaticos } = req.body;
         const id = req.params.id;
         try {
-            const retorno = await lessonPlanService.updateLessonPlan(id, data, inicio, fim, conteudoFormativo, modoDeEnsino, recursosDidaticos);
+            // Certifique-se de passar todos os parâmetros necessários
+            const retorno = await lessonPlanService.updateLessonPlan(id, subjectId, data, inicio, fim, conteudoFormativo, modoDeEnsino, recursosDidaticos);
             if (!retorno) {
                 res.status(500).send('Não foi possível atualizar o plano de aula.');
             } else {
