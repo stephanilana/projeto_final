@@ -1,85 +1,102 @@
 import { Request, Response } from 'express'
-import { turmaService } from '../services/classes.service'
 
-const turmasController = {
-  createTurma: async (req: Request, res: Response): Promise<void> => {
-    const {
-      nome,
-      turno,
-      dataDeInicio,
-      dataDeTermino,
-      cargaHoraria,
-      professor,
-    } = req.body
+import { classesService } from '../services/classes.service'
+
+const classesController = {
+  createClass: async (req: Request, res: Response): Promise<void> => {
+    const { name, shift, startDate, endDate, workload, teacher } = req.body
     try {
-      const retorno = await turmaService.createTurma(
-        nome,
-        turno,
-        dataDeInicio,
-        dataDeTermino,
-        cargaHoraria,
-        professor
+      const result = await classesService.createClass(
+        name,
+        shift,
+        startDate,
+        endDate,
+        workload,
+        teacher
       )
-      if (!retorno) {
-        res.status(500).send('Não foi possível cadastrar a turma.')
+      if (!result) {
+        res.status(500).send('Unable to register the class.')
       } else {
-        res.status(200).send('Cadastro da turma realizado com sucesso.')
+        res.status(200).send('Class registration completed successfully.')
       }
     } catch (error) {
-      console.error('Erro ao cadastrar turma:', error)
+      console.error('Error registering class:', error)
       res
         .status(500)
-        .send('Ocorreu um erro no servidor ao tentar cadastrar a turma.')
+        .send(
+          'An error occurred on the server while trying to register the class.'
+        )
     }
   },
 
-  updateTurma: async (req: Request, res: Response): Promise<void> => {
-    const {
-      nome,
-      turno,
-      dataDeInicio,
-      dataDeTermino,
-      cargaHoraria,
-      professor,
-    } = req.body
+  updateClass: async (req: Request, res: Response): Promise<void> => {
+    const { name, shift, startDate, endDate, workload, teacher } = req.body
     try {
-      const ret = await turmaService.updateTurma(
-        nome,
-        turno,
-        dataDeInicio,
-        dataDeTermino,
-        cargaHoraria,
-        professor
+      const result = await classesService.updateClass(
+        name,
+        shift,
+        startDate,
+        endDate,
+        workload,
+        teacher
       )
-      if (!ret) {
-        res.status(500).send('Não foi possível atualizar a turma.')
+      if (!result) {
+        res.status(500).send('Unable to update the class.')
       } else {
-        res.status(200).send('Atualização da turma realizada com sucesso.')
+        res.status(200).send('Class update completed successfully.')
       }
     } catch (error) {
-      console.error('Erro ao atualizar turma:', error)
+      console.error('Error updating class:', error)
       res
         .status(500)
-        .send('Ocorreu um erro no servidor ao tentar atualizar a turma.')
+        .send(
+          'An error occurred on the server while trying to update the class.'
+        )
     }
   },
 
-  deleteTurma: async (req: Request, res: Response): Promise<void> => {
-    const { nome, dataDeInicio } = req.body
+  deleteClass: async (req: Request, res: Response): Promise<void> => {
+    const { name, startDate } = req.body
     try {
-      const ret = await turmaService.deleteTurma(nome, dataDeInicio)
-      if (!ret) {
-        res.status(500).send('Não foi possível deletar a turma.')
+      const result = await classesService.deleteClass(name, startDate)
+      if (!result) {
+        res.status(500).send('Unable to delete the class.')
       } else {
-        res.status(200).send('Turma deletada com sucesso.')
+        res.status(200).send('Class deleted successfully.')
       }
     } catch (error) {
-      console.error('Erro ao deletar turma:', error)
+      console.error('Error deleting class:', error)
       res
         .status(500)
-        .send('Ocorreu um erro no servidor ao tentar deletar a turma.')
+        .send(
+          'An error occurred on the server while trying to delete the class.'
+        )
+    }
+  },
+
+  addStudentToClass: async (req: Request, res: Response): Promise<void> => {
+    const { className, startDate, studentId, studentName } = req.body
+    try {
+      const result = await classesService.addStudentToClass(
+        className,
+        startDate,
+        studentId,
+        studentName
+      )
+      if (!result) {
+        res.status(500).send('Unable to add the student to the class.')
+      } else {
+        res.status(200).send(result)
+      }
+    } catch (error) {
+      console.error('Error adding student to class:', error)
+      res
+        .status(500)
+        .send(
+          'An error occurred on the server while trying to add the student to the class.'
+        )
     }
   },
 }
 
-export default turmasController
+export default classesController
