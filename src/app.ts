@@ -8,6 +8,7 @@ import lessonPlanRouter from './routes/lessonPlan.routes'
 import courseRouter from './routes/course.routes'
 import subjectsRouter from './routes/subjects.routes'
 import classesRouter from './routes/classes.routes'
+import courseSyllabus from './routes/course-syllabus.routes'
 
 dotenv.config()
 const app = express()
@@ -27,5 +28,6 @@ app.use(alunosRouter)
 app.use(lessonPlanRouter)
 app.use(courseRouter)
 app.use(subjectsRouter)
+app.use(courseSyllabus)
 
 export default app

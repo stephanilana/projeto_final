@@ -1,4 +1,5 @@
 import { Request, Response } from 'express'
+
 import { classesService } from '../services/classes.service'
 
 const classesController = {
