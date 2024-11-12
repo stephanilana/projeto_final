@@ -15,7 +15,7 @@ async function createActivity(
     const createdAt = new Date()
 
     const result = await db.query(
-      `INSERT INTO atividade (titulo, descricao, valor, date_entrega, date_postagem) 
+      `INSERT INTO atividade (titulo, descricao, valor, date_entrega, data_postagem) 
        VALUES ($1, $2, $3, $4, $5) RETURNING id`,
       [title, description, value, deliveryDate, createdAt]
     )
