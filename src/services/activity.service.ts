@@ -1,3 +1,5 @@
+import { db } from '../config/database'
+
 async function createActivity(
   title: string,
   description: string,
@@ -10,11 +12,12 @@ async function createActivity(
     }
 
     const matriceStudents = (await db.query(`SELECT id_aluno FROM alunos`)).rows
+    const createdAt = new Date()
 
     const result = await db.query(
-      `INSERT INTO atividade (titulo, descricao, valor, date_entrega) 
-       VALUES ($1, $2, $3, $4) RETURNING id`,
-      [title, description, value, deliveryDate]
+      `INSERT INTO atividade (titulo, descricao, valor, date_entrega, date_postagem) 
+       VALUES ($1, $2, $3, $4, $5) RETURNING id`,
+      [title, description, value, deliveryDate, createdAt]
     )
 
     const activityId = result.rows[0].id
