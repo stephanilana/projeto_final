@@ -7,3 +7,5 @@ router.post('/activity', activiesController.createActivity)
 router.patch('/activity/:activityId', activiesController.updateActivityGrades)
 router.get('/activity/:activityId,', activiesController.getActivity)
 router.delete('/activity/:activityId', activiesController.deleteActivity)
+
+export default router
