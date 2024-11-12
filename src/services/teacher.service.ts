@@ -165,7 +165,7 @@ async function deleteTeacher(
       resposta = `Excluindo o usuário ${nome} id:${idteacher}`;
     }
   } catch (error) {
-    console.log(`Erro ao deletar professor`, error);
+    console.log(`Erro ao cadastrar o professor`, error);
     return `Erro ao cadastrar professor`;
   }
 }
