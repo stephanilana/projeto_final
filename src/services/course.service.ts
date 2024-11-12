@@ -1,23 +1,47 @@
-import {db} from '../config/database'
+import {db} from '../config/database';
 
-
-async function criarCurso(id: string, nome: string, dataInicio: Date, dataFim: Date, cargaHoraria: string): Promise<string> {
+async function criarCurso(
+    idCurso: string,
+    nomeCurso: string,
+    cargaHoraria: string,
+    dataInicio: Date,
+    dataFim: Date,
+    dataInicioInscricoes: Date,
+    dataFimInscricoes: Date,
+    numeroVagas: number,
+    ementa: string
+  ): Promise<string> {
     try {
       let resposta = "";
-      if (!nome || !dataInicio || !dataFim || !cargaHoraria || !id) {
+      if (!idCurso || !nomeCurso || !cargaHoraria || !dataInicio || !dataFim || !dataInicioInscricoes || !dataFimInscricoes || numeroVagas === undefined || !ementa) {
         resposta = "Todos os dados são obrigatórios";
         return resposta;
       }
   
       const query = `
-        INSERT INTO cursos (id, nome, data_inicio, data_fim, carga_horaria)
-        VALUES ($1, $2, $3, $4, $5)
+        INSERT INTO cursos (
+          id_curso, nome_curso, carga_horaria, data_inicio, data_fim, 
+          data_inicio_inscricoes, data_fim_inscricoes, numero_vagas, ementa
+        )
+        VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9)
       `;
   
-      const valores = [id, nome, dataInicio, dataFim, cargaHoraria];
-     await db.query(query, valores);
+      const valores = [
+        idCurso,
+        nomeCurso,
+        cargaHoraria,
+        dataInicio,
+        dataFim,
+        dataInicioInscricoes,
+        dataFimInscricoes,
+        numeroVagas,
+        ementa
+      ];
   
-      resposta = `Curso ${nome} criado com sucesso`;
+      
+      await db.query(query, valores);
+  
+      resposta = `Curso ${nomeCurso} criado com sucesso!`;
       return resposta;
     } catch (error) {
       console.error("Erro ao criar curso:", error);
@@ -25,16 +49,24 @@ async function criarCurso(id: string, nome: string, dataInicio: Date, dataFim: D
     }
   }
   
-  async function deletarCurso(id: string): Promise<string> {
+  async function deletarCurso(idCurso: string): Promise<string> {
     try {
-      if (!id) {
+      if (!idCurso) {
         return "ID do curso é obrigatório";
       }
   
-      const query = 'DELETE FROM cursos WHERE id = $1';
-      // await db.query(query, [id]); // Descomente esta linha se a consulta real ao banco de dados for necessária
+     
+      const queryVerificar = 'SELECT * FROM cursos WHERE id_curso = $1';
+      const resultado = await db.query(queryVerificar, [idCurso]);
   
-      const resposta = `Curso com ID ${id} deletado com sucesso`;
+      if (resultado.rows.length === 0) {
+        return "ID inválido: Curso não encontrado";
+      }
+  
+      const queryDeletar = 'DELETE FROM cursos WHERE id_curso = $1';
+      await db.query(queryDeletar, [idCurso]);
+      
+      const resposta = `Curso com ID ${idCurso} deletado com sucesso`;
       return resposta;
     } catch (error) {
       console.error("Erro ao deletar curso:", error);
@@ -42,26 +74,45 @@ async function criarCurso(id: string, nome: string, dataInicio: Date, dataFim: D
     }
   }
   
+  
   async function atualizarCurso(
-    id: string,
-    nome: string,
+    idCurso: string,
+    nomeCurso: string,
+    cargaHoraria: string,
     dataInicio: Date,
     dataFim: Date,
-    cargaHoraria: string
+    dataInicioInscricoes: Date,
+    dataFimInscricoes: Date,
+    numeroVagas: number,
+    ementa: string
   ): Promise<string> {
     try {
-      if (!id || !nome || !dataInicio || !dataFim || !cargaHoraria) {
+      if (!idCurso || !nomeCurso || !cargaHoraria || !dataInicio || !dataFim || !dataInicioInscricoes || !dataFimInscricoes || numeroVagas === undefined || !ementa) {
         return "Todos os dados são obrigatórios";
       }
   
       const query = `
         UPDATE cursos
-        SET nome = $1, data_inicio = $2, data_fim = $3, carga_horaria = $4
-        WHERE id = $5
+        SET nome_curso = $1, carga_horaria = $2, data_inicio = $3, data_fim = $4, 
+            data_inicio_inscricoes = $5, data_fim_inscricoes = $6, numero_vagas = $7, ementa = $8
+        WHERE id_curso = $9
       `;
-      const valores = [nome, dataInicio, dataFim, cargaHoraria, id];
+      
+      const valores = [
+        nomeCurso,
+        cargaHoraria,
+        dataInicio,
+        dataFim,
+        dataInicioInscricoes,
+        dataFimInscricoes,
+        numeroVagas,
+        ementa,
+        idCurso
+      ];
   
-      const resposta = `Curso com ID ${id} atualizado com sucesso`;
+      await db.query(query, valores);
+  
+      const resposta = `Curso com ID ${idCurso} atualizado com sucesso!`;
       return resposta;
     } catch (error) {
       console.error("Erro ao atualizar curso:", error);
@@ -69,16 +120,16 @@ async function criarCurso(id: string, nome: string, dataInicio: Date, dataFim: D
     }
   }
   
-  async function buscarCursoPorId(id: string): Promise<string> {
+  async function buscarCursoPorId(idCurso: string): Promise<string> {
     try {
-      if (!id) {
+      if (!idCurso) {
         return "ID do curso é obrigatório";
       }
   
-      const query = 'SELECT * FROM cursos WHERE id = $1';
-      // const resultado = await db.query(query, [id]); // Descomente esta linha se a consulta real ao banco de dados for necessária
+      const query = 'SELECT * FROM cursos WHERE id_curso = $1';
+      // const resultado = await db.query(query, [idCurso]);
   
-      const resposta = `Curso com ID ${id} encontrado`;
+      const resposta = `Curso com ID ${idCurso} encontrado`;
       return resposta;
     } catch (error) {
       console.error("Erro ao buscar curso:", error);
@@ -95,7 +146,7 @@ async function criarCurso(id: string, nome: string, dataInicio: Date, dataFim: D
   
       const query = 'INSERT INTO curso_materia (curso_id, materia_id) VALUES ($1, $2)';
       const valores = [idCurso, idMateria];
-      // await db.query(query, valores); // Descomente esta linha se a consulta real ao banco de dados for necessária
+      // await db.query(query, valores);
   
       console.log(`Matéria com ID ${idMateria} adicionada ao curso com ID ${idCurso} com sucesso.`);
       return `Matéria com ID ${idMateria} adicionada ao curso com ID ${idCurso} com sucesso.`;
@@ -106,5 +157,34 @@ async function criarCurso(id: string, nome: string, dataInicio: Date, dataFim: D
   }
   
   export const cursoService = {
-    criarCurso: (id:
+    criarCurso: (
+      idCurso: string,
+      nomeCurso: string,
+      cargaHoraria: string,
+      dataInicio: Date,
+      dataFim: Date,
+      dataInicioInscricoes: Date,
+      dataFimInscricoes: Date,
+      numeroVagas: number,
+      ementa: string
+    ) => criarCurso(idCurso, nomeCurso, cargaHoraria, dataInicio, dataFim, dataInicioInscricoes, dataFimInscricoes, numeroVagas, ementa),
+  
+    deletarCurso: (idCurso: string) => deletarCurso(idCurso),
+  
+    atualizarCurso: (
+      idCurso: string,
+      nomeCurso: string,
+      cargaHoraria: string,
+      dataInicio: Date,
+      dataFim: Date,
+      dataInicioInscricoes: Date,
+      dataFimInscricoes: Date,
+      numeroVagas: number,
+      ementa: string
+    ) => atualizarCurso(idCurso, nomeCurso, cargaHoraria, dataInicio, dataFim, dataInicioInscricoes, dataFimInscricoes, numeroVagas, ementa),
+  
+    buscarCursoPorId: (idCurso: string) => buscarCursoPorId(idCurso),
+  
+    adicionarMateriaAoCurso: (idCurso: string, idMateria: string) => adicionarMateriaAoCurso(idCurso, idMateria)
+  };
   
