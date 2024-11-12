@@ -67,11 +67,11 @@ async function updateTeacher(
       resposta = "ID, Nome e CPF são obrigatórios.";
       return resposta;
     }
-    resposta = `O aluno que atualizamos é ${nome} que possui o CPF ${cpf}`;
+    resposta = `O professor que atualizamos é ${nome} que possui o CPF ${cpf}`;
     return resposta;
   } catch (error) {
-    console.error("Erro ao atualizar aluno:", error);
-    return "Erro ao atualizar aluno";
+    console.error("Erro ao atualizar professor:", error);
+    return "Erro ao atualizar professor";
   }
 }
 
@@ -165,7 +165,7 @@ async function deleteTeacher(
       resposta = `Excluindo o usuário ${nome} id:${idteacher}`;
     }
   } catch (error) {
-    console.log(`Erro ao deletar professor`, error);
+    console.log(`Erro ao cadastrar o professor`, error);
     return `Erro ao cadastrar professor`;
   }
 }
