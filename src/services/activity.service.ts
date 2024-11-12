@@ -27,7 +27,7 @@ async function createActivity(
       )
 
       await db.query(
-        `INSERT INTO activity_grade (student_id, activity_id, grade) 
+        `INSERT INTO nota_atividade (id_aluno, id_atividade, nota) 
          VALUES ($1, $2, $3)`,
         [student.id, activityId, null]
       )
@@ -51,7 +51,7 @@ async function updateActivityGrades(
 
     const students = (
       await db.query(
-        `SELECT student_id FROM activity_student WHERE activity_id = $1`,
+        `SELECT id_aluno FROM atividade_aluno WHERE id_atividade = $1`,
         [activityId]
       )
     ).rows
@@ -64,7 +64,7 @@ async function updateActivityGrades(
       await db.query(
         `UPDATE atividade
          SET grade = $1
-         WHERE student_id = $2 AND activity_id = $3`,
+         WHERE id_aluno = $2 AND id_atividade = $3`,
         [grade, student.student_id, activityId]
       )
     }
@@ -78,8 +78,8 @@ async function updateActivityGrades(
 async function getActivity(activityId: number): Promise<any> {
   try {
     const activityResult = await db.query(
-      `SELECT id, title, description, value, delivery_date 
-       FROM activities 
+      `SELECT id, titulo, descricao, valor, date_entrega 
+       FROM atividade 
        WHERE id = $1`,
       [activityId]
     )
@@ -120,13 +120,13 @@ async function getActivity(activityId: number): Promise<any> {
 
 async function deleteActivity(activity_id: number): Promise<string> {
   try {
-    await db.query(`DELETE FROM activity_student WHERE activity_id = $1`, [
+    await db.query(`DELETE FROM atividade_aluno WHERE id_atividade = $1`, [
       activity_id,
     ])
-    await db.query(`DELETE FROM activity_grade WHERE activity_id = $1`, [
+    await db.query(`DELETE FROM nota_atividade WHERE id_atividade = $1`, [
       activity_id,
     ])
-    await db.query(`DELETE FROM activities WHERE id = $1`, [activity_id])
+    await db.query(`DELETE FROM atividade WHERE id = $1`, [activity_id])
     return `Atividade excluída com sucesso. ID: ${activity_id}`
   } catch (error) {
     console.error('Erro ao excluir atividade:', error)
