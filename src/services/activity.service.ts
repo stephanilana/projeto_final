@@ -9,10 +9,10 @@ async function createActivity(
       return 'Todos os campos são obrigatórios.'
     }
 
-    const matriceStudents = (await db.query(`SELECT id FROM students`)).rows
+    const matriceStudents = (await db.query(`SELECT id_aluno FROM alunos`)).rows
 
     const result = await db.query(
-      `INSERT INTO activities (title, description, value, delivery_date) 
+      `INSERT INTO atividade (titulo, descricao, valor, date_entrega) 
        VALUES ($1, $2, $3, $4) RETURNING id`,
       [title, description, value, deliveryDate]
     )
@@ -21,7 +21,7 @@ async function createActivity(
 
     for (const student of matriceStudents) {
       await db.query(
-        `INSERT INTO activity_student (student_id, activity_id) 
+        `INSERT INTO atividade_aluno (id_aluno, id_atividade) 
          VALUES ($1, $2)`,
         [student.id, activityId]
       )
@@ -62,7 +62,7 @@ async function updateActivityGrades(
 
     for (const student of students) {
       await db.query(
-        `UPDATE activity_grade
+        `UPDATE atividade
          SET grade = $1
          WHERE student_id = $2 AND activity_id = $3`,
         [grade, student.student_id, activityId]
