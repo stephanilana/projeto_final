@@ -1,4 +1,4 @@
-import Router from 'express-promise-router' // Importação padrão
+import Router from 'express-promise-router'
 import schoolCallController from '../controllers/school-call.controller'
 
 const router = Router()
