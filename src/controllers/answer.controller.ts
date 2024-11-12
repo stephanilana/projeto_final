@@ -66,4 +66,14 @@ export class AnswerController {
              res.status(500).send('Houve um erro no servidor ao tentar deletar a resposta');
         }
     }
+
+    async getAllAnswers(req: Request, res: Response): Promise<void> {
+        try {
+            const answer = await this.answerService.getAllAnswers();
+            res.status(200).json(answer);
+        } catch (error) {
+            console.error("Erro ao buscar todas as respostas")
+            res.status(500).send("Houve um erro no servidor ao tentar buscar as respostas.");
+        }
+    }
 }

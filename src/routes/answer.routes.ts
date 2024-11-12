@@ -9,6 +9,7 @@ const router = Router();
 
 router.post('/answers', answerController.createAnswer);
 router.get('/answers/student/:studentId', answerController.searchAnswerByStudent);
+router.get('/answers', answerController.getAllAnswers);
 router.put('/answers/:id', answerController.updateAnswer);
 router.delete('/answers/:id', answerController.deleteAnswer);
 
