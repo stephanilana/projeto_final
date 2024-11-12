@@ -26,7 +26,7 @@ async function createResponsible(
       return resposta;
     }
     const response = await db.query(
-      "INSERT INTO aluno (id, nome, cpf, rg) VALUES ($1, $2, $3, $4, $5, $6, $7)",
+      "INSERT INTO responsible (id, nome, cpf, rg) VALUES ($1, $2, $3, $4, $5, $6, $7)",
       [nome, cpf, email, idade, endereço, contato, tipo]
     );
     return response.rows[0];
