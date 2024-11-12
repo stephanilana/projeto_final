@@ -96,4 +96,19 @@ export class AnswerService {
             throw new Error("Erro ao excluir a resposta no banco de dados.");
         }
     }
+
+    async getAllAnswers(): Promise<any[]> {
+        try {
+            const query = 'SELECT formId, questionId, answer FROM answers';
+            const [rows] = await pool.execute(query);
+            if (rows.length === 0) {
+                throw new Error("Nenhuma resposta encontrada.");
+            }
+
+            return rows;
+        } catch (error) {
+            console.error("Erro ao buscar todas as respostas:", error);
+            throw new Error("Erro ao buscar as respostas no banco de dados");
+        }
+    }
 }
