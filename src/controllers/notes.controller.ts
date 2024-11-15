@@ -40,6 +40,24 @@ const noteController = {
         .send('Ocorreu um erro no servidor ao tentar calcular a média.')
     }
   },
+
+  getStudentByNoteId: async (req: Request, res: Response): Promise<void> => {
+    const noteId = Number(req.params.noteId)
+
+    try {
+      const student = await notaService.getStudentByNoteId(noteId)
+      if (typeof student === 'string') {
+        res.status(404).send(student)
+      } else {
+        res.status(200).json(student)
+      }
+    } catch (error) {
+      console.error('Erro ao buscar aluno:', error)
+      res
+        .status(500)
+        .send('Ocorreu um erro no servidor ao tentar buscar o aluno.')
+    }
+  },
 }
 
 export default noteController
