@@ -49,10 +49,10 @@ const activiesController = {
         .send('Ocorreu um erro enquanto estava atualizando uma atividade.')
     }
   },
-  getActivity: async (req: Request, res: Response): Promise<void> => {
+  getActivityById: async (req: Request, res: Response): Promise<void> => {
     const activityId = parseInt(req.params.activityId, 10)
     try {
-      const activity = await activityService.getActivity(activityId)
+      const activity = await activityService.getActivityById(activityId)
       if (!activity) {
         res.status(404).send('Atividade não encontrada.')
       } else {

@@ -116,7 +116,7 @@ async function updateActivityGrades(
     return 'Erro ao atualizar atividades'
   }
 }
-async function getActivity(activityId: number): Promise<any> {
+async function getActivityById(activityId: number): Promise<any> {
   try {
     const activityResult = await db.query(
       `SELECT *
@@ -192,5 +192,5 @@ export const activityService = {
     grade: string
   ) => updateActivityGrades(activityId, studentId, grade),
   deleteActivity: (activityId: number) => deleteActivity(activityId),
-  getActivity: (activityId: number) => getActivity(activityId),
+  getActivityById: (activityId: number) => getActivityById(activityId),
 }

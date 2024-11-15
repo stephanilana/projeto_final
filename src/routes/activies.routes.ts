@@ -8,7 +8,7 @@ router.patch(
   '/activity/:activityId/:studentId',
   activiesController.updateActivityGrades
 )
-router.get('/activity/:activityId', activiesController.getActivity)
+router.get('/activity/:activityId', activiesController.getActivityById)
 router.delete('/activity/:activityId', activiesController.deleteActivity)
 
 export default router
