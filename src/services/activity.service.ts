@@ -162,16 +162,16 @@ async function getActivity(activityId: number): Promise<any> {
 
 async function deleteActivity(activity_id: number): Promise<string> {
   try {
-    /*
     await db.query(`DELETE FROM atividade_aluno WHERE id_atividade = $1`, [
       activity_id,
     ])
     await db.query(`DELETE FROM nota_atividade WHERE id_atividade = $1`, [
       activity_id,
-    ])*/
+    ])
     await db.query(`DELETE FROM atividade WHERE id_atividade = $1`, [
       activity_id,
     ])
+
     return `Atividade excluída com sucesso. ID: ${activity_id}`
   } catch (error) {
     console.error('Erro ao excluir atividade:', error)
