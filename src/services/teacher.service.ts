@@ -1,3 +1,5 @@
+import { db } from "../config/database";
+
 function validateEmail(email: string) {
   const re = /\S+@\S+\.\S+/;
   return re.test(email);
@@ -139,30 +141,37 @@ async function createTeacher(
     return `Erro ao cadastrar o professor`;
   }
 }
+async function getTeacher(id: string): Promise<string> {
+  try {
+    if (!id) {
+      return "ID é obrigatório.";
+    }
 
-async function deleteTeacher(
-  idteacher: string,
-  nome: string,
-  cpf: string,
-  email: string,
-  telefone: string,
-  estado: string,
-  rua: string,
-  bairro: string,
-  municipio: string,
-  numero: number,
-  datadenascimento: Date,
-  RG: string,
-  datadeespedicao: Date,
-  naturalidade: string
-) {
+    const resposta = await db.query(
+      "SELECT * FROM professor WHERE id_professor = $1",
+      [parseInt(id)]
+    );
+
+    if (resposta.rows.length === 0) {
+      return `Professor com ID ${id} não encontrado.`;
+    }
+
+    const professor = resposta.rows[0];
+    return `Professor com ID ${id} encontrado: ${professor.nome}`;
+  } catch (erro) {
+    console.error("Erro ao buscar professor:", erro);
+    return "Erro ao buscar professor.";
+  }
+}
+
+async function deleteTeacher(idteacher: string) {
   try {
     let resposta = "";
     if (!idteacher) {
       resposta = "Usuário não enontrado";
       return resposta;
     } else {
-      resposta = `Excluindo o usuário ${nome} id:${idteacher}`;
+      resposta = `Excluindo o usuário id:${idteacher}`;
     }
   } catch (error) {
     console.log(`Erro ao cadastrar o professor`, error);
@@ -250,21 +259,5 @@ export const teacherService = {
     RG: string,
     datadeespedicao: Date,
     naturalidade: string
-  ) =>
-    deleteTeacher(
-      idteacher,
-      nome,
-      cpf,
-      email,
-      telefone,
-      estado,
-      rua,
-      bairro,
-      municipio,
-      numero,
-      datadenascimento,
-      RG,
-      datadeespedicao,
-      naturalidade
-    ),
+  ) => deleteTeacher(idteacher),
 };
