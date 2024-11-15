@@ -81,6 +81,22 @@ const activiesController = {
         .send('Ocorreu um erro enquanto estava deletando uma atividade.')
     }
   },
+  getActivities: async (req: Request, res: Response) => {
+    try {
+      const activities = await activityService.getActivities()
+      res.status(200)
+      if (!activities) {
+        res.status(404).send('Nenhuma atividade encontrada.')
+      } else {
+        res.send(activities)
+      }
+    } catch (err) {
+      console.error('Erro buscando atividades:', err)
+      res
+        .status(500)
+        .send('Ocorreu um erro enquanto estava buscando atividades.')
+    }
+  },
 }
 
 export default activiesController

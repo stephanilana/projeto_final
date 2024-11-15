@@ -98,9 +98,8 @@ async function updateActivityGrades(
     if (studentActivityId.length === 0) {
       return 'Nenhum aluno encontrado para esta atividade.'
     }
-    console.log(grade)
-    console.log(studentId)
-    console.log(studentActivityId)
+    console.log('nota:', grade)
+    console.log('id atividade aluno:', studentActivityId)
 
     for (const studentActivity of studentActivityId) {
       await db.query(
@@ -161,6 +160,17 @@ async function getActivityById(activityId: number): Promise<any> {
   }
 }
 
+async function getActivities(): Promise<any> {
+  try {
+    const activitiesResult = await db.query(`SELECT * FROM atividade`)
+    console.log('Atividades retornadas do banco:', activitiesResult.rows)
+    return activitiesResult.rows
+  } catch (error) {
+    console.error('Erro ao buscar atividades:', error)
+    throw new Error('Erro ao buscar atividades')
+  }
+}
+
 async function deleteActivity(activity_id: number): Promise<string> {
   try {
     await db.query(`DELETE FROM atividade_aluno WHERE id_atividade = $1`, [
@@ -194,4 +204,5 @@ export const activityService = {
   ) => updateActivityGrades(activityId, studentId, grade),
   deleteActivity: (activityId: number) => deleteActivity(activityId),
   getActivityById: (activityId: number) => getActivityById(activityId),
+  getActivities: () => getActivities(),
 }
