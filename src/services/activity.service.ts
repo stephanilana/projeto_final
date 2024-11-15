@@ -35,16 +35,37 @@ async function createActivity(
     console.log('ID da atividade criada:', activityId)
 
     for (const student of matriceStudents) {
-      await db.query(
+      const atividadeAlunoResult = await db.query(
         `INSERT INTO atividade_aluno (id_aluno, id_atividade)
-          VALUES ($1, $2)`,
+          VALUES ($1, $2) RETURNING id_atividade_aluno`,
         [student.id_aluno, activityId]
       )
 
+      const idAtividadeAluno = atividadeAlunoResult.rows[0]?.id_atividade_aluno
+
+      if (!idAtividadeAluno) {
+        console.error('Erro: Não foi possível obter o id_atividade_aluno')
+        continue
+      }
+
+      const notaAtividadeResult = await db.query(
+        `INSERT INTO nota_atividade (id_atividade_aluno, nota, id_atividade)
+          VALUES ($1, $2, $3) RETURNING id_nota_atividade`,
+        [idAtividadeAluno, null, activityId]
+      )
+
+      const idNotaAtividade = notaAtividadeResult.rows[0]?.id_nota_atividade
+
+      if (!idNotaAtividade) {
+        console.error('Erro: Não foi possível obter o id_nota_atividade')
+        continue
+      }
+
       await db.query(
-        `INSERT INTO nota_atividade (id_atividade, nota)
-          VALUES ($1, $2)`,
-        [activityId, null]
+        `UPDATE atividade_aluno
+         SET id_nota_atividade = $1
+         WHERE id_atividade_aluno = $2`,
+        [idNotaAtividade, idAtividadeAluno]
       )
     }
 
