@@ -29,8 +29,13 @@ const activiesController = {
   updateActivityGrades: async (req: Request, res: Response): Promise<void> => {
     const { grade } = req.body
     const activityId = parseInt(req.params.activityId, 10)
+    const studentId = parseInt(req.params.studentId, 10)
     try {
-      const ret = await activityService.updateActivityGrades(activityId, grade)
+      const ret = await activityService.updateActivityGrades(
+        activityId,
+        studentId,
+        grade
+      )
       if (!ret) {
         res.status(404).send('Atividade não encontrada.')
       } else {

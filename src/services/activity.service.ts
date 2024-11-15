@@ -78,6 +78,7 @@ async function createActivity(
 
 async function updateActivityGrades(
   activityId: number,
+  studentId: number,
   grade: string
 ): Promise<string> {
   try {
@@ -85,23 +86,27 @@ async function updateActivityGrades(
       return 'Nota é obrigatória.'
     }
 
-    const students = (
+    const studentActivityId = (
       await db.query(
-        `SELECT id_aluno FROM atividade_aluno WHERE id_atividade = $1`,
-        [activityId]
+        `SELECT id_atividade_aluno FROM atividade_aluno WHERE id_atividade = $1 AND id_aluno = $2`,
+        [activityId, studentId]
       )
     ).rows
+    console.log('estudantes:', studentId)
 
-    if (students.length === 0) {
+    if (studentActivityId.length === 0) {
       return 'Nenhum aluno encontrado para esta atividade.'
     }
+    console.log(grade)
+    console.log(studentId)
+    console.log(studentActivityId)
 
-    for (const student of students) {
+    for (const studentActivity of studentActivityId) {
       await db.query(
         `UPDATE nota_atividade
          SET nota = $1
-         WHERE id_aluno = $2 AND id_atividade = $3`,
-        [grade, student.id_aluno, activityId]
+         WHERE id_atividade_aluno = $2 AND id_atividade = $3`,
+        [grade, studentActivity.id_atividade_aluno, activityId]
       )
     }
 
@@ -181,8 +186,11 @@ export const activityService = {
     value: string,
     deliveryDate: Date
   ) => createActivity(title, description, value, deliveryDate),
-  updateActivityGrades: (activityId: number, grade: string) =>
-    updateActivityGrades(activityId, grade),
+  updateActivityGrades: (
+    activityId: number,
+    studentId: number,
+    grade: string
+  ) => updateActivityGrades(activityId, studentId, grade),
   deleteActivity: (activityId: number) => deleteActivity(activityId),
   getActivity: (activityId: number) => getActivity(activityId),
 }
