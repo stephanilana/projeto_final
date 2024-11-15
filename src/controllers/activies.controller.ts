@@ -31,6 +31,12 @@ const activiesController = {
     const activityId = parseInt(req.params.activityId, 10)
     try {
       const ret = await activityService.updateActivityGrades(activityId, grade)
+      if (!ret) {
+        res.status(404).send('Atividade não encontrada.')
+      } else {
+        res.status(200).send('Nota atualizada com sucesso.')
+        console.log('id atividade atualizada:', activityId)
+      }
     } catch (err) {
       console.error('Erro atualizando atividade:', err)
       res

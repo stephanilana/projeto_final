@@ -34,19 +34,19 @@ async function createActivity(
 
     console.log('ID da atividade criada:', activityId)
 
-    // for (const student of matriceStudents) {
-    //   await db.query(
-    //     `INSERT INTO atividade_aluno (id_aluno, id_atividade)
-    //      VALUES ($1, $2)`,
-    //     [student.id_aluno, activityId]
-    //   )
+    for (const student of matriceStudents) {
+      await db.query(
+        `INSERT INTO atividade_aluno (id_aluno, id_atividade)
+          VALUES ($1, $2)`,
+        [student.id_aluno, activityId]
+      )
 
-    //   await db.query(
-    //     `INSERT INTO nota_atividade (id_aluno, id_atividade, nota)
-    //      VALUES ($1, $2, $3)`,
-    //     [student.id_aluno, activityId, null]
-    //   )
-    // }
+      await db.query(
+        `INSERT INTO nota_atividade (id_atividade, nota)
+          VALUES ($1, $2)`,
+        [activityId, null]
+      )
+    }
 
     return `Atividade criada com sucesso. ID: ${activityId}`
   } catch (error) {
