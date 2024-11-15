@@ -6,35 +6,43 @@ async function createActivity(
   value: string,
   deliveryDate: Date
 ): Promise<string> {
+  console.log('Função createActivity chamada')
+
   try {
     if (!title || !description || !value || !deliveryDate) {
+      console.log('Campos obrigatórios faltando')
       return 'Todos os campos são obrigatórios.'
     }
 
     const matriceStudents = (await db.query(`SELECT id_aluno FROM alunos`)).rows
+    console.log('Estudantes encontrados:', matriceStudents)
+
     const createdAt = new Date()
 
     const result = await db.query(
       `INSERT INTO atividade (titulo, descricao, valor, date_entrega, data_postagem) 
-       VALUES ($1, $2, $3, $4, $5) RETURNING id`,
+       VALUES ($1, $2, $3, $4, $5)`,
       [title, description, value, deliveryDate, createdAt]
     )
+    console.log('Atividade criada com sucesso:', result.rows[0])
 
-    const activityId = result.rows[0].id
+    const activityId = result.rows[0].id_atividade
 
-    for (const student of matriceStudents) {
-      await db.query(
-        `INSERT INTO atividade_aluno (id_aluno, id_atividade) 
-         VALUES ($1, $2)`,
-        [student.id, activityId]
-      )
+    // for (const student of matriceStudents) {
+    //   console.log('Inserindo atividade para aluno:', student.id)
 
-      await db.query(
-        `INSERT INTO nota_atividade (id_aluno, id_atividade, nota) 
-         VALUES ($1, $2, $3)`,
-        [student.id, activityId, null]
-      )
-    }
+    //   await db.query(
+    //     `INSERT INTO atividade_aluno (id_aluno, id_atividade)
+    //      VALUES ($1, $2)`,
+    //     [student.id, activityId]
+    //   )
+
+    //   await db.query(
+    //     `INSERT INTO nota_atividade (id_aluno, id_atividade, nota)
+    //      VALUES ($1, $2, $3)`,
+    //     [student.id, activityId, null]
+    //   )
+    // }
 
     return `Atividade criada com sucesso. ID: ${activityId}`
   } catch (error) {
@@ -93,30 +101,29 @@ async function getActivity(activityId: number): Promise<any> {
       return 'Atividade não encontrada.'
     }
     const activity = activityResult.rows[0]
-    return activity
 
-    // const gradesResult = await db.query(
-    //   `SELECT s.id AS student_id, s.name AS student_name, ag.grade
-    //    FROM activity_grade ag
-    //    INNER JOIN students s ON ag.student_id = s.id
-    //    WHERE ag.activity_id = $1`,
-    //   [activityId]
-    // )
+    const gradesResult = await db.query(
+      `SELECT s.id AS id_aluno, s.name AS nome, ag.nota
+       FROM nota_atividade ag
+       INNER JOIN alunos s ON ag.id_aluno = s.id
+       WHERE ag.id_nota_atividade = $1`,
+      [activityId]
+    )
 
-    // const activityDetails = {
-    //   id: activity.id,
-    //   title: activity.title,
-    //   description: activity.description,
-    //   value: activity.value,
-    //   deliveryDate: activity.delivery_date,
-    //   studentsGrades: gradesResult.rows.map((row: any) => ({
-    //     studentId: row.student_id,
-    //     studentName: row.student_name,
-    //     grade: row.grade,
-    //   })),
-    // }
+    const activityDetails = {
+      id: activity.id,
+      title: activity.title,
+      description: activity.description,
+      value: activity.value,
+      deliveryDate: activity.delivery_date,
+      studentsGrades: gradesResult.rows.map((row: any) => ({
+        studentId: row.student_id,
+        studentName: row.student_name,
+        grade: row.grade,
+      })),
+    }
 
-    // return activityDetails
+    return activityDetails
   } catch (error) {
     console.error('Erro ao buscar atividade:', error)
     return 'Erro ao buscar atividade'

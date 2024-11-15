@@ -3,7 +3,10 @@ import { activityService } from '../services/activity.service'
 
 const activiesController = {
   createActivity: async (req: Request, res: Response): Promise<void> => {
-    const { title, description, value, deliveryDate } = req.body
+    const { id, title, description, value, deliveryDate } = req.body
+    if (!title || !description || !value || !deliveryDate) {
+      console.log(`campos faltando`)
+    }
     try {
       const ret = await activityService.createActivity(
         title,
