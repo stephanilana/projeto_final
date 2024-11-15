@@ -2,7 +2,7 @@ import { db } from '../config/database'
 
 async function createSchoolCall(
   id_chamada: number,
-  materia_id: number,
+  id_materia: number,
   data: string,
   aluno_id: number,
   status: boolean
@@ -13,10 +13,10 @@ async function createSchoolCall(
     }
 
     const query = `
-      INSERT INTO schoolCall (id_chamada, materia_id, data, aluno_id, status)
+      INSERT INTO chamada (id_chamada, id_materia, data, aluno_id, status)
       VALUES ($1, $2, $3, $4, $5)
     `
-    const values = [id_chamada, materia_id, data, aluno_id, status]
+    const values = [id_chamada, id_materia, data, aluno_id, status]
 
     await db.query(query, values)
     return 'Chamada criada com sucesso'
@@ -32,7 +32,7 @@ async function removeSchoolCall(aluno_id: number): Promise<string> {
       return 'ID do estudante é obrigatório.'
     }
 
-    const query = `DELETE FROM schoolCall WHERE aluno_id = $1`
+    const query = `DELETE FROM chamada WHERE aluno_id = $1`
     const result = await db.query(query, [aluno_id])
 
     if (result.rowCount === 0) {
@@ -48,19 +48,19 @@ async function removeSchoolCall(aluno_id: number): Promise<string> {
 
 async function updateSchoolCall(
   aluno_id: number,
-  presence: boolean
+  status: boolean
 ): Promise<string> {
   try {
-    if (!aluno_id || presence === undefined) {
+    if (!aluno_id || status === undefined) {
       return 'ID e presença são obrigatórios.'
     }
 
     const query = `
-      UPDATE schoolCall
+      UPDATE chamada
       SET status = $1
       WHERE aluno_id = $2
     `
-    const values = [presence, aluno_id]
+    const values = [status, aluno_id]
 
     const result = await db.query(query, values)
 
@@ -81,14 +81,14 @@ async function getSchoolCallById(id: number): Promise<string> {
       return 'ID da chamada é obrigatório.'
     }
 
-    const query = `SELECT * FROM schoolCall WHERE id_chamada = $1`
+    const query = `SELECT * FROM chamada WHERE id_chamada = $1`
     const result = await db.query(query, [id])
 
     if (result.rowCount === 0) {
       return 'Nenhuma chamada encontrada para o ID fornecido.'
     }
 
-    return JSON.stringify(result.rows[0])
+    return result.rows[0]
   } catch (error) {
     console.error('Erro ao buscar chamada por ID:', error)
     return 'Erro ao buscar a chamada'
@@ -97,7 +97,7 @@ async function getSchoolCallById(id: number): Promise<string> {
 
 async function getAllSchoolCalls(): Promise<string> {
   try {
-    const query = 'SELECT * FROM schoolCall ORDER BY data DESC'
+    const query = 'SELECT * FROM chamada ORDER BY data DESC'
     const result = await db.query(query)
 
     if (result.rowCount === 0) {
