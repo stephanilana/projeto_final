@@ -54,11 +54,7 @@ async function createComment(
 async function getComments(activityId: number): Promise<any> {
   try {
     const result = await db.query(
-      `SELECT c.id_comentario, u.nome AS usuario_nome, c.mensagem, c.created_at 
-       FROM comentario c
-       JOIN usuario u ON c.id_usuario = u.id_usuario
-       JOIN comentario_atividade ca ON ca.id_comentario = c.id_comentario
-       WHERE ca.id_atividade = $1`,
+      `SELECT * FROM comentario_atividade WHERE id_atividade = $1`,
       [activityId]
     )
 
