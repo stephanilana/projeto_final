@@ -1,11 +1,14 @@
 import { Request, Response } from 'express'
 import { commentService } from '../services/coments.service'
-
 const commentController = {
   createComment: async (req: Request, res: Response): Promise<void> => {
-    const { studentId, activityId, comment } = req.body
+    const { userId, activityId, message } = req.body
     try {
-      const ret = await commentService.createComment(studentId, activityId, comment)
+      const ret = await commentService.createComment(
+        userId,
+        activityId,
+        message
+      )
       res.status(200).send(ret)
     } catch (err) {
       console.error('Erro criando comentário:', err)
@@ -17,7 +20,10 @@ const commentController = {
     const activityId = parseInt(req.params.activityId, 10)
     try {
       const comments = await commentService.getComments(activityId)
-      if (!comments || comments === 'Nenhum comentário encontrado para essa atividade.') {
+      if (
+        !comments ||
+        comments === 'Nenhum comentário encontrado para essa atividade.'
+      ) {
         res.status(404).send('Nenhum comentário encontrado.')
       } else {
         res.status(200).send(comments)
@@ -29,10 +35,10 @@ const commentController = {
   },
 
   updateComment: async (req: Request, res: Response): Promise<void> => {
-    const { newComment } = req.body
+    const { newMessage } = req.body
     const commentId = parseInt(req.params.commentId, 10)
     try {
-      const ret = await commentService.updateComment(commentId, newComment)
+      const ret = await commentService.updateComment(commentId, newMessage)
       res.status(200).send(ret)
     } catch (err) {
       console.error('Erro atualizando comentário:', err)

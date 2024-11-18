@@ -1,27 +1,50 @@
+import { db } from '../config/database'
+
 async function createComment(
-  studentId: number,
+  userId: number,
   activityId: number,
-  comment: string
+  message: string
 ): Promise<string> {
   try {
-    if (!comment) {
-      return 'O comentário não pode ser vazio.'
+    if (!message) {
+      return 'A mensagem não pode ser vazia.'
     }
 
-    const studentResult = await db.query('SELECT id FROM students WHERE id = $1', [studentId]);
-    if (studentResult.rows.length === 0) {
-      return 'Estudante não encontrado.'
+    const userResult = await db.query(
+      'SELECT id_usuario FROM usuarios WHERE id_usuario = $1',
+      [userId]
+    )
+    if (userResult.rows.length === 0) {
+      return 'Usuário não encontrado.'
     }
 
-    const activityResult = await db.query('SELECT id FROM activities WHERE id = $1', [activityId]);
-    if (activityResult.rows.length === 0) {
-      return 'Atividade não encontrada.'
-    }
+    // const addActivityId = await db.query(
+    //   'INSERT INTO id_atividade from comentario_atividade VALUES (1)',
+    //   [activityId]
+    // )
+    // if (addActivityId.rows.length === 0) {
+    //   return 'Id da Atividade não encontrada.'
+    // }
 
+    // const activityResult = await db.query(
+    //   'SELECT id_atividade FROM comentario_atividade WHERE id_atividade = $1',
+    //   [activityId]
+    // )
+    // if (activityResult.rows.length === 0) {
+    //   return 'Atividade não encontrada.'
+    // }
+
+    const commentResult = await db.query(
+      `INSERT INTO comentario (id_usuario, mensagem) 
+       VALUES ($1, $2) RETURNING id_comentario`,
+      [userId, message]
+    )
+
+    const commentId = commentResult.rows[0].id_comentario
     await db.query(
-      `INSERT INTO comments (student_id, activity_id, comment) 
-       VALUES ($1, $2, $3)`,
-      [studentId, activityId, comment]
+      `INSERT INTO comentario_atividade (id_atividade, id_comentario) 
+       VALUES ($1, $2)`,
+      [activityId, commentId]
     )
 
     return 'Comentário criado com sucesso.'
@@ -31,14 +54,14 @@ async function createComment(
   }
 }
 
-
 async function getComments(activityId: number): Promise<any> {
   try {
     const result = await db.query(
-      `SELECT c.id, s.name AS student_name, c.comment, c.created_at 
-       FROM comments c 
-       JOIN students s ON c.student_id = s.id 
-       WHERE c.activity_id = $1`,
+      `SELECT c.id_comentario, u.nome AS usuario_nome, c.mensagem, c.created_at 
+       FROM comentario c
+       JOIN usuario u ON c.id_usuario = u.id_usuario
+       JOIN comentario_atividade ca ON ca.id_comentario = c.id_comentario
+       WHERE ca.id_atividade = $1`,
       [activityId]
     )
 
@@ -53,22 +76,21 @@ async function getComments(activityId: number): Promise<any> {
   }
 }
 
-
 async function updateComment(
   commentId: number,
-  newComment: string
+  newMessage: string
 ): Promise<string> {
   try {
-    if (!newComment) {
-      return 'O comentário não pode ser vazio.'
+    if (!newMessage) {
+      return 'A mensagem não pode ser vazia.'
     }
 
     const result = await db.query(
-      `UPDATE comments
-       SET comment = $1, updated_at = CURRENT_TIMESTAMP
-       WHERE id = $2
-       RETURNING id`,
-      [newComment, commentId]
+      `UPDATE comentario
+       SET mensagem = $1, updated_at = CURRENT_TIMESTAMP
+       WHERE id_comentario = $2
+       RETURNING id_comentario`,
+      [newMessage, commentId]
     )
 
     if (result.rows.length === 0) {
@@ -82,11 +104,15 @@ async function updateComment(
   }
 }
 
-
 async function deleteComment(commentId: number): Promise<string> {
   try {
+    await db.query(
+      `DELETE FROM comentario_atividade WHERE id_comentario = $1`,
+      [commentId]
+    )
+
     const result = await db.query(
-      `DELETE FROM comments WHERE id = $1 RETURNING id`,
+      `DELETE FROM comentario WHERE id_comentario = $1 RETURNING id_comentario`,
       [commentId]
     )
 
@@ -101,12 +127,11 @@ async function deleteComment(commentId: number): Promise<string> {
   }
 }
 
-
 export const commentService = {
-  createComment: (studentId: number, activityId: number, comment: string) =>
-    createComment(studentId, activityId, comment),
+  createComment: (userId: number, activityId: number, message: string) =>
+    createComment(userId, activityId, message),
   getComments: (activityId: number) => getComments(activityId),
-  updateComment: (commentId: number, newComment: string) =>
-    updateComment(commentId, newComment),
+  updateComment: (commentId: number, newMessage: string) =>
+    updateComment(commentId, newMessage),
   deleteComment: (commentId: number) => deleteComment(commentId),
 }
