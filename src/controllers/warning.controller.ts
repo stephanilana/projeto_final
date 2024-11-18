@@ -72,5 +72,3 @@ const warningController = {
 }
 
 export default warningController
-
-//ass

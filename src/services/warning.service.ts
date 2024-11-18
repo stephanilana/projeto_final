@@ -80,5 +80,3 @@ export const warningService = {
   getWarning,
   deleteWarning,
 }
-
-//ass
