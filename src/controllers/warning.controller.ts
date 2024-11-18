@@ -3,12 +3,12 @@ import { warningService } from '../services/warning.service'
 
 const warningController = {
   createWarning: async (req: Request, res: Response): Promise<void> => {
-    const { nome, activityId, userId } = req.body
+    const { mensagem, id_materia, id_professor } = req.body
     try {
       const message = await warningService.createWarning(
-        nome,
-        activityId,
-        userId
+        mensagem,
+        id_materia,
+        id_professor
       )
       res.status(201).send(message)
     } catch (err) {
@@ -18,10 +18,15 @@ const warningController = {
   },
 
   updateWarning: async (req: Request, res: Response): Promise<void> => {
-    const { nome } = req.body
-    const warningId = req.params.warningId
+    const { mensagem } = req.body
+    const id_aviso = parseInt(req.params.id_aviso, 10) // Garantir que o ID seja um número
+    if (isNaN(id_aviso)) {
+      res.status(400).send('ID do aviso inválido.')
+      return
+    }
+
     try {
-      const message = await warningService.updateWarning(warningId, nome)
+      const message = await warningService.updateWarning(id_aviso, mensagem)
       res.status(200).send(message)
     } catch (err) {
       console.error('Erro atualizando aviso:', err)
@@ -30,9 +35,14 @@ const warningController = {
   },
 
   getWarning: async (req: Request, res: Response): Promise<void> => {
-    const warningId = req.params.warningId
+    const id_aviso = parseInt(req.params.id_aviso, 10) // Garantir que o ID seja um número
+    if (isNaN(id_aviso)) {
+      res.status(400).send('ID do aviso inválido.')
+      return
+    }
+
     try {
-      const warning = await warningService.getWarning(warningId)
+      const warning = await warningService.getWarning(id_aviso)
       if (!warning) {
         res.status(404).send('Aviso não encontrado.')
       } else {
@@ -45,9 +55,14 @@ const warningController = {
   },
 
   deleteWarning: async (req: Request, res: Response): Promise<void> => {
-    const warningId = req.params.warningId
+    const id_aviso = parseInt(req.params.id_aviso, 10)
+    if (isNaN(id_aviso)) {
+      res.status(400).send('ID do aviso inválido.')
+      return
+    }
+
     try {
-      const message = await warningService.deleteWarning(warningId)
+      const message = await warningService.deleteWarning(id_aviso)
       res.status(200).send(message)
     } catch (err) {
       console.error('Erro deletando aviso:', err)

@@ -1,50 +1,53 @@
 import { db } from '../config/database'
 
 async function createWarning(
-  nome: string,
-  activityId: string,
-  userId: string
+  mensagem: string,
+  id_materia: number,
+  id_professor: number
 ): Promise<string> {
-  if (!nome) {
-    return 'Digite algo.'
+  if (!mensagem) {
+    return 'Digite uma mensagem.'
   }
 
   try {
     const result = await db.query(
-      'INSERT INTO warnings (nome, activityId, userId) VALUES ($1, $2, $3) RETURNING id',
-      [nome, activityId, userId]
+      'INSERT INTO aviso (mensagem, id_materia, id_professor) VALUES ($1, $2, $3) RETURNING id_aviso',
+      [mensagem, id_materia, id_professor]
     )
-    return `Aviso criado com sucesso, ID: ${result.rows[0].id}`
+    return `Aviso criado com sucesso, ID: ${result.rows[0].id_aviso}`
   } catch (error) {
     console.error('Erro ao criar aviso:', error)
     return 'Erro ao criar aviso'
   }
 }
 
-async function updateWarning(warningId: string, nome: string): Promise<string> {
-  if (!nome) {
-    return 'Digite algo.'
+async function updateWarning(
+  id_aviso: number,
+  mensagem: string
+): Promise<string> {
+  if (!mensagem) {
+    return 'Digite uma mensagem.'
   }
 
   try {
     const result = await db.query(
-      'UPDATE warnings SET nome = $1 WHERE id = $2 RETURNING id',
-      [nome, warningId]
+      'UPDATE aviso SET mensagem = $1 WHERE id_aviso = $2 RETURNING id_aviso',
+      [mensagem, id_aviso]
     )
     if (result.rowCount === 0) {
       return 'Aviso não encontrado para atualização.'
     }
-    return `Aviso atualizado com sucesso, ID: ${result.rows[0].id}`
+    return `Aviso atualizado com sucesso, ID: ${result.rows[0].id_aviso}`
   } catch (error) {
     console.error('Erro ao atualizar aviso:', error)
     return 'Erro ao atualizar aviso'
   }
 }
 
-async function getWarning(warningId: string) {
+async function getWarning(id_aviso: number) {
   try {
-    const result = await db.query('SELECT * FROM warnings WHERE id = $1', [
-      warningId,
+    const result = await db.query('SELECT * FROM aviso WHERE id_aviso = $1', [
+      id_aviso,
     ])
     if (result.rows.length === 0) {
       return null
@@ -56,10 +59,10 @@ async function getWarning(warningId: string) {
   }
 }
 
-async function deleteWarning(warningId: string): Promise<string> {
+async function deleteWarning(id_aviso: number): Promise<string> {
   try {
-    const result = await db.query('DELETE FROM warnings WHERE id = $1', [
-      warningId,
+    const result = await db.query('DELETE FROM aviso WHERE id_aviso = $1', [
+      id_aviso,
     ])
     if (result.rowCount === 0) {
       return 'Aviso não encontrado para exclusão.'
