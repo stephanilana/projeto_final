@@ -3,79 +3,71 @@ import { schoolCallService } from '../services/school-call.service'
 
 const schoolCallController = {
   createSchoolCall: async (req: Request, res: Response): Promise<void> => {
-    const { idStudent, nameStudent, presence } = req.body
+    const { aluno_id, status, id_chamada, materia_id, data } = req.body
     try {
       const retorno = await schoolCallService.createSchoolCall(
-        idStudent,
-        nameStudent,
-        presence
+        id_chamada,
+        materia_id,
+        data,
+        aluno_id,
+        status
       )
       if (!retorno) {
-        return res.status(500).send('Não foi possível criar lista de chamada.')
+        res.status(500).send('Não foi possível criar a chamada.')
       } else {
-        return res.status(200).send('Realizado com sucesso')
+        res.status(201).send('Chamada criada com sucesso.')
       }
     } catch (error) {
-      console.error('Erro ao criar lista de chamada:', error)
-      res.status(500).send('Ocorreu um erro no servidor.')
+      console.error('Erro ao criar a chamada:', error)
+      res.status(500).send('Erro interno do servidor ao criar a chamada.')
     }
   },
 
   updateSchoolCall: async (req: Request, res: Response): Promise<void> => {
-    const { nameStudent, presence } = req.body
-    const idStudent = req.params.id
+    const { status } = req.body
+    const aluno_id = Number(req.params.id)
     try {
-      const ret = await schoolCallService.updateSchoolCall(
-        idStudent,
-        nameStudent,
-        presence
-      )
+      const ret = await schoolCallService.updateSchoolCall(aluno_id, status)
       if (!ret) {
-        res.status(500).send('Não foi possível atualizar a lista.')
+        res.status(404).send('Chamada não encontrada para atualização.')
       } else {
-        res.status(200).send('Atualização realizada com sucesso')
+        res.status(200).send('Chamada atualizada com sucesso.')
       }
     } catch (error) {
-      console.error('Erro ao atualizar lista de chamada:', error)
-      res
-        .status(500)
-        .send(
-          'Ocorreu um erro no servidor ao tentar atualizar a lista de chamada.'
-        )
+      console.error('Erro ao atualizar a chamada:', error)
+      res.status(500).send('Erro interno do servidor ao atualizar a chamada.')
     }
   },
 
   deleteSchoolCall: async (req: Request, res: Response): Promise<void> => {
-    const idStudent = req.params.id
+    const aluno_id = Number(req.params.id)
     try {
-      const ret = await schoolCallService.removeSchoolCall(idStudent)
+      const ret = await schoolCallService.removeSchoolCall(aluno_id)
       if (!ret) {
-        res.status(500).send('Não foi possível remover a lista.')
+        res.status(404).send('Chamada não encontrada para remoção.')
       } else {
-        res.status(200).send('Remoção realizada com sucesso')
+        res.status(200).send('Chamada removida com sucesso.')
       }
     } catch (error) {
       console.error('Erro ao remover a chamada:', error)
-      res.status(500).send('Ocorreu um erro no servidor.')
+      res.status(500).send('Erro interno do servidor ao remover a chamada.')
     }
   },
 
   getSchoolCall: async (req: Request, res: Response): Promise<void> => {
-    const idStudent = req.params.id
+    const aluno_id = Number(req.params.id)
     try {
-      const ret = await schoolCallService.getSchoolCallById(idStudent)
+      const ret = await schoolCallService.getSchoolCallById(aluno_id)
       if (!ret) {
         res.status(404).send('Chamada não encontrada.')
-        return
       } else {
-        res.status(200).send(ret)
-        return
+        res.status(200).json(ret)
       }
     } catch (error) {
-      console.error('Erro ao buscar chamada:', error)
-      res.status(500).send('Ocorreu um erro no servidor.')
-      return
+      console.error('Erro ao buscar a chamada:', error)
+      res.status(500).send('Erro interno do servidor ao buscar a chamada.')
     }
   },
 }
+
 export default schoolCallController
