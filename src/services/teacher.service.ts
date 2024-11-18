@@ -118,21 +118,22 @@ async function createTeacher(
 
     if (!validateTeacher) return (resposta = "O dado enviado é inválido.");
 
-    const cadastroNoBanco = `INSERT INTO teacher values(
-        idteacher
-        nome
-        cpf
-        email
-        telefone
-        estado
-        rua
-        bairro
-        municipio
-        numero
-        datadenascimento
-        RG
-        datadeespedicao
-        naturalidade)`;
+    const query = `INSERT INTO teacher(
+        idteacher,
+        nome,
+        cpf,
+        email,
+        telefone,
+        estado,
+        rua,
+        bairro,
+        municipio,
+        numero,
+        datadenascimento,
+        RG,
+        datadeespedicao,
+        naturalidade)
+        VALUES($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13, $14)`;
 
     resposta = "O cadastro de professor foi realizado";
     return resposta;
@@ -244,20 +245,5 @@ export const teacherService = {
       datadeespedicao,
       naturalidade
     ),
-  deleteTeacher: (
-    idteacher: string,
-    nome: string,
-    cpf: string,
-    email: string,
-    telefone: string,
-    estado: string,
-    rua: string,
-    bairro: string,
-    municipio: string,
-    numero: number,
-    datadenascimento: Date,
-    RG: string,
-    datadeespedicao: Date,
-    naturalidade: string
-  ) => deleteTeacher(idteacher),
+  deleteTeacher: (idteacher: string) => deleteTeacher(idteacher),
 };

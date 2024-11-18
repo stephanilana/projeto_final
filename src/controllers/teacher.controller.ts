@@ -98,39 +98,9 @@ const teachersController = {
   },
 
   deleteTeacher: async (req: Request, res: Response): Promise<void> => {
-    const {
-      idteacher,
-      nome,
-      cpf,
-      email,
-      telefone,
-      estado,
-      rua,
-      bairro,
-      municipio,
-      numero,
-      datadenascimento,
-      RG,
-      datadeespedicao,
-      naturalidade,
-    } = req.body;
+    const { idteacher } = req.body;
     try {
-      const ret = await teacherService.deleteTeacher(
-        idteacher,
-        nome,
-        cpf,
-        email,
-        telefone,
-        estado,
-        rua,
-        bairro,
-        municipio,
-        numero,
-        datadenascimento,
-        RG,
-        datadeespedicao,
-        naturalidade
-      );
+      const ret = await teacherService.deleteTeacher(idteacher);
       if (!ret) {
         res.status(500).send("Não foi possível excluir o professor.");
       } else {
