@@ -108,6 +108,12 @@ async function updateActivityGrades(
          WHERE id_atividade_aluno = $2 AND id_atividade = $3`,
         [grade, studentActivity.id_atividade_aluno, activityId]
       )
+      await db.query(
+        `UPDATE atividade_aluno
+         SET nota = $1
+         WHERE id_atividade_aluno = $2 AND id_atividade = $3`,
+        [grade, studentActivity.id_atividade_aluno, activityId]
+      )
     }
 
     return `Notas atualizadas com sucesso para a atividade ID: ${activityId}.`
