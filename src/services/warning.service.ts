@@ -1,3 +1,5 @@
+import { db } from '../config/database'
+
 async function createWarning(
   nome: string,
   activityId: string,
