@@ -1,5 +1,4 @@
 import { db } from '../config/database'
-
 async function createComment(
   userId: number,
   activityId: number,
@@ -11,28 +10,20 @@ async function createComment(
     }
 
     const userResult = await db.query(
-      'SELECT id_usuario FROM usuarios WHERE id_usuario = $1',
+      'SELECT id_usuario FROM usuario WHERE id_usuario = $1',
       [userId]
     )
     if (userResult.rows.length === 0) {
       return 'Usuário não encontrado.'
     }
 
-    // const addActivityId = await db.query(
-    //   'INSERT INTO id_atividade from comentario_atividade VALUES (1)',
-    //   [activityId]
-    // )
-    // if (addActivityId.rows.length === 0) {
-    //   return 'Id da Atividade não encontrada.'
-    // }
-
-    // const activityResult = await db.query(
-    //   'SELECT id_atividade FROM comentario_atividade WHERE id_atividade = $1',
-    //   [activityId]
-    // )
-    // if (activityResult.rows.length === 0) {
-    //   return 'Atividade não encontrada.'
-    // }
+    const activityResult = await db.query(
+      'SELECT id_atividade FROM atividade WHERE id_atividade = $1',
+      [activityId]
+    )
+    if (activityResult.rows.length === 0) {
+      return 'Atividade não encontrada.'
+    }
 
     const commentResult = await db.query(
       `INSERT INTO comentario (id_usuario, mensagem) 
@@ -40,7 +31,13 @@ async function createComment(
       [userId, message]
     )
 
-    const commentId = commentResult.rows[0].id_comentario
+    const commentId = commentResult.rows[0]?.id_comentario
+
+    if (!commentId) {
+      console.error('Erro ao criar o comentário, id_comentario não retornado.')
+      return 'Erro ao criar o comentário.'
+    }
+
     await db.query(
       `INSERT INTO comentario_atividade (id_atividade, id_comentario) 
        VALUES ($1, $2)`,
@@ -48,8 +45,8 @@ async function createComment(
     )
 
     return 'Comentário criado com sucesso.'
-  } catch (error) {
-    console.error('Erro ao criar comentário:', error)
+  } catch (error: any) {
+    console.error('Erro ao criar comentário:', error.message)
     return 'Erro ao criar comentário.'
   }
 }
