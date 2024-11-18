@@ -2,10 +2,10 @@ import { Request, Response } from 'express';
 import { usuarioService } from '../services/usuario.service';
 
 const usuarioController = {
-    CreateUser: async (req: Request, res: Response): Promise<void> => { 
-        const { id, nome, email, senha, cpf } = req.body;
+    /* CreateUser: async (req: Request, res: Response): Promise<void> => { 
+        const { id, nome, senha, cpf, contato } = req.body;
         try {
-            const retorno = await usuarioService.createUser(id, nome, cpf, senha, email);
+            const retorno = await usuarioService.createUser(id, nome, cpf, senha, contato);
             if (!retorno) {
                 res.status(500).send('Não foi possível cadastrar o usuário.');
             } else {
@@ -15,7 +15,7 @@ const usuarioController = {
             console.error('Erro ao cadastrar usuário:', error);
             res.status(500).send('Ocorreu um erro no servidor ao tentar cadastrar o usuário.');
         }
-    },
+    }, */
     getUser: async(req: Request, res: Response): Promise<void> => {
         const {id} = req.body;
         try{
@@ -25,6 +25,7 @@ const usuarioController = {
             }else{
                   res.status(200).send(`Usuario buscado com sucesso`);
             }
+            console.log(id)
         }
         catch(error){
             console.error('Erro ao buscar usuário:', error);
@@ -32,7 +33,7 @@ const usuarioController = {
         }
     },
 
-    deleteUser: async(req: Request, res: Response): Promise<void> => {
+/*     deleteUser: async(req: Request, res: Response): Promise<void> => {
         const {id} = req.body;
         try{
             const retorno = await usuarioService.deleteUser(id);
@@ -47,9 +48,9 @@ const usuarioController = {
             res.status(500).send( 'Ocorreu um erro no servidor ao tentar deletar o usuário.');
         }
     },
-
-    updateUser: async(req: Request, res: Response): Promise<void> => {
-        const {id, nome, cpf, email} = req.body;
+ */
+   /*  updateUser: async(req: Request, res: Response): Promise<void> => {
+        const {id, nome, cpf} = req.body;
         try{
             const retorno = await usuarioService.deleteUser(id);
             if(!retorno){
@@ -62,6 +63,6 @@ const usuarioController = {
             console.error('Erro ao atualizar o usuário:', error);
             res.status(500).send( 'Ocorreu um erro no servidor ao tentar atualizar o usuário.');
         }
-    } 
+    }  */
 }
 export default usuarioController

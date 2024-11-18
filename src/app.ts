@@ -9,6 +9,7 @@ import courseRouter from './routes/course.routes'
 import subjectsRouter from './routes/subjects.routes'
 import classesRouter from './routes/classes.routes'
 import courseSyllabus from './routes/course-syllabus.routes'
+import usuario from './routes/usuario.routes'
 
 dotenv.config()
 const app = express()
@@ -29,5 +30,6 @@ app.use(lessonPlanRouter)
 app.use(courseRouter)
 app.use(subjectsRouter)
 app.use(courseSyllabus)
+app.use(usuario)
 
 export default app
