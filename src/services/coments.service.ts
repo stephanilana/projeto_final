@@ -80,7 +80,7 @@ async function updateComment(
 
     const result = await db.query(
       `UPDATE comentario
-       SET mensagem = $1, updated_at = CURRENT_TIMESTAMP
+       SET mensagem = $1
        WHERE id_comentario = $2
        RETURNING id_comentario`,
       [newMessage, commentId]
