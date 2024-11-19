@@ -1,6 +1,7 @@
 import { db } from '../config/database'
 
 async function createClass(
+  
   name: string,
   shift: string,
   startDate: Date,
@@ -68,37 +69,37 @@ async function deleteClass(name: string, startDate: Date): Promise<string> {
   }
 }
 
-async function addStudentToClass(
-  className: string,
-  startDate: Date,
-  studentId: string,
-  studentName: string
-): Promise<string> {
+async function addStudentsToClass(studentIds: number[], turmaId: number): Promise<string> {
   try {
-    if (!className || !startDate || !studentId || !studentName) {
-      return 'All fields are required to add a student to the class.'
+    if (!studentIds || studentIds.length === 0 || !turmaId) {
+      return 'todos os dados e obrigatorio';
     }
 
-    const classResponse = await db.query(
-      'SELECT id FROM classes WHERE name = $1 AND start_date = $2',
-      [className, startDate]
-    )
+ 
+    const values = studentIds.map((id) => `(${id}, ${turmaId})`).join(", ")
+    const query = `INSERT INTO alunosTurma (id_aluno, id_turma) VALUES ${values}`
 
-    const classId = classResponse.rows[0]?.id
+    await db.query(query)
 
-    if (!classId) {
-      return `Class ${className} starting on ${startDate} not found.`
-    }
+    return `Os alunos com os IDs [${studentIds.join(", ")}] foram add a turma ${turmaId}.`;
 
-    await db.query(
-      'INSERT INTO class_students (class_id, student_id, student_name) VALUES ($1, $2, $3)',
-      [classId, studentId, studentName]
-    )
-
-    return `The student ${studentName} has been added to the class ${className} starting on ${startDate}.`
   } catch (error) {
-    console.error('Error adding student to class:', error)
-    return 'Error adding student to class'
+    console.error('Erro ao adicionar alunos a turma:', error)
+    return 'Erro ao adicionar os alunos a turma. Por favor, tente novamente mais tarde.'
+  }
+}
+
+async function verificaridExistente(idTurma: string): Promise<boolean>{
+  try {
+    const queryVerificar = 'SELECT * FROM turmas WHERE id = $1'
+    const result = await db.query(queryVerificar, [idTurma])
+    if (result.rows.length === 0) {
+      return false
+    }
+    return true
+  } catch (error) {
+    console.error('Error verificando id existente:', error)
+    return false
   }
 }
 
@@ -106,5 +107,5 @@ export const classesService = {
   createClass,
   updateClass,
   deleteClass,
-  addStudentToClass,
+  addStudentsToClass
 }
