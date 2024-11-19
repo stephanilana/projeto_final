@@ -1,34 +1,31 @@
+import { db } from '../config/database'
+
 async function createForm(
   id: number,
-  title: string,
-  postingDate: Date,
-  closingDate: Date,
-  classes: string[],
-  answers: any[]
+  id_usuario: number,
+  data_criacao: string,
+  link: string,
+  nome: string
 ) {
   try {
     const query = `
-      INSERT INTO forms (id, title, posting_date, closing_date, classes, answers)
-      VALUES ($1, $2, $3, $4, $5, $6)
+      INSERT INTO formulario (id, id_usuario, data_criacao, link, nome)
+      VALUES ($1, $2, $3, $4, $5)
     `
-    const values = [
-      id,
-      title,
-      postingDate,
-      closingDate,
-      JSON.stringify(classes),
-      JSON.stringify(answers),
-    ]
+    const values = [id, id_usuario, data_criacao, link, nome]
     await db.query(query, values)
+
+    return values
   } catch (error) {
-    console.error('Erro ao criar form:', error)
+    console.error('Erro ao criar formulário:', error)
+    return false
   }
 }
 
 async function getFormById(id: number) {
   try {
-    const query = 'SELECT * FROM forms WHERE id = $1'
-    const result = await db.query(query, id)
+    const query = 'SELECT * FROM formulario WHERE id = $1'
+    const result = await db.query(query, [id])
     if (!id) {
       return console.log('Id e obrigatorio')
     }
@@ -40,7 +37,7 @@ async function getFormById(id: number) {
 
 async function getAllForms() {
   try {
-    const query = 'SELECT * FROM forms'
+    const query = 'SELECT * FROM formulario'
     const result = await db.query(query)
     return result.rows
   } catch (error) {
@@ -50,57 +47,52 @@ async function getAllForms() {
 
 async function deleteForm(id: number) {
   try {
-    const query = 'DELETE FROM forms WHERE id = $1'
-    await db.query(query, id)
+    const query = 'DELETE FROM formulario WHERE id = $1'
+    await db.query(query, [id])
     if (!id) {
       return console.log('Id e obrigatorio')
     }
+
+    return true
   } catch (error) {
     console.error('Erro ao deletar o formulario:', error)
   }
 }
 
-async function updateForm(
-  id: number,
-  title: string,
-  closingDate: Date,
-  classes: string[]
-) {
+async function updateForm(id: number, link: string, nome: string) {
   try {
     const query = `
-      UPDATE forms
-      SET title = $1, posting_date = $2, closing_date = $3, classes = $4, answers = $5
-      WHERE id = $6
-    `
-    const values = [title, closingDate, JSON.stringify(classes), id]
+  UPDATE formulario
+  SET link = $1, nome = $2
+  WHERE id = $3
+`
+    const values = [link, nome, id]
+
     await db.query(query, values)
-    if (!title || !closingDate || !classes) {
-      return console.log('Titulo, Data de fechamento, turmas  sao obrigatorios')
+    if (!nome || !link) {
+      return console.log('Titulo e link sao obrigatorios')
     }
+
+    return values
   } catch (error) {
     console.error('Erro ao atualizar o formulario:', error)
   }
 }
 
-const formService = {
-  createForm: (
+export const formService = {
+  createForm: async (
     id: number,
-    title: string,
-    postingDate: Date,
-    closingDate: Date,
-    classes: string[],
-    answers: any[]
+    id_usuario: number,
+    data_criacao: string,
+    link: string,
+    nome: string
   ) => {
-    createForm(id, title, postingDate, closingDate, classes, answers)
+    return await createForm(id, id_usuario, data_criacao, link, nome)
   },
 
   getFormById: (id: number) => getFormById(id),
   getAllForms: () => getAllForms(),
-  updateForm: (
-    id: number,
-    title: string,
-    closingDate: Date,
-    classes: string[]
-  ) => updateForm(id, title, closingDate, classes),
+  updateForm: (id: number, link: string, nome: string) =>
+    updateForm(id, link, nome),
   deleteForm: (id: number) => deleteForm(id),
 }
