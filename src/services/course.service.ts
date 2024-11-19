@@ -45,34 +45,20 @@ async function criarCurso(
 
 async function deletarCurso(idCurso: string): Promise<string> {
   try {
-
-    
-    
     if (!idCurso) {
-     
-      return "ID do curso é obrigatório"
+      return "ID do curso é obrigatório";
     }
 
-     const cursoExiste = await verificarIdExistente(idCurso)
-  
-    if (cursoExiste === false) {
-      console.log("oi")
-      return "id invalido: Curso nao encontrado"
-    }
-    
+    const queryDeletar = 'DELETE FROM curso WHERE id_curso = $1';
+    await db.query(queryDeletar, [idCurso]);
 
-else{
- 
-    const queryDeletar = 'DELETE FROM curso WHERE id = $1'
-    await db.query(queryDeletar, [idCurso])
-   
-
-    return `Curso com ID ${idCurso} deletado com sucesso`}
+    return `Curso com ID ${idCurso} deletado com sucesso`;
   } catch (error) {
-    console.error("Erro ao deletar curso:", error)
-    return "Erro ao deletar curso"
+    console.error("Erro ao deletar curso:", error);
+    return "Erro ao deletar curso";
   }
 }
+
 
 async function atualizarCurso(
   idCurso: string,
@@ -90,10 +76,10 @@ async function atualizarCurso(
       return "Todos os dados são obrigatórios"
     }
 
-    // const cursoExiste = await verificarIdExistente(idCurso)
-    // if (!cursoExiste) {
-    //   return "ID invalido: Curso nao encontrado"
-    // }
+     const cursoExiste = await verificarIdExistente(idCurso)
+     if (!cursoExiste) {
+       return "ID invalido: Curso nao encontrado"
+     }
 
     const query = `
       UPDATE cursos
@@ -146,7 +132,7 @@ async function buscarCursoPorId(idCurso: string): Promise<string> {
 
 async function verificarIdExistente(idCurso: string): Promise<boolean> {
  
-//
+
 
   const queryVerificar = "SELECT * FROM curso WHERE id_curso = $1"
 
@@ -165,14 +151,11 @@ async function verificarIdExistente(idCurso: string): Promise<boolean> {
 
 
 
-
-
-
-
 export const cursoService = {
   criarCurso,
   deletarCurso,
   atualizarCurso,
   buscarCursoPorId,
+  verificarIdExistente
 
 }
