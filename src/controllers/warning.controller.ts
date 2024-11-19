@@ -35,7 +35,7 @@ const warningController = {
   },
 
   getWarning: async (req: Request, res: Response): Promise<void> => {
-    const id_aviso = parseInt(req.params.id_aviso, 10) // Garantir que o ID seja um número
+    const id_aviso = parseInt(req.params.warningId, 10) // Garantir que o ID seja um número
     if (isNaN(id_aviso)) {
       res.status(400).send('ID do aviso inválido.')
       return
