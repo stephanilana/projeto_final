@@ -3,12 +3,9 @@ import { notaService } from '../services/notes.service'
 
 const noteController = {
   getNote: async (req: Request, res: Response): Promise<void> => {
-    const { studentId, activityId } = req.params
+    const { studentId } = req.params
     try {
-      const nota = await notaService.getNote(
-        Number(studentId),
-        Number(activityId)
-      )
+      const nota = await notaService.getNotesByStudentId(Number(studentId))
       if (!nota) {
         res.status(404).send('Nota não encontrada.')
       } else {
@@ -24,38 +21,20 @@ const noteController = {
 
   getAverage: async (req: Request, res: Response): Promise<void> => {
     const studentId = Number(req.params.studentId)
-    const activityId = Number(req.params.activityId)
 
     try {
-      const average = await notaService.getAverage(studentId, activityId)
-      if (typeof average === 'string') {
-        res.status(404).send(average)
+      const average = await notaService.getAverageByStudentId(studentId)
+
+      if (average === null) {
+        res.status(404).send('Nenhuma nota encontrada para calcular a média.')
       } else {
-        res.status(200).json(average)
+        res.status(200).json({ average })
       }
     } catch (error) {
       console.error('Erro ao calcular a média das notas:', error)
       res
         .status(500)
         .send('Ocorreu um erro no servidor ao tentar calcular a média.')
-    }
-  },
-
-  getStudentByNoteId: async (req: Request, res: Response): Promise<void> => {
-    const noteId = Number(req.params.noteId)
-
-    try {
-      const student = await notaService.getStudentByNoteId(noteId)
-      if (typeof student === 'string') {
-        res.status(404).send(student)
-      } else {
-        res.status(200).json(student)
-      }
-    } catch (error) {
-      console.error('Erro ao buscar aluno:', error)
-      res
-        .status(500)
-        .send('Ocorreu um erro no servidor ao tentar buscar o aluno.')
     }
   },
 }

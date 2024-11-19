@@ -3,8 +3,7 @@ import noteController from '../controllers/notes.controller'
 
 const router = Router()
 
-router.get('/note/get/:studentId/:activityId', noteController.getNote)
-router.get('/note/average/:studentId/:activityId', noteController.getAverage)
-router.get('/note/student/:noteId', noteController.getStudentByNoteId)
+router.get('/note/get/:studentId', noteController.getNote)
+router.get('/note/average/:studentId', noteController.getAverage)
 
 export default router
