@@ -2,10 +2,10 @@ import { Request, Response } from 'express';
 import { usuarioService } from '../services/usuario.service';
 
 const usuarioController = {
-    /* CreateUser: async (req: Request, res: Response): Promise<void> => { 
-        const { id, nome, senha, cpf, contato } = req.body;
+    CreateUser: async (req: Request, res: Response): Promise<void> => { 
+        const { id_usuario, email, senha } = req.body;
         try {
-            const retorno = await usuarioService.createUser(id, nome, cpf, senha, contato);
+            const retorno = await usuarioService.createUser(id_usuario, email, senha);
             if (!retorno) {
                 res.status(500).send('Não foi possível cadastrar o usuário.');
             } else {
@@ -15,17 +15,17 @@ const usuarioController = {
             console.error('Erro ao cadastrar usuário:', error);
             res.status(500).send('Ocorreu um erro no servidor ao tentar cadastrar o usuário.');
         }
-    }, */
+    },
     getUser: async(req: Request, res: Response): Promise<void> => {
-        const {id} = req.body;
+        const {id_usuario} = req.params;
         try{
-            const retorno = await usuarioService.getUser(id);
+            const retorno = await usuarioService.getUser(id_usuario);
             if(!retorno){
                  res.status(500).send(`Não foi possivel buscar o usuario`);
             }else{
                   res.status(200).send(`Usuario buscado com sucesso`);
             }
-            console.log(id)
+            console.log(id_usuario)
         }
         catch(error){
             console.error('Erro ao buscar usuário:', error);

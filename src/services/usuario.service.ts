@@ -3,21 +3,19 @@ const app = express()
 import { response } from 'express';
 import { db } from '../config/database';
 
-/* async function createUser(id: string, nome: string, cpf: string, senha: string, contato: string): Promise<string> {
+async function createUser(id_usuario: string, email: string, senha: string): Promise<any> {
     let res;
     try { 
-        if (!cpf || !senha || !nome) { 
+        if (!email || !senha) { 
             res = 'Campo obrigatório';
             return res;
         }
         const response = await db.query(
-            "INSERT INTO usuario (id_usuario, nome, cpf, senha, contato) VALUES ($1, $2, $3, $4, $5)",
+            "INSERT INTO usuario (id_usuario, email, senha) VALUES ($1, $2, $3)",
             [
-            id,
-            nome,
-            cpf,
-            senha,
-            contato
+            parseInt(id_usuario),
+            email,
+            senha
             ]
         );
         return response.rows[0]
@@ -27,6 +25,7 @@ import { db } from '../config/database';
         return res;
     }
 }
+/* 
 async function updateUser(id: string, nome: string, cpf: string, senha: string, contato: string): Promise<string>{
     try {
         let resposta = "";
@@ -49,11 +48,11 @@ async function updateUser(id: string, nome: string, cpf: string, senha: string, 
         const response = await db.query(
             "UPDATE usuario SET nome = $1, cpf = $2, senha = $4, contato = $5 WHERE id_usuario = $3",
             [
-            nome,
-            cpf,
-            id,
-            senha,
-            contato
+                nome,
+                cpf,
+                id,
+                senha,
+                contato
             ]
         );
         const user = await getUser(id);
@@ -77,12 +76,12 @@ async function updateUser(id: string, nome: string, cpf: string, senha: string, 
         throw new Error("Falha ao excluir usuario");
     }
 } */
-async function getUser(idUsuario: string): Promise<any> {
+async function getUser(id_usuario: string): Promise<any> {
     let resposta;
     try {                                      
        const response = await db.query(
-        "Select * from usuario WHERE id_usuario = $1",
-        [idUsuario]
+        "SELECT * FROM usuario WHERE id_usuario = $1",
+        [parseInt(id_usuario)]
        )
        return response.rows[0];
     } catch (error) {
@@ -92,8 +91,8 @@ async function getUser(idUsuario: string): Promise<any> {
 }
 
 export const usuarioService = {
-   /*  createUser: (id: string, nome: string, cpf: string, senha: string, contato: string) => createUser(id, nome, cpf, senha, contato),
-    updateUser: (id: string, nome: string, cpf: string, contato: string, senha: string) => updateUser(id, nome, cpf, contato, senha), */
+     createUser: (id_usuario: string, cpf: string, senha: string) => createUser(id_usuario, cpf, senha),
+  /*  updateUser: (id: string, nome: string, cpf: string, contato: string, senha: string) => updateUser(id, nome, cpf, contato, senha), */
     /* deleteUser: (id: string) => deleteUser(id), */
-    getUser: (idUsuario: string) => getUser(idUsuario)
+    getUser: (id_usuario: string) => getUser(id_usuario)
 };
