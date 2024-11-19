@@ -37,7 +37,8 @@ async function getAverageByStudentId(studentId: number): Promise<number> {
       return NaN
     }
 
-    return parseFloat(result.rows[0].media)
+    const average = parseFloat(result.rows[0].media)
+    return parseFloat(average.toFixed(2))
   } catch (error) {
     console.error('Erro ao calcular a média:', error)
     return NaN
