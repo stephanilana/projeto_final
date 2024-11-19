@@ -170,19 +170,19 @@ async function updateResponsible(
   }
 }
 
-async function deletarCurso(id: string): Promise<string> {
+async function deleteResponsible(id: string): Promise<string> {
   try {
     if (!id) {
-      return "ID do curso é obrigatório";
+      return "ID do responsavel é obrigatório";
     }
  
-    const queryDeletar = 'DELETE FROM curso WHERE id_responsavel = $1';
+    const queryDeletar = 'DELETE FROM responsavel WHERE id_responsavel = $1';
     await db.query(queryDeletar, [id]);
  
-    return `Curso com ID ${id} deletado com sucesso`;
+    return `Responsavel com ID ${id} deletado com sucesso`;
   } catch (error) {
-    console.error("Erro ao deletar responsavel:", error);
-    return "Erro ao deletar curso";
+    console.error("Erro ao deletar Responsavel:", error);
+    return "Erro ao deletar Responsavel";
   }
 }
 
@@ -208,13 +208,10 @@ async function getResponsavel(id: string): Promise<string> {
 }
  
 async function verificarIdExistente(idCurso: string): Promise<boolean> {
- 
- 
- 
-  const queryVerificar = "SELECT * FROM curso WHERE id_curso = $1"
+
+  const queryVerificar = "SELECT * FROM curso WHERE id_responsavel = $1"
  
   const resultado = await db.query(queryVerificar, [parseInt(idCurso)])
- 
  
   if (resultado.rows.length === 0){
     return false
@@ -224,13 +221,11 @@ async function verificarIdExistente(idCurso: string): Promise<boolean> {
   }
  
 }
- 
-
-
 
 export const responsibleService = {
 createResponsable,
 updateResponsible,
-deletarCurso,
+deleteResponsible,
 getResponsavel,
+verificarIdExistente,
 };
