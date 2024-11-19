@@ -39,7 +39,7 @@ const teachersController = {
       if (!retorno) {
         res.status(500).send("Não foi possível cadastrar o professor.");
       } else {
-        res.status(200).send("Cadastro realizado com sucesso");
+        res.status(200).send(retorno);
       }
     } catch (error) {
       console.error("Erro ao cadastrar aluno:", error);
@@ -98,7 +98,7 @@ const teachersController = {
   },
 
   deleteTeacher: async (req: Request, res: Response): Promise<void> => {
-    const { idteacher } = req.body;
+    const { idteacher } = req.params;
     try {
       const ret = await teacherService.deleteTeacher(idteacher);
       if (!ret) {

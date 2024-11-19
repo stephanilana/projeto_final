@@ -118,7 +118,7 @@ async function createTeacher(
 
     if (!validateTeacher) return (resposta = "O dado enviado é inválido.");
 
-    const query = `INSERT INTO teacher(
+    await db.query(`INSERT INTO teacher(
         idteacher,
         nome,
         cpf,
@@ -133,8 +133,7 @@ async function createTeacher(
         RG,
         datadeespedicao,
         naturalidade)
-        VALUES($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13, $14)`;
-
+        VALUES($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13, $14)`);
     resposta = "O cadastro de professor foi realizado";
     return resposta;
   } catch (error) {
@@ -172,7 +171,10 @@ async function deleteTeacher(idteacher: string) {
       resposta = "Usuário não enontrado";
       return resposta;
     } else {
-      resposta = `Excluindo o usuário id:${idteacher}`;
+      await db.query("DELETE FROM professor WHERE id_professor = $1", [
+        parseInt(idteacher),
+      ]);
+      return "Usuário removido com seucesso.";
     }
   } catch (error) {
     console.log(`Erro ao cadastrar o professor`, error);
