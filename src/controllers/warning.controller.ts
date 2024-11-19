@@ -19,7 +19,7 @@ const warningController = {
 
   updateWarning: async (req: Request, res: Response): Promise<void> => {
     const { mensagem } = req.body
-    const id_aviso = parseInt(req.params.id_aviso, 10) // Garantir que o ID seja um número
+    const id_aviso = parseInt(req.params.warningId, 10)
     if (isNaN(id_aviso)) {
       res.status(400).send('ID do aviso inválido.')
       return
@@ -35,7 +35,7 @@ const warningController = {
   },
 
   getWarning: async (req: Request, res: Response): Promise<void> => {
-    const id_aviso = parseInt(req.params.warningId, 10) // Garantir que o ID seja um número
+    const id_aviso = parseInt(req.params.warningId, 10)
     if (isNaN(id_aviso)) {
       res.status(400).send('ID do aviso inválido.')
       return
@@ -55,7 +55,7 @@ const warningController = {
   },
 
   deleteWarning: async (req: Request, res: Response): Promise<void> => {
-    const id_aviso = parseInt(req.params.id_aviso, 10)
+    const id_aviso = parseInt(req.params.warningId, 10)
     if (isNaN(id_aviso)) {
       res.status(400).send('ID do aviso inválido.')
       return
