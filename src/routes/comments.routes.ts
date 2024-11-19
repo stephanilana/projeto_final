@@ -1,5 +1,5 @@
 import Router from 'express-promise-router'
-import commentController from '../controllers/coments.controllerr'
+import commentController from '../controllers/comments.controller'
 
 const router = Router()
 
