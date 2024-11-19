@@ -59,7 +59,6 @@ async function deletarCurso(idCurso: string): Promise<string> {
   }
 }
 
-
 async function atualizarCurso(
   idCurso: string,
   nomeCurso: string,
