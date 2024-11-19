@@ -1,112 +1,120 @@
+import { db } from '../config/database'
+
 async function createSchoolCall(
-  idStudent?: number,
-  nameStudent?: string,
-  presence?: boolean,
-  dateCall?: Date,
-  discipline?: string,
-  course?: string,
-  classes?: string
+  id_chamada: number,
+  id_materia: number,
+  data: string,
+  aluno_id: number,
+  status: boolean
 ): Promise<string> {
   try {
+    if (!id_chamada || !aluno_id || status === undefined) {
+      return 'Todos os campos obrigatórios devem ser preenchidos.'
+    }
+
     const query = `
-     INSERT INTO schoolCall (id, nameStudent, presence, dateCall, discipline, course, classes)
-     VALUES ($1, $2, $3, $4, $5, $6)
+      INSERT INTO chamada (id_chamada, id_materia, data, aluno_id, status)
+      VALUES ($1, $2, $3, $4, $5)
     `
-    const values = [
-      idStudent,
-      nameStudent,
-      presence,
-      dateCall,
-      discipline,
-      course,
-      classes,
-    ]
+    const values = [id_chamada, id_materia, data, aluno_id, status]
+
     await db.query(query, values)
     return 'Chamada criada com sucesso'
   } catch (error) {
-    console.error('Erro ao carregar a chamada', error)
-    return 'Erro ao carregar a chamada'
+    console.error('Erro ao criar a chamada:', error)
+    return 'Erro ao criar a chamada'
   }
 }
 
-async function removeSchoolCall(idStudent: number): Promise<string> {
+async function removeSchoolCall(aluno_id: number): Promise<string> {
   try {
-    const query = `DELETE FROM schoolCall WHERE id = $1`
-    await db.query(query, idStudent)
+    if (!aluno_id) {
+      return 'ID do estudante é obrigatório.'
+    }
+
+    const query = `DELETE FROM chamada WHERE aluno_id = $1`
+    const result = await db.query(query, [aluno_id])
+
+    if (result.rowCount === 0) {
+      return 'Nenhuma chamada encontrada para o ID fornecido.'
+    }
+
     return 'Chamada removida com sucesso'
   } catch (error) {
-    console.error('Erro ao remover a chamada', error)
+    console.error('Erro ao remover a chamada:', error)
     return 'Erro ao remover a chamada'
   }
 }
 
 async function updateSchoolCall(
-  idStudent: number,
-  nameStudent: string,
-  presence: boolean
+  aluno_id: number,
+  status: boolean
 ): Promise<string> {
   try {
+    if (!aluno_id || status === undefined) {
+      return 'ID e presença são obrigatórios.'
+    }
+
     const query = `
-     UPDATE schoolCall
-     SET nameStudent = $1, presence = $2
-     WHERE idStudent = $3
+      UPDATE chamada
+      SET status = $1
+      WHERE aluno_id = $2
     `
-    const values = [nameStudent, presence, idStudent]
-    await db.query(query, values)
+    const values = [status, aluno_id]
+
+    const result = await db.query(query, values)
+
+    if (result.rowCount === 0) {
+      return 'Nenhuma chamada encontrada para o ID fornecido.'
+    }
+
     return 'Chamada atualizada com sucesso'
   } catch (error) {
-    console.error('Erro ao atualizar a chamada', error)
+    console.error('Erro ao atualizar a chamada:', error)
     return 'Erro ao atualizar a chamada'
   }
 }
 
 async function getSchoolCallById(id: number): Promise<string> {
   try {
-    const query = `SELECT * FROM schoolCall WHERE id = $1`
-    const result = await db.query(query, id)
-    return result[0] || null
+    if (!id) {
+      return 'ID da chamada é obrigatório.'
+    }
+
+    const query = `SELECT * FROM chamada WHERE id_chamada = $1`
+    const result = await db.query(query, [id])
+
+    if (result.rowCount === 0) {
+      return 'Nenhuma chamada encontrada para o ID fornecido.'
+    }
+
+    return result.rows[0]
   } catch (error) {
-    console.error('Erro ao buscar chamada por ID', error)
+    console.error('Erro ao buscar chamada por ID:', error)
     return 'Erro ao buscar a chamada'
   }
 }
 
 async function getAllSchoolCalls(): Promise<string> {
   try {
-    const query = 'SELECT * FROM schoolCall'
+    const query = 'SELECT * FROM chamada ORDER BY data DESC'
     const result = await db.query(query)
-    return result.rows
+
+    if (result.rowCount === 0) {
+      return 'Nenhuma chamada encontrada.'
+    }
+
+    return JSON.stringify(result.rows)
   } catch (error) {
-    console.error('Erro ao buscar todas as chamadas', error)
+    console.error('Erro ao buscar todas as chamadas:', error)
     return 'Erro ao buscar todas as chamadas'
   }
 }
 
 export const schoolCallService = {
-  createSchoolCall: (
-    idStudent?: number,
-    nameStudent?: string,
-    presence?: boolean,
-    dateCall?: Date,
-    discipline?: string,
-    course?: string,
-    classes?: string
-  ) =>
-    createSchoolCall(
-      idStudent,
-      nameStudent,
-      presence,
-      dateCall,
-      discipline,
-      course,
-      classes
-    ),
-  updateSchoolCall: (
-    idStudent: number,
-    nameStudent: string,
-    presence: boolean
-  ) => updateSchoolCall(idStudent, nameStudent, presence),
-  removeSchoolCall: (idStudent: number) => removeSchoolCall(idStudent),
-  getSchoolCallById: (id: number) => getSchoolCallById(id),
-  getAllSchoolCalls: () => getAllSchoolCalls(),
+  createSchoolCall,
+  updateSchoolCall,
+  removeSchoolCall,
+  getSchoolCallById,
+  getAllSchoolCalls,
 }
