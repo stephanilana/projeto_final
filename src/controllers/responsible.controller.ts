@@ -41,7 +41,7 @@ export const responsibleController = {
                     res.status(500).send('Erro ao cadastrar responsável')
                 }
                 else {
-                    res.status(200).send('Cadastro realizado com sucesso');
+                    res.status(200).send(retorno);
                 }
             } catch(error) {
                 console.error(error)
@@ -87,7 +87,7 @@ export const responsibleController = {
                     res.status(500).send('Erro ao cadastrar responsável')
                 }
                 else {
-                    res.status(200).send('Cadastro realizado com sucesso');
+                    res.status(200).send(retorno);
                 }
             } catch(error) {
                 console.error(error)

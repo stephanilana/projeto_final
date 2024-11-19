@@ -1,6 +1,5 @@
 import { db } from "../config/database";
 
-
 function validateEmail(email: string) {
   const re = /\S+@\S+\.\S+/;
   return re.test(email);
@@ -16,7 +15,6 @@ function validarDataNascimento(data: string): boolean {
  
   return regex.test(data);
 }
-
 
 function validateResponsable(
   nome: string,
@@ -34,8 +32,6 @@ function validateResponsable(
  
   return true;
 }
-
-
 
 async function createResponsable(
   id: string,
@@ -79,12 +75,12 @@ async function createResponsable(
     if (!validateResponsable) return (resposta = "O dado enviado é inválido.");
 
     await db.query(`
-      INSERT INTO responsaveis (
-        id, 
+      INSERT INTO responsavel (
+        id_responsavel, 
         tipo, 
         nome, 
         email, 
-        telefone, 
+        telefone,
         estado, 
         municipio, 
         rua, 
@@ -94,7 +90,7 @@ async function createResponsable(
         cpf, 
         rg, 
         documentos
-      ) VALUES ($1, $2, $3, $4, $5, $6, $7 $8, $9, $10, $11, $12, $13)`,
+      ) VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13, $14)`,
       [id, tipo, nome, email, telefone, estado, municipio, rua, bairro, numero, dataNascimento, cpf, rg, documentos])
     resposta = "O cadastro do responsavel foi realizado com sucesso!";
     return resposta;
@@ -144,8 +140,8 @@ async function updateResponsible(
       return resposta;
     }
     await db.query(`
-      INSERT INTO responsaveis (
-        id, 
+      INSERT INTO responsavel (
+        id_responsavel, 
         tipo, 
         nome, 
         email, 
@@ -159,7 +155,7 @@ async function updateResponsible(
         cpf, 
         rg, 
         documentos
-      ) VALUES ($1, $2, $3, $4, $5, $6, $7 $8, $9, $10, $11, $12, $13)`,
+      ) VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13, $14)`,
       [id, tipo, nome, email, telefone, estado, municipio, rua, bairro, numero, dataNascimento, cpf, rg, documentos])
     resposta = "O cadastro do responsavel foi realizado com sucesso!";
     return resposta;
