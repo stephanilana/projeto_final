@@ -33,9 +33,12 @@ const LessonPlanController = {
             } else {
                 res.status(201).send(retorno);
             }
-        } catch (error) {
-            console.error('Erro ao cadastrar plano de aula:', error);
-            res.status(500).send('Ocorreu um erro no servidor ao tentar cadastrar o plano de aula.');
+        } catch (error: any) {
+            console.error('Erro ao cadastrar plano de aula:', error.message || error);
+            res.status(500).json({
+                message: 'Erro ao cadastrar plano de aula.',
+                details: error.message || 'Erro desconhecido',
+            });
         }
     },
 
@@ -73,9 +76,12 @@ const LessonPlanController = {
             } else {
                 res.status(200).send(retorno);
             }
-        } catch (error) {
-            console.error('Erro ao atualizar plano de aula:', error);
-            res.status(500).send('Ocorreu um erro no servidor ao tentar atualizar o plano de aula.');
+        } catch (error: any) {
+            console.error('Erro ao atualizar plano de aula:', error.message || error);
+            res.status(500).json({
+                message: 'Erro ao atualizar plano de aula.',
+                details: error.message || 'Erro desconhecido',
+            });
         }
     },
 
@@ -90,9 +96,12 @@ const LessonPlanController = {
             } else {
                 res.status(200).send(retorno);
             }
-        } catch (error) {
-            console.error('Erro ao excluir plano de aula:', error);
-            res.status(500).send('Ocorreu um erro no servidor ao tentar excluir o plano de aula.');
+        } catch (error: any) {
+            console.error('Erro ao excluir plano de aula:', error.message || error);
+            res.status(500).json({
+                message: 'Erro ao excluir plano de aula.',
+                details: error.message || 'Erro desconhecido',
+            });
         }
     },
 
@@ -107,9 +116,12 @@ const LessonPlanController = {
             } else {
                 res.status(200).json(retorno);
             }
-        } catch (error) {
-            console.error('Erro ao buscar plano de aula:', error);
-            res.status(500).send('Ocorreu um erro no servidor ao tentar buscar o plano de aula.');
+        } catch (error: any) {
+            console.error('Erro ao buscar plano de aula:', error.message || error);
+            res.status(500).json({
+                message: 'Erro ao buscar plano de aula.',
+                details: error.message || 'Erro desconhecido',
+            });
         }
     },
 };
