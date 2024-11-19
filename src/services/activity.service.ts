@@ -1,35 +1,72 @@
+import { db } from '../config/database'
+
 async function createActivity(
   title: string,
   description: string,
   value: string,
   deliveryDate: Date
 ): Promise<string> {
+  console.log('Função createActivity chamada')
+
   try {
     if (!title || !description || !value || !deliveryDate) {
+      console.log('Campos obrigatórios faltando')
       return 'Todos os campos são obrigatórios.'
     }
 
-    const matriceStudents = (await db.query(`SELECT id FROM students`)).rows
+    const matriceStudents = (await db.query(`SELECT id_aluno FROM alunos`)).rows
+    console.log('Estudantes encontrados:', matriceStudents)
+
+    const createdAt = new Date()
 
     const result = await db.query(
-      `INSERT INTO activities (title, description, value, delivery_date) 
-       VALUES ($1, $2, $3, $4) RETURNING id`,
-      [title, description, value, deliveryDate]
+      `INSERT INTO atividade (titulo, descricao, valor, date_entrega, data_postagem) 
+       VALUES ($1, $2, $3, $4, $5) RETURNING id_atividade`,
+      [title, description, value, deliveryDate, createdAt]
     )
 
-    const activityId = result.rows[0].id
+    const activityId = result.rows[0]?.id_atividade
+
+    if (!activityId) {
+      console.error('Erro: Não foi possível obter o id_atividade')
+      return 'Erro ao cadastrar atividade'
+    }
+
+    console.log('ID da atividade criada:', activityId)
 
     for (const student of matriceStudents) {
-      await db.query(
-        `INSERT INTO activity_student (student_id, activity_id) 
-         VALUES ($1, $2)`,
-        [student.id, activityId]
+      const studentActivityResult = await db.query(
+        `INSERT INTO atividade_aluno (id_aluno, id_atividade)
+          VALUES ($1, $2) RETURNING id_atividade_aluno`,
+        [student.id_aluno, activityId]
       )
 
+      const studentActivityId =
+        studentActivityResult.rows[0]?.id_atividade_aluno
+
+      if (!studentActivityId) {
+        console.error('Erro: Não foi possível obter o id_atividade_aluno')
+        continue
+      }
+
+      const notaAtividadeResult = await db.query(
+        `INSERT INTO nota_atividade (id_atividade_aluno, nota, id_atividade)
+          VALUES ($1, $2, $3) RETURNING id_nota_atividade`,
+        [studentActivityId, null, activityId]
+      )
+
+      const idNotaAtividade = notaAtividadeResult.rows[0]?.id_nota_atividade
+
+      if (!idNotaAtividade) {
+        console.error('Erro: Não foi possível obter o id_nota_atividade')
+        continue
+      }
+
       await db.query(
-        `INSERT INTO activity_grade (student_id, activity_id, grade) 
-         VALUES ($1, $2, $3)`,
-        [student.id, activityId, null]
+        `UPDATE atividade_aluno
+         SET id_nota_atividade = $1
+         WHERE id_atividade_aluno = $2`,
+        [idNotaAtividade, studentActivityId]
       )
     }
 
@@ -42,6 +79,7 @@ async function createActivity(
 
 async function updateActivityGrades(
   activityId: number,
+  studentId: number,
   grade: string
 ): Promise<string> {
   try {
@@ -49,23 +87,32 @@ async function updateActivityGrades(
       return 'Nota é obrigatória.'
     }
 
-    const students = (
+    const studentActivityId = (
       await db.query(
-        `SELECT student_id FROM activity_student WHERE activity_id = $1`,
-        [activityId]
+        `SELECT id_atividade_aluno FROM atividade_aluno WHERE id_atividade = $1 AND id_aluno = $2`,
+        [activityId, studentId]
       )
     ).rows
+    console.log('estudantes:', studentId)
 
-    if (students.length === 0) {
+    if (studentActivityId.length === 0) {
       return 'Nenhum aluno encontrado para esta atividade.'
     }
+    console.log('nota:', grade)
+    console.log('id atividade aluno:', studentActivityId)
 
-    for (const student of students) {
+    for (const studentActivity of studentActivityId) {
       await db.query(
-        `UPDATE activity_grade
-         SET grade = $1
-         WHERE student_id = $2 AND activity_id = $3`,
-        [grade, student.student_id, activityId]
+        `UPDATE nota_atividade
+         SET nota = $1
+         WHERE id_atividade_aluno = $2 AND id_atividade = $3`,
+        [grade, studentActivity.id_atividade_aluno, activityId]
+      )
+      await db.query(
+        `UPDATE atividade_aluno
+         SET nota = $1
+         WHERE id_atividade_aluno = $2 AND id_atividade = $3`,
+        [grade, studentActivity.id_atividade_aluno, activityId]
       )
     }
 
@@ -75,26 +122,27 @@ async function updateActivityGrades(
     return 'Erro ao atualizar atividades'
   }
 }
-async function getActivity(activityId: number): Promise<any> {
+async function getActivityById(activityId: number): Promise<any> {
   try {
     const activityResult = await db.query(
-      `SELECT id, title, description, value, delivery_date 
-       FROM activities 
-       WHERE id = $1`,
+      `SELECT *
+       FROM atividade 
+       WHERE id_atividade = $1`,
       [activityId]
     )
+
+    console.log(activityResult)
 
     if (activityResult.rows.length === 0) {
       return 'Atividade não encontrada.'
     }
-
     const activity = activityResult.rows[0]
 
-    const gradesResult = await db.query(
-      `SELECT s.id AS student_id, s.name AS student_name, ag.grade
-       FROM activity_grade ag
-       INNER JOIN students s ON ag.student_id = s.id
-       WHERE ag.activity_id = $1`,
+    /*  const gradesResult = await db.query(
+      `SELECT s.id AS id_aluno, s.name AS nome, ag.nota
+       FROM nota_atividade ag
+       INNER JOIN alunos s ON ag.id_aluno = s.id
+       WHERE ag.id_nota_atividade = $1`,
       [activityId]
     )
 
@@ -109,24 +157,38 @@ async function getActivity(activityId: number): Promise<any> {
         studentName: row.student_name,
         grade: row.grade,
       })),
-    }
+    } */
 
-    return activityDetails
+    return activity
   } catch (error) {
     console.error('Erro ao buscar atividade:', error)
     return 'Erro ao buscar atividade'
   }
 }
 
+async function getActivities(): Promise<any> {
+  try {
+    const activitiesResult = await db.query(`SELECT * FROM atividade`)
+    console.log('Atividades retornadas do banco:', activitiesResult.rows)
+    return activitiesResult.rows
+  } catch (error) {
+    console.error('Erro ao buscar atividades:', error)
+    throw new Error('Erro ao buscar atividades')
+  }
+}
+
 async function deleteActivity(activity_id: number): Promise<string> {
   try {
-    await db.query(`DELETE FROM activity_student WHERE activity_id = $1`, [
+    await db.query(`DELETE FROM atividade_aluno WHERE id_atividade = $1`, [
       activity_id,
     ])
-    await db.query(`DELETE FROM activity_grade WHERE activity_id = $1`, [
+    await db.query(`DELETE FROM nota_atividade WHERE id_atividade = $1`, [
       activity_id,
     ])
-    await db.query(`DELETE FROM activities WHERE id = $1`, [activity_id])
+    await db.query(`DELETE FROM atividade WHERE id_atividade = $1`, [
+      activity_id,
+    ])
+
     return `Atividade excluída com sucesso. ID: ${activity_id}`
   } catch (error) {
     console.error('Erro ao excluir atividade:', error)
@@ -141,8 +203,12 @@ export const activityService = {
     value: string,
     deliveryDate: Date
   ) => createActivity(title, description, value, deliveryDate),
-  updateActivityGrades: (activityId: number, grade: string) =>
-    updateActivityGrades(activityId, grade),
+  updateActivityGrades: (
+    activityId: number,
+    studentId: number,
+    grade: string
+  ) => updateActivityGrades(activityId, studentId, grade),
   deleteActivity: (activityId: number) => deleteActivity(activityId),
-  getActivity: (activityId: number) => getActivity(activityId),
+  getActivityById: (activityId: number) => getActivityById(activityId),
+  getActivities: () => getActivities(),
 }
