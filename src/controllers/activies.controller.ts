@@ -3,6 +3,7 @@ import { activityService } from '../services/activity.service'
 
 const activitiesController = {
   createActivity: async (req: Request, res: Response): Promise<void> => {
+    const subjectId = parseInt(req.params.subjectId, 10)
     const { title, description, value, deliveryDate } = req.body
 
     if (!title || !description || !value || !deliveryDate) {
@@ -15,7 +16,8 @@ const activitiesController = {
         title,
         description,
         value,
-        deliveryDate
+        deliveryDate,
+        subjectId
       )
 
       if (!ret) {

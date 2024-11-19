@@ -4,12 +4,13 @@ async function createActivity(
   title: string,
   description: string,
   value: string,
-  deliveryDate: Date
+  deliveryDate: Date,
+  subjectId: number
 ): Promise<string> {
   console.log('Função createActivity chamada')
 
   try {
-    if (!title || !description || !value || !deliveryDate) {
+    if (!title || !description || !value || !deliveryDate || !subjectId) {
       console.log('Campos obrigatórios faltando')
       return 'Todos os campos são obrigatórios.'
     }
@@ -20,9 +21,9 @@ async function createActivity(
     const createdAt = new Date()
 
     const result = await db.query(
-      `INSERT INTO atividade (titulo, descricao, valor, date_entrega, data_postagem) 
-       VALUES ($1, $2, $3, $4, $5) RETURNING id_atividade`,
-      [title, description, value, deliveryDate, createdAt]
+      `INSERT INTO atividade (titulo, descricao, valor, date_entrega, data_postagem, id_materia) 
+       VALUES ($1, $2, $3, $4, $5, $6) RETURNING id_atividade`,
+      [title, description, value, deliveryDate, createdAt, subjectId]
     )
 
     const activityId = result.rows[0]?.id_atividade
@@ -201,8 +202,9 @@ export const activityService = {
     title: string,
     description: string,
     value: string,
-    deliveryDate: Date
-  ) => createActivity(title, description, value, deliveryDate),
+    deliveryDate: Date,
+    subjectId: number
+  ) => createActivity(title, description, value, deliveryDate, subjectId),
   updateActivityGrades: (
     activityId: number,
     studentId: number,

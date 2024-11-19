@@ -10,7 +10,7 @@ import subjectsRouter from './routes/subjects.routes'
 import classesRouter from './routes/classes.routes'
 import courseSyllabus from './routes/course-syllabus.routes'
 import activiesRouter from './routes/activies.routes'
-import commentsRouter from './routes/coments.routes'
+import commentsRouter from './routes/comments.routes'
 import formRoutes from './routes/form.routes'
 import schoolCallRouter from './routes/school-call.routes'
 
