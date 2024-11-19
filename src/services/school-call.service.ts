@@ -19,21 +19,25 @@ async function createSchoolCall(
     const values = [id_chamada, id_materia, data, aluno_id, status]
 
     await db.query(query, values)
-    return 'Chamada criada com sucesso'
+    const result = await db.query(
+      `select status from chamada where id_chamada = $1`,
+      [id_chamada]
+    )
+    return result.rows[0]
   } catch (error) {
     console.error('Erro ao criar a chamada:', error)
     return 'Erro ao criar a chamada'
   }
 }
 
-async function removeSchoolCall(aluno_id: number): Promise<string> {
+async function removeSchoolCall(id_chamada: number): Promise<string> {
   try {
-    if (!aluno_id) {
-      return 'ID do estudante é obrigatório.'
+    if (!id_chamada) {
+      return 'ID da chamada é obrigatório.'
     }
 
-    const query = `DELETE FROM chamada WHERE aluno_id = $1`
-    const result = await db.query(query, [aluno_id])
+    const query = `DELETE FROM chamada WHERE id_chamada = $1`
+    const result = await db.query(query, [id_chamada])
 
     if (result.rowCount === 0) {
       return 'Nenhuma chamada encontrada para o ID fornecido.'

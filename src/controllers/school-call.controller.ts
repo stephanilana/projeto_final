@@ -15,7 +15,7 @@ const schoolCallController = {
       if (!retorno) {
         res.status(500).send('Não foi possível criar a chamada.')
       } else {
-        res.status(201).send('Chamada criada com sucesso.')
+        res.status(201).send(retorno)
       }
     } catch (error) {
       console.error('Erro ao criar a chamada:', error)
@@ -40,9 +40,9 @@ const schoolCallController = {
   },
 
   deleteSchoolCall: async (req: Request, res: Response): Promise<void> => {
-    const aluno_id = Number(req.params.id)
+    const id_chamada = Number(req.params.id)
     try {
-      const ret = await schoolCallService.removeSchoolCall(aluno_id)
+      const ret = await schoolCallService.removeSchoolCall(id_chamada)
       if (!ret) {
         res.status(404).send('Chamada não encontrada para remoção.')
       } else {
@@ -55,9 +55,9 @@ const schoolCallController = {
   },
 
   getSchoolCall: async (req: Request, res: Response): Promise<void> => {
-    const aluno_id = Number(req.params.id)
+    const id_chamada = Number(req.params.id)
     try {
-      const ret = await schoolCallService.getSchoolCallById(aluno_id)
+      const ret = await schoolCallService.getSchoolCallById(id_chamada)
       if (!ret) {
         res.status(404).send('Chamada não encontrada.')
       } else {
