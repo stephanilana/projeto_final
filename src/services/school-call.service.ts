@@ -4,19 +4,19 @@ async function createSchoolCall(
   id_chamada: number,
   id_materia: number,
   data: string,
-  aluno_id: number,
+  id_aluno: number,
   status: boolean
 ): Promise<string> {
   try {
-    if (!id_chamada || !aluno_id || status === undefined) {
+    if (!id_chamada || !id_aluno || status === undefined) {
       return 'Todos os campos obrigatórios devem ser preenchidos.'
     }
 
     const query = `
-      INSERT INTO chamada (id_chamada, id_materia, data, aluno_id, status)
+      INSERT INTO chamada (id_chamada, id_materia, data, id_aluno, status)
       VALUES ($1, $2, $3, $4, $5)
     `
-    const values = [id_chamada, id_materia, data, aluno_id, status]
+    const values = [id_chamada, id_materia, data, id_aluno, status]
 
     await db.query(query, values)
     const result = await db.query(
@@ -51,20 +51,20 @@ async function removeSchoolCall(id_chamada: number): Promise<string> {
 }
 
 async function updateSchoolCall(
-  aluno_id: number,
+  id_aluno: number,
   status: boolean
 ): Promise<string> {
   try {
-    if (!aluno_id || status === undefined) {
+    if (!id_aluno || status === undefined) {
       return 'ID e presença são obrigatórios.'
     }
 
     const query = `
       UPDATE chamada
       SET status = $1
-      WHERE aluno_id = $2
+      WHERE id_aluno = $2
     `
-    const values = [status, aluno_id]
+    const values = [status, id_aluno]
 
     const result = await db.query(query, values)
 
