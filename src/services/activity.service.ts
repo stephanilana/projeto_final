@@ -18,10 +18,10 @@ async function createActivity(
     const matriceStudents = (await db.query(`SELECT id_aluno FROM alunos`)).rows
     console.log('Estudantes encontrados:', matriceStudents)
 
-    const createdAt = new Date()
+    const createdAt = new Date().toISOString().split('T')[0]
 
     const result = await db.query(
-      `INSERT INTO atividade (titulo, descricao, valor, date_entrega, data_postagem, id_materia) 
+      `INSERT INTO atividade (titulo, descricao, valor, data_entrega, data_postagem, id_materia) 
        VALUES ($1, $2, $3, $4, $5, $6) RETURNING id_atividade`,
       [title, description, value, deliveryDate, createdAt, subjectId]
     )
