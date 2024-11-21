@@ -3,13 +3,13 @@ import { usuarioService } from '../services/usuario.service';
 
 const usuarioController = {
     CreateUser: async (req: Request, res: Response): Promise<void> => { 
-        const { id_usuario, email, senha } = req.body;
+        const { id_usuario, email, senha, id_aluno, id_professor, id_pedagogo } = req.body;
         try {
-            const retorno = await usuarioService.createUser(id_usuario, email, senha);
+            const retorno = await usuarioService.createUser(id_usuario, email, senha,  id_aluno, id_professor, id_pedagogo);
             if (!retorno) {
                 res.status(500).send('Não foi possível cadastrar o usuário.');
             } else {
-                res.status(200).send('Cadastro realizado com sucesso');
+                res.status(200).send(retorno);
             }
         } catch (error) {
             console.error('Erro ao cadastrar usuário:', error);
@@ -49,20 +49,22 @@ const usuarioController = {
         }
     },
  */
-   /*  updateUser: async(req: Request, res: Response): Promise<void> => {
-        const {id, nome, cpf} = req.body;
+     updateUser: async(req: Request, res: Response): Promise<void> => {
+        const {id_usuario, email, senha, id_aluno, id_professor, id_pedagogo} = req.body;
+        const id = req.params.id_usuario;
         try{
-            const retorno = await usuarioService.deleteUser(id);
+            const retorno = await usuarioService.updateUser(id_usuario, email, senha, id_aluno, id_professor, id_pedagogo);
+            console.log(retorno)
             if(!retorno){
                  res.status(500).send(`Não foi possivel atualizar o usuario`);
             }else{
-                  res.status(200).send(`O usuario com id: ${id} e o foi atualizado com sucesso`) 
+                  res.status(200).send(retorno) 
             }
         }
         catch(error){
             console.error('Erro ao atualizar o usuário:', error);
             res.status(500).send( 'Ocorreu um erro no servidor ao tentar atualizar o usuário.');
         }
-    }  */
+    }  
 }
 export default usuarioController
