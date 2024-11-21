@@ -101,6 +101,17 @@ const subjectsController = {
             console.error('Erro ao buscar matéria:', error);
             res.status(500).send('Ocorreu um erro no servidor ao tentar buscar a matéria.');
         }
+    },
+    addSubjectToClass: async (req: Request, res: Response): Promise<void> => {
+        const { idMateria} = req.body;
+        const { idTurma } = req.params;
+        try {
+            await materiaService.addSubjectToClass(idTurma, idMateria);
+            res.status(200).send(`Matéria com ID ${idMateria} adicionada a turma com ID ${idTurma} com sucesso.`);
+        } catch (error) {
+            console.error('Erro ao adicionar matéria a turma:', error);
+            res.status(500).send('Ocorreu um erro no servidor ao tentar adicionar a matéria a turma.');
+        }
     }
 };
 

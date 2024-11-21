@@ -95,6 +95,19 @@ async function getSubjectById(idMateria: string): Promise<any> {
     }
 }
 
+async function addSubjectToClass(id_turma: string, idMateria: string): Promise<void> {
+    try {
+        await db.query(
+            `INSERT INTO materiaturma (id_turma, id_materia)
+             VALUES ($1, $2)`,
+            [id_turma, idMateria]
+        );
+    } catch (error) {
+        console.error('Erro ao adicionar matéria ao curso:', error);
+        throw new Error('Erro ao associar matéria ao curso');
+    }
+}
+
 export const materiaService = {
     createSubject: (
         idMateria: string,
@@ -132,5 +145,6 @@ export const materiaService = {
         ementa),
 
     deleteSubject: (idMateria: string) => deleteSubject(idMateria),
-    getSubjectById: (idMateria: string) => getSubjectById(idMateria)
+    getSubjectById: (idMateria: string) => getSubjectById(idMateria),
+    addSubjectToClass: (idCurso: string, idMateria: string) => addSubjectToClass(idCurso, idMateria)
 };
