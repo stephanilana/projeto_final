@@ -3,9 +3,14 @@ import turmasController from '../controllers/classes.controller'
 
 const router = Router()
 
-router.post('/classes', turmasController.createClass)
-router.put('/classes', turmasController.updateClass)
-router.delete('/classes', turmasController.deleteClass)
-router.post('/classes/addAluno', turmasController.addStudentToClass)
+router.post('/turmas', turmasController.createClass)
+
+router.put('/turmas/:id', turmasController.updateClass)
+
+router.delete('/turmas/:id', turmasController.deleteClass)
+
+router.post('/turmas/:id/adicionarAlunos', turmasController.addStudentsToClass)
+
+router.get('/turmas/:id/listarAlunos', turmasController.liststudentsinClass)
 
 export default router

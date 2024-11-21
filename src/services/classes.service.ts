@@ -1,104 +1,196 @@
 import { db } from '../config/database'
 
 async function createClass(
-  
-  name: string,
-  shift: string,
-  startDate: Date,
-  endDate: Date,
-  workload: number,
-  teacher: string
+  id_turma: number,
+  nome_turma: string,
+  turno: string,
+  cargahoraria: number,
+  datainicio: Date,
+  datafim: Date,
+  ementa: string,
+  dataFinalIncricao: Date,
+  vagasincricoes: number
 ): Promise<string> {
   try {
-    if (!name || !shift || !startDate || !endDate || !workload || !teacher) {
-      return 'All fields are required to add a class.'
+    if (
+      !id_turma ||
+      !nome_turma ||
+      !turno ||
+      !cargahoraria ||
+      !datainicio ||
+      !datafim ||
+      !ementa ||
+      !dataFinalIncricao ||
+      vagasincricoes === undefined
+    ) {
+      return 'Todos os campos sao obrigatorios para adicionar uma turma'
+    }
+
+    const idExistente = await verificaridExistente(id_turma)
+    if (idExistente) {
+      return `Ja existe uma turma com o ID ${id_turma}`
     }
 
     const response = await db.query(
-      'INSERT INTO classes (name, shift, start_date, end_date, workload, teacher) VALUES ($1, $2, $3, $4, $5, $6) RETURNING id',
-      [name, shift, startDate, endDate, workload, teacher]
+      `INSERT INTO turmas 
+       (id_turma, nome_turma, turno, carga_horaria, datainicio, datafim, ementa, datafinalinscricao, vagasinscricoes) 
+       VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9) 
+       RETURNING id_turma`,
+      [
+        id_turma,
+        nome_turma,
+        turno,
+        cargahoraria,
+        datainicio,
+        datafim,
+        ementa,
+        dataFinalIncricao,
+        vagasincricoes
+      ]
     )
 
-    return `The class ${name} has been added with teacher ${teacher}, shift ${shift}, starting on ${startDate} and ending on ${endDate}, with a workload of ${workload} hours.`
+    return `A turma ${nome_turma} foi adicionada com sucesso! ID: ${response.rows[0].id_turma}, turno: ${turno}, inicio: ${datainicio.toISOString()}, termino: ${datafim.toISOString()}, carga horaria: ${cargahoraria}, ementa: "${ementa}", inscricoes ate: ${dataFinalIncricao.toISOString()}, vagas: ${vagasincricoes}.`
   } catch (error) {
-    console.error('Error adding class:', error)
-    return 'Error adding class'
+    console.error('Erro ao adicionar turma:', error)
+    return 'Erro ao adicionar turma. Tente novamente mais tarde.'
   }
 }
 
 async function updateClass(
-  name: string,
-  shift: string,
-  startDate: Date,
-  endDate: Date,
-  workload: number,
-  teacher: string
+  id_turma: number,
+  nome_turma: string,
+  turno: string,
+  cargahoraria: number,
+  datainicio: Date,
+  datafim: Date,
+  ementa: string,
+  dataFinalIncricao: Date,
+  vagasincricoes: number
 ): Promise<string> {
   try {
-    if (!name || !shift || !startDate || !endDate || !workload || !teacher) {
-      return 'All fields are required to update a class.'
+    if (
+      !id_turma ||
+      !nome_turma ||
+      !turno ||
+      !cargahoraria ||
+      !datainicio ||
+      !datafim ||
+      !ementa ||
+      !dataFinalIncricao ||
+      vagasincricoes === undefined
+    ) {
+      return 'Todos os campos sao obrigatorios para atualizar uma turma'
     }
 
     await db.query(
-      'UPDATE classes SET shift = $1, start_date = $2, end_date = $3, workload = $4, teacher = $5 WHERE name = $6',
-      [shift, startDate, endDate, workload, teacher, name]
+      `UPDATE turmas 
+       SET nome_turma = $1, turno = $2, carga_horaria = $3, datainicio = $4, datafim = $5, ementa = $6, datafinalinscricao = $7, vagasinscricoes = $8 
+       WHERE id_turma = $9`,
+      [nome_turma, turno, cargahoraria, datainicio, datafim, ementa, dataFinalIncricao, vagasincricoes, id_turma]
     )
 
-    return `The class ${name} has been updated with teacher ${teacher}, shift ${shift}, starting on ${startDate} and ending on ${endDate}, with a workload of ${workload} hours.`
+    return `A turma ${nome_turma} (ID: ${id_turma}) foi atualizada com sucesso`
   } catch (error) {
-    console.error('Error updating class:', error)
-    return 'Error updating class'
+    console.error('Erro ao atualizar turma:', error)
+    return 'Erro ao atualizar turma. Tente novamente mais tarde'
   }
 }
 
-async function deleteClass(name: string, startDate: Date): Promise<string> {
+async function deleteClass(id_turma: number): Promise<string> {
   try {
-    if (!name || !startDate) {
-      return 'Name and start date are required to delete a class.'
+    if (!id_turma) {
+      return 'O ID da turma e obrigatorio para excluir uma turma'
     }
 
-    await db.query('DELETE FROM classes WHERE name = $1 AND start_date = $2', [
-      name,
-      startDate,
-    ])
+    const idExistente = await verificaridExistente(id_turma)
+    if (!idExistente) {
+      return `Nao foi encontrada nenhuma turma com o ID ${id_turma}`
+    }
 
-    return `The class ${name}, starting on ${startDate}, has been successfully deleted.`
+    await db.query('DELETE FROM turmas WHERE id_turma = $1', [id_turma])
+
+    return `A turma com o ID ${id_turma} foi excluida com sucesso`
   } catch (error) {
-    console.error('Error deleting class:', error)
-    return 'Error deleting class'
+    console.error('Erro ao excluir turma:', error)
+    return 'Erro ao excluir turma. '
   }
 }
+async function getClassesbyid(id_turma: number): Promise<string> {
+  try {
+    if (!id_turma) {
+      return 'O ID da turma e obrigatorio para buscar turmas'
+    }
+    const idExistente = await verificaridExistente(id_turma)
+    if (!idExistente) {
+      return `Nao foi encontrada nenhuma turma com o ID ${id_turma}`
+    }
+    await db.query(`SELECT FROM trumas WHERE id_turma = ${id_turma}`)
+    return `Turmas com id: ${id_turma} encontradas com sucesso`
+  } catch (error) {
+      console.error('Erro ao buscar turmas:', error)
+      return 'Erro ao buscar turmas'
+    
+}}
+
+
 
 async function addStudentsToClass(studentIds: number[], turmaId: number): Promise<string> {
   try {
-    if (!studentIds || studentIds.length === 0 || !turmaId) {
-      return 'todos os dados e obrigatorio';
+    if (studentIds.length === 0 || !turmaId) {
+      return 'Todos os campos sao obrigatorios'
     }
 
- 
-    const values = studentIds.map((id) => `(${id}, ${turmaId})`).join(", ")
+    const idExistente = await verificaridExistente(turmaId)
+    if (!idExistente) {
+      return `Nao foi encontrada nenhuma turma com o ID ${turmaId}`
+    }
+
+    const values = studentIds.map((id) => `(${id}, ${turmaId})`).join(', ')
     const query = `INSERT INTO alunosTurma (id_aluno, id_turma) VALUES ${values}`
 
     await db.query(query)
 
-    return `Os alunos com os IDs [${studentIds.join(", ")}] foram add a turma ${turmaId}.`;
-
+    return `Os alunos com os IDs [${studentIds.join(', ')}] foram adicionados a turma ${turmaId}`
   } catch (error) {
     console.error('Erro ao adicionar alunos a turma:', error)
-    return 'Erro ao adicionar os alunos a turma. Por favor, tente novamente mais tarde.'
+    return 'Erro ao adicionar alunos a turma'
   }
 }
 
-async function verificaridExistente(idTurma: string): Promise<boolean>{
+async function liststudentsinClass(id_turma: number): Promise<string> {
   try {
-    const queryVerificar = 'SELECT * FROM turmas WHERE id = $1'
-    const result = await db.query(queryVerificar, [idTurma])
-    if (result.rows.length === 0) {
-      return false
+    if (!id_turma) {
+      return 'O ID da turma e obrigatorio para listar alunos'
     }
-    return true
+
+    const idExistente = await verificaridExistente(id_turma)
+    if (!idExistente) {
+      return `Nao foi encontrada nenhuma turma com o ID ${id_turma}`
+    }
+
+    const result = await db.query(`SELECT id_aluno FROM alunosTurma WHERE id_turma = $1`, [id_turma])
+    const studentIds = result.rows.map((row) => row.id_aluno)
+
+    if (studentIds.length === 0) {
+      return `Nenhum aluno encontrado na turma com ID ${id_turma}`
+    }
+
+    return `IDs dos alunos na turma ${id_turma}: [${studentIds.join(', ')}]`
   } catch (error) {
-    console.error('Error verificando id existente:', error)
+    console.error('Erro ao listar alunos na turma:', error)
+    return 'Erro ao listar alunos na turma'
+  }
+}
+
+
+
+async function verificaridExistente(id_turma: number): Promise<boolean> {
+  try {
+    const queryVerificar = 'SELECT 1 FROM turmas WHERE id_turma = $1'
+    const result = await db.query(queryVerificar, [id_turma])
+    return result.rows.length > 0
+  } catch (error) {
+    console.error('Erro ao verificar ID da turma:', error)
     return false
   }
 }
@@ -107,5 +199,8 @@ export const classesService = {
   createClass,
   updateClass,
   deleteClass,
-  addStudentsToClass
+  addStudentsToClass,
+  verificaridExistente,
+  getClassesbyid,
+  liststudentsinClass
 }
