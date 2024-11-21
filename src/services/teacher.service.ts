@@ -1,3 +1,5 @@
+import { db } from "../config/database";
+
 function validateEmail(email: string) {
   const re = /\S+@\S+\.\S+/;
   return re.test(email);
@@ -31,43 +33,66 @@ function validateTeacher(
 }
 
 async function updateTeacher(
-  idteacher: string,
+  id_professor: string,
   nome: string,
   cpf: string,
+  datanasc: string,
   email: string,
-  telefone: string,
   estado: string,
   rua: string,
   bairro: string,
   municipio: string,
   numero: number,
-  datadenascimento: Date,
-  RG: string,
-  datadeespedicao: Date,
-  naturalidade: string
+  datadeexpedicaorg: Date,
+  estadodeexpedicaorg: string,
+  estadonascimento: Date,
+  cidadedenascimento: string
 ): Promise<string> {
   try {
     let resposta = "";
     if (
-      !idteacher ||
+      !id_professor ||
       !nome ||
       !cpf ||
+      !datanasc ||
       !email ||
-      !telefone ||
       !estado ||
+      !municipio ||
       !rua ||
       !bairro ||
-      !municipio ||
       !numero ||
-      !datadenascimento ||
-      !RG ||
-      !datadeespedicao ||
-      !naturalidade
+      !datadeexpedicaorg ||
+      !estadodeexpedicaorg ||
+      !estadonascimento ||
+      !cidadedenascimento
     ) {
       resposta = "ID, Nome e CPF são obrigatórios.";
       return resposta;
     }
-    resposta = `O professor que atualizamos é ${nome} que possui o CPF ${cpf}`;
+    if (!validateTeacher) return (resposta = "O dado enviado é inválido.");
+    else {
+      await db.query(
+        `INSERT INTO teacher(
+        id_professor
+        nome, 
+        cpf,
+        datanasc,
+        email,
+        estado,
+        municipio,
+        rua, 
+        bairro,
+        numero,
+        datadeexpedicaorg,
+        estadodeexpedicaorg,
+        estadonascimento,
+        cidadedenascimento) 
+        VALUES($1, $2, $3 , $4, $5, $6, $7, $8, $9, $10, $11, $12, $13, $14, $15)`[
+          parseInt(id_professor)
+        ]
+      );
+    }
+    resposta = `O professor que atualizamos é ${nome}`;
     return resposta;
   } catch (error) {
     console.error("Erro ao atualizar professor:", error);
@@ -76,39 +101,39 @@ async function updateTeacher(
 }
 
 async function createTeacher(
-  idteacher: string,
+  id_professor: string,
   nome: string,
   cpf: string,
+  datanasc: string,
   email: string,
-  telefone: string,
   estado: string,
   rua: string,
   bairro: string,
   municipio: string,
   numero: number,
-  datadenascimento: Date,
-  RG: string,
-  datadeespedicao: Date,
-  naturalidade: string
+  datadeexpedicaorg: Date,
+  estadodeexpedicaorg: string,
+  estadonascimento: Date,
+  cidadedenascimento: string
 ): Promise<string> {
   try {
     let resposta = "";
 
     if (
-      !idteacher ||
+      !id_professor ||
       !nome ||
       !cpf ||
+      !datanasc ||
       !email ||
-      !telefone ||
       !estado ||
+      !municipio ||
       !rua ||
       !bairro ||
-      !municipio ||
       !numero ||
-      !datadenascimento ||
-      !RG ||
-      !datadeespedicao ||
-      !naturalidade
+      !datadeexpedicaorg ||
+      !estadodeexpedicaorg ||
+      !estadonascimento ||
+      !cidadedenascimento
     ) {
       resposta = "Todos os campos são obrigatórios.";
       return resposta;
@@ -116,53 +141,66 @@ async function createTeacher(
 
     if (!validateTeacher) return (resposta = "O dado enviado é inválido.");
 
-    const cadastroNoBanco = `INSERT INTO teacher values(
-        idteacher
-        nome
-        cpf
-        email
-        telefone
-        estado
-        rua
-        bairro
-        municipio
-        numero
-        datadenascimento
-        RG
-        datadeespedicao
-        naturalidade)`;
-
+    await db.query(
+      `INSERT INTO teacher(
+        id_professor
+        nome, 
+        cpf,
+        datanasc,
+        email,
+        estado,
+        municipio,
+        rua, 
+        bairro,
+        numero,
+        datadeexpedicaorg,
+        estadodeexpedicaorg,
+        estadonascimento,
+        cidadedenascimento) 
+        VALUES($1, $2, $3 , $4, $5, $6, $7, $8, $9, $10, $11, $12, $13, $14,15)`[
+        parseInt(id_professor)
+      ]
+    );
     resposta = "O cadastro de professor foi realizado";
     return resposta;
   } catch (error) {
-    console.log(`Erro ao cadsatrar professor`, error);
-    return `Erro ao cadastrar o professor`;
+    return `Erro ao cadastrar o professor 88`;
+  }
+}
+async function getTeacher(id: string): Promise<string> {
+  try {
+    if (!id) {
+      return "ID é obrigatório.";
+    }
+
+    const resposta = await db.query(
+      "SELECT * FROM professor WHERE id_professor = $1",
+      [parseInt(id)]
+    );
+
+    if (resposta.rows.length === 0) {
+      return `Professor com ID ${id} não encontrado.`;
+    }
+
+    const professor = resposta.rows[0];
+    return `Professor com ID ${id} encontrado: ${professor.nome}`;
+  } catch (erro) {
+    console.error("Erro ao buscar professor:", erro);
+    return "Erro ao buscar professor.";
   }
 }
 
-async function deleteTeacher(
-  idteacher: string,
-  nome: string,
-  cpf: string,
-  email: string,
-  telefone: string,
-  estado: string,
-  rua: string,
-  bairro: string,
-  municipio: string,
-  numero: number,
-  datadenascimento: Date,
-  RG: string,
-  datadeespedicao: Date,
-  naturalidade: string
-) {
+async function deleteTeacher(idteacher: string) {
   try {
     let resposta = "";
     if (!idteacher) {
       resposta = "Usuário não enontrado";
       return resposta;
     } else {
-      resposta = `Excluindo o usuário ${nome} id:${idteacher}`;
+      await db.query("DELETE FROM professor WHERE id_professor = $1", [
+        parseInt(idteacher),
+      ]);
+      return "Usuário removido com seucesso.";
     }
   } catch (error) {
     console.log(`Erro ao cadastrar o professor`, error);
@@ -172,99 +210,68 @@ async function deleteTeacher(
 
 export const teacherService = {
   createTeacher: (
-    idteacher: string,
+    id_professor: string,
     nome: string,
     cpf: string,
+    datanasc: string,
     email: string,
-    telefone: string,
     estado: string,
     rua: string,
     bairro: string,
     municipio: string,
     numero: number,
-    datadenascimento: Date,
-    RG: string,
-    datadeespedicao: Date,
-    naturalidade: string
+    datadeexpedicaorg: Date,
+    estadodeexpedicaorg: string,
+    estadonascimento: Date,
+    cidadedenascimento: string
   ) =>
     createTeacher(
-      idteacher,
+      id_professor,
       nome,
       cpf,
+      datanasc,
       email,
-      telefone,
       estado,
       rua,
       bairro,
       municipio,
       numero,
-      datadenascimento,
-      RG,
-      datadeespedicao,
-      naturalidade
+      datadeexpedicaorg,
+      estadodeexpedicaorg,
+      estadonascimento,
+      cidadedenascimento
     ),
   updateTeacher: (
-    idteacher: string,
+    id_professor: string,
     nome: string,
     cpf: string,
+    datanasc: string,
     email: string,
-    telefone: string,
     estado: string,
     rua: string,
     bairro: string,
     municipio: string,
     numero: number,
-    datadenascimento: Date,
-    RG: string,
-    datadeespedicao: Date,
-    naturalidade: string
+    datadeexpedicaorg: Date,
+    estadodeexpedicaorg: string,
+    estadonascimento: Date,
+    cidadedenascimento: string
   ) =>
     updateTeacher(
-      idteacher,
+      id_professor,
       nome,
       cpf,
+      datanasc,
       email,
-      telefone,
       estado,
       rua,
       bairro,
       municipio,
       numero,
-      datadenascimento,
-      RG,
-      datadeespedicao,
-      naturalidade
+      datadeexpedicaorg,
+      estadodeexpedicaorg,
+      estadonascimento,
+      cidadedenascimento
     ),
-  deleteTeacher: (
-    idteacher: string,
-    nome: string,
-    cpf: string,
-    email: string,
-    telefone: string,
-    estado: string,
-    rua: string,
-    bairro: string,
-    municipio: string,
-    numero: number,
-    datadenascimento: Date,
-    RG: string,
-    datadeespedicao: Date,
-    naturalidade: string
-  ) =>
-    deleteTeacher(
-      idteacher,
-      nome,
-      cpf,
-      email,
-      telefone,
-      estado,
-      rua,
-      bairro,
-      municipio,
-      numero,
-      datadenascimento,
-      RG,
-      datadeespedicao,
-      naturalidade
-    ),
+  deleteTeacher: (idteacher: string) => deleteTeacher(idteacher),
 };
