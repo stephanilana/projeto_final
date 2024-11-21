@@ -1,15 +1,22 @@
-import express from "express";
-import dotenv from "dotenv";
-import cors from "cors";
-import cookieParser from "cookie-parser";
-import bodyParser from "body-parser";
-import alunosRouter from "./routes/alunos.routes";
-import lessonPlanRouter from "./routes/lessonPlan.routes";
-import courseRouter from "./routes/course.routes";
-import subjectsRouter from "./routes/subjects.routes";
-import classesRouter from "./routes/classes.routes";
-import courseSyllabus from "./routes/course-syllabus.routes";
+import express from 'express'
+import dotenv from 'dotenv'
+import cors from 'cors'
+import cookieParser from 'cookie-parser'
+import bodyParser from 'body-parser'
+import alunosRouter from './routes/alunos.routes'
+import lessonPlanRouter from './routes/lessonPlan.routes'
+import courseRouter from './routes/course.routes'
 import teacherRouter from "./routes/teacher.routes";
+import subjectsRouter from './routes/subjects.routes'
+import classesRouter from './routes/classes.routes'
+import courseSyllabus from './routes/course-syllabus.routes'
+import notesRouter from './routes/notes.routes'
+import responsibleRouter from './routes/responsible.routes'
+import activiesRouter from './routes/activies.routes'
+import commentsRouter from './routes/comments.routes'
+import formRoutes from './routes/form.routes'
+import schoolCallRouter from './routes/school-call.routes'
+
 dotenv.config();
 const app = express();
 
@@ -22,13 +29,19 @@ app.use(cors());
 
 // Roteamentos
 
-app.use(alunosRouter);
-app.use(classesRouter);
-app.use(alunosRouter);
-app.use(lessonPlanRouter);
-app.use(courseRouter);
-app.use(subjectsRouter);
-app.use(courseSyllabus);
 app.use(teacherRouter);
+app.use(alunosRouter)
+app.use(classesRouter)
+app.use(alunosRouter)
+app.use(lessonPlanRouter)
+app.use(courseRouter)
+app.use(subjectsRouter)
+app.use(courseSyllabus)
+app.use(notesRouter)
+app.use(responsibleRouter)
+app.use(activiesRouter)
+app.use(commentsRouter)
+app.use(formRoutes)
+app.use(schoolCallRouter)
 
 export default app;

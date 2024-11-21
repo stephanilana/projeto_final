@@ -1,160 +1,168 @@
-interface LessonPlan {
-    id: string;                    
-    subjectId: string;            
-    data: string;          
-    inicio: string;                  
-    fim: string;                  
-    conteudoFormativo: string;   
-    modoDeEnsino: string;          
-    recursosDidaticos: string;     
+import { db } from "../config/database";
+
+interface PlanoDeAula {
+    id_planoaula: string;
+    id_professor: string;
+    id_turma: string;
+    id_materia: string;
+    data_aula: string;
+    datainicio: string;
+    datafim: string;
+    conteudoformativo: string;
+    mododeensino: string;
+    recursosdidaticos: string;
 }
 
-interface Subject {
-    id: string;                   
-    name: string;            
-    lessonPlanId?: string;       
+interface Materia {
+    id_materia: string;
+    id_curso: string;
+    id_professor: string;
+    nome_materia: string;
+    datainicio: string;
+    datafim: string;
+    ementa: string;
 }
-
-// Definindo os arrays simulados de dados
-const lessonPlans: LessonPlan[] = [];  
-const subjects: Subject[] = [];         
 
 export async function createLessonPlan(
-    subjectId: string,
-    data: string,
-    inicio: string,
-    fim: string,
-    conteudoFormativo: string,
-    modoDeEnsino: string,
-    recursosDidaticos: string
+    id_professor: string,
+    id_turma: string,
+    id_materia: string,
+    data_aula: string,
+    datainicio: string,
+    datafim: string,
+    conteudoformativo: string,
+    mododeensino: string,
+    recursosdidaticos: string
 ): Promise<string> {
     try {
-        if (!subjectId || !data || !inicio || !fim || !conteudoFormativo || !modoDeEnsino || !recursosDidaticos) {
-            return 'Todos os campos, incluindo o ID da matéria, são obrigatórios.';
+        if (
+            !id_professor ||
+            !id_turma ||
+            !id_materia ||
+            !data_aula ||
+            !datainicio ||
+            !datafim ||
+            !conteudoformativo ||
+            !mododeensino ||
+            !recursosdidaticos
+        ) {
+            return "Todos os campos são obrigatórios.";
         }
 
-        // Substitua por uma consulta no banco de dados para buscar a matéria
-        // const subject = await db.query('SELECT * FROM subjects WHERE id = $1', [subjectId]);
-        const subject = subjects.find(s => s.id === subjectId);
-        if (!subject) {
-            return `Matéria com ID ${subjectId} não encontrada.`;
+        const materia = await db.query("SELECT * FROM materia WHERE id_materia = $1", [id_materia]);
+        if (materia.rows.length === 0) {
+            return `Matéria com ID ${id_materia} não encontrada.`;
         }
 
-        // Verificar se a matéria já possui um plano de aula associado
-        if (subject.lessonPlanId) {
-            return `Essa matéria já tem um plano de aula associado.`;
-        }
+        const novoPlanoDeAula = await db.query(
+            `INSERT INTO planoaula 
+            (id_professor, id_turma, id_materia, data_aula, datainicio, datafim, conteudoformativo, mododeensino, recursosdidaticos) 
+            VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9) RETURNING id_planoaula`,
+            [id_professor, id_turma, id_materia, data_aula, datainicio, datafim, conteudoformativo, mododeensino, recursosdidaticos]
+        );
 
-        const newLessonPlan = {
-            id: (lessonPlans.length + 1).toString(),
-            subjectId,
-            data,
-            inicio,
-            fim,
-            conteudoFormativo,
-            modoDeEnsino,
-            recursosDidaticos
-        }
-        lessonPlans.push(newLessonPlan);
-        // Substitua por uma consulta no banco de dados para atualizar a relação entre o plano de aula e a matéria
-        // await db.query('UPDATE subjects SET lessonPlanId = $1 WHERE id = $2', [newLessonPlan.id, subjectId]);
-        subject.lessonPlanId = newLessonPlan.id;
-
-        return `Plano de aula criado para a matéria ${subjectId} em ${data} das ${inicio} às ${fim}. Conteúdo: ${conteudoFormativo}`;
+        return `Plano de aula criado com sucesso. ID: ${novoPlanoDeAula.rows[0].id_planoaula}`;
     } catch (error) {
-        console.error('Erro ao criar plano de aula:', error);
-        return 'Erro ao cadastrar plano de aula'; 
+        console.error("Erro ao criar plano de aula:", error);
+        return "Erro ao cadastrar plano de aula.";
     }
 }
+
+export async function getLessonPlan(id_planoaula: string): Promise<string> {
+    try {
+        const planoDeAula = await db.query("SELECT * FROM planoaula WHERE id_planoaula = $1", [id_planoaula]);
+        if (planoDeAula.rows.length === 0) return "Plano de aula não encontrado.";
+
+        const {
+            id_professor,
+            id_turma,
+            id_materia,
+            data_aula,
+            datainicio,
+            datafim,
+            conteudoformativo,
+            mododeensino,
+            recursosdidaticos,
+        } = planoDeAula.rows[0];
+
+        const materia = await db.query("SELECT nome_materia FROM materia WHERE id_materia = $1", [id_materia]);
+        const nome_materia = materia.rows.length > 0 ? materia.rows[0].nome_materia : "Nome não encontrado";
+
+        return `
+            Plano de Aula:
+            ID: ${id_planoaula}
+            Professor: ${id_professor}
+            Turma: ${id_turma}
+            Matéria: ${nome_materia}
+            Data: ${data_aula}
+            Início: ${datainicio}
+            Fim: ${datafim}
+            Conteúdo Formativo: ${conteudoformativo}
+            Modo de Ensino: ${mododeensino}
+            Recursos Didáticos: ${recursosdidaticos}
+        `;
+    } catch (error) {
+        console.error("Erro ao buscar plano de aula:", error);
+        return "Erro ao buscar plano de aula.";
+    }
+}
+
 export async function updateLessonPlan(
-    id: string,
-    subjectId: string,
-    data: string,
-    inicio: string,
-    fim: string,
-    conteudoFormativo: string,
-    modoDeEnsino: string,
-    recursosDidaticos: string
+    id_planoaula: string,
+    id_professor: string,
+    id_turma: string,
+    id_materia: string,
+    data_aula: string,
+    datainicio: string,
+    datafim: string,
+    conteudoformativo: string,
+    mododeensino: string,
+    recursosdidaticos: string
 ): Promise<string> {
     try {
-        if (!id || !subjectId || !data || !inicio || !fim || !conteudoFormativo || !modoDeEnsino || !recursosDidaticos) {
-            return 'ID, ID da matéria e todos os campos são obrigatórios para atualização.';
+        if (
+            !id_planoaula ||
+            !id_professor ||
+            !id_turma ||
+            !id_materia ||
+            !data_aula ||
+            !datainicio ||
+            !datafim ||
+            !conteudoformativo ||
+            !mododeensino ||
+            !recursosdidaticos
+        ) {
+            return "Todos os campos são obrigatórios.";
         }
 
-        // Buscar o plano de aula pelo ID
-        // const lessonPlan = await db.query('SELECT * FROM lessonPlans WHERE id = $1', [id]);
-        const lessonPlan = lessonPlans.find(lp => lp.id === id);
-        if (!lessonPlan) return 'Plano de aula não encontrado.';
+        const planoDeAula = await db.query("SELECT * FROM planoaula WHERE id_planoaula = $1", [id_planoaula]);
+        if (planoDeAula.rows.length === 0) return "Plano de aula não encontrado.";
 
-        // Substitua por uma consulta no banco de dados para buscar a matéria
-        // const subject = await db.query('SELECT * FROM subjects WHERE id = $1', [subjectId]);
-        const subject = subjects.find(s => s.id === subjectId);
-        if (!subject) return `Matéria com ID ${subjectId} não encontrada.`;
+        await db.query(
+            `UPDATE planoaula 
+            SET id_professor = $1, id_turma = $2, id_materia = $3, data_aula = $4, datainicio = $5, datafim = $6, 
+            conteudoformativo = $7, mododeensino = $8, recursosdidaticos = $9 
+            WHERE id_planoaula = $10`,
+            [id_professor, id_turma, id_materia, data_aula, datainicio, datafim, conteudoformativo, mododeensino, recursosdidaticos, id_planoaula]
+        );
 
-        lessonPlan.subjectId = subjectId;
-        lessonPlan.data = data;
-        lessonPlan.inicio = inicio;
-        lessonPlan.fim = fim;
-        lessonPlan.conteudoFormativo = conteudoFormativo;
-        lessonPlan.modoDeEnsino = modoDeEnsino;
-        lessonPlan.recursosDidaticos = recursosDidaticos;
-
-        // Atualizar a relação entre o plano de aula e a matéria
-        // await db.query('UPDATE lessonPlans SET subjectId = $1, data = $2, inicio = $3, fim = $4, conteudoFormativo = $5, modoDeEnsino = $6, recursosDidaticos = $7 WHERE id = $8', 
-        //     [subjectId, data, inicio, fim, conteudoFormativo, modoDeEnsino, recursosDidaticos, id]);
-        subject.lessonPlanId = lessonPlan.id;
-
-        return `Plano de aula atualizado para a matéria ${subjectId} em ${data} das ${inicio} às ${fim}. Conteúdo: ${conteudoFormativo}`;
+        return `Plano de aula atualizado com sucesso. ID: ${id_planoaula}`;
     } catch (error) {
-        console.error('Erro ao atualizar plano de aula:', error);
-        return 'Erro ao atualizar plano de aula';
+        console.error("Erro ao atualizar plano de aula:", error);
+        return "Erro ao atualizar plano de aula.";
     }
 }
-export async function deleteLessonPlan(id: string): Promise<string> {
+
+export async function deleteLessonPlan(id_planoaula: string): Promise<string> {
     try {
-        // Buscar o índice do plano de aula pelo ID
-        // const lessonPlan = await db.query('SELECT * FROM lessonPlans WHERE id = $1', [id]);
-        const lessonPlanIndex = lessonPlans.findIndex(lp => lp.id === id);
-        if (lessonPlanIndex === -1) return 'Plano de aula não encontrado.';
-        const lessonPlan = lessonPlans[lessonPlanIndex];
+        const planoDeAula = await db.query("SELECT * FROM planoaula WHERE id_planoaula = $1", [id_planoaula]);
+        if (planoDeAula.rows.length === 0) return "Plano de aula não encontrado.";
 
-        lessonPlans.splice(lessonPlanIndex, 1);
+        await db.query("DELETE FROM planoaula WHERE id_planoaula = $1", [id_planoaula]);
 
-        // Substitua por uma consulta no banco de dados para atualizar a relação da matéria
-        // const subject = await db.query('UPDATE subjects SET lessonPlanId = NULL WHERE lessonPlanId = $1', [lessonPlan.id]);
-        const subject = subjects.find(s => s.lessonPlanId === lessonPlan.id);
-        if (subject) {
-            delete subject.lessonPlanId;
-        }
-
-        return `O Plano de aula com ID ${id} foi excluído com sucesso.`;
+        return `Plano de aula excluído com sucesso. ID: ${id_planoaula}`;
     } catch (error) {
-        console.error('Erro ao excluir plano de aula:', error);
-        return 'Erro ao excluir plano de aula';
-    }
-}
-export async function getLessonPlan(id: string): Promise<string> {
-    try {
-        // Buscar o plano de aula pelo ID
-        // const lessonPlan = await db.query('SELECT * FROM lessonPlans WHERE id = $1', [id]);
-        const lessonPlan = lessonPlans.find(lp => lp.id === id);
-        if (!lessonPlan) return 'Plano de aula não encontrado.';
-
-        // Substitua por uma consulta no banco de dados para buscar os detalhes da matéria
-        // const subject = await db.query('SELECT * FROM subjects WHERE id = $1', [lessonPlan.subjectId]);
-        const subject = subjects.find(s => s.id === lessonPlan.subjectId);
-        if (!subject) return `Matéria com ID ${lessonPlan.subjectId} não encontrada.`;
-
-        return `Plano de aula encontrado: \n
-                ID: ${lessonPlan.id} \n
-                Matéria: ${subject.name} \n
-                Data: ${lessonPlan.data} \n
-                Horário: das ${lessonPlan.inicio} às ${lessonPlan.fim} \n
-                Conteúdo Formativo: ${lessonPlan.conteudoFormativo} \n
-                Modo de Ensino: ${lessonPlan.modoDeEnsino} \n
-                Recursos Didáticos: ${lessonPlan.recursosDidaticos}`;
-    } catch (error) {
-        console.error('Erro ao buscar plano de aula:', error);
-        return 'Erro ao buscar plano de aula';
+        console.error("Erro ao excluir plano de aula:", error);
+        return "Erro ao excluir plano de aula.";
     }
 }
