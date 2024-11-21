@@ -76,7 +76,8 @@ async function createResponsable(
 
     await db.query(`
       INSERT INTO responsavel (
-        id_responsavel, 
+        id_responsavel,
+        id_aluno
         tipo, 
         nome, 
         email, 
@@ -85,8 +86,8 @@ async function createResponsable(
         municipio, 
         rua, 
         bairro, 
-        numero, 
-        dataNascimento, 
+        numerocasa, 
+        data_nascimento,
         cpf, 
         rg, 
         documentos
@@ -95,7 +96,6 @@ async function createResponsable(
     resposta = "O cadastro do responsavel foi realizado com sucesso!";
     return resposta;
   } catch (error) {
-    console.log(`Erro ao cadsatrar responsavel`, error);
     return `Erro ao cadastrar o responsavel`;
   }
 }
@@ -141,17 +141,18 @@ async function updateResponsible(
     }
     await db.query(`
       INSERT INTO responsavel (
-        id_responsavel, 
+        id_responsavel,
+        id_aluno
         tipo, 
         nome, 
         email, 
-        telefone, 
+        telefone,
         estado, 
         municipio, 
         rua, 
         bairro, 
-        numero, 
-        dataNascimento, 
+        numerocasa, 
+        data_nascimento,
         cpf, 
         rg, 
         documentos
