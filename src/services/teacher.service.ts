@@ -35,14 +35,15 @@ function validateTeacher(
 async function updateTeacher(
   id_professor: string,
   nome: string,
-  cpf: string,
   datanasc: string,
   email: string,
   estado: string,
+  municipio: string,
   rua: string,
   bairro: string,
-  municipio: string,
-  numero: number,
+  numero: string,
+  cpf: string,
+  rg: string,
   datadeexpedicaorg: Date,
   estadodeexpedicaorg: string,
   estadonascimento: Date,
@@ -72,21 +73,21 @@ async function updateTeacher(
     if (!validateTeacher) return (resposta = "O dado enviado é inválido.");
     else {
       await db.query(
-        `INSERT INTO teacher(
-        id_professor
-        nome, 
-        cpf,
-        datanasc,
-        email,
-        estado,
-        municipio,
-        rua, 
-        bairro,
-        numero,
-        datadeexpedicaorg,
-        estadodeexpedicaorg,
-        estadonascimento,
-        cidadedenascimento) 
+        `INSERT INTO professor(
+          id_professor,
+          nome, 
+          cpf,
+          datanasc,
+          email,
+          estado,
+          municipio,
+          rua, 
+          bairro,
+          numero,
+          datadeexpedicaorg,
+          estadodeexpedicaorg,
+          estadonascimento,
+          cidadedenascimento) 
         VALUES($1, $2, $3 , $4, $5, $6, $7, $8, $9, $10, $11, $12, $13, $14, $15)`[
           parseInt(id_professor)
         ]
@@ -96,21 +97,22 @@ async function updateTeacher(
     return resposta;
   } catch (error) {
     console.error("Erro ao atualizar professor:", error);
-    return "Erro ao atualizar professor";
+    return "Não foi possível cadastrar o professor";
   }
 }
 
 async function createTeacher(
   id_professor: string,
   nome: string,
-  cpf: string,
   datanasc: string,
   email: string,
   estado: string,
+  municipio: string,
   rua: string,
   bairro: string,
-  municipio: string,
-  numero: number,
+  numero: string,
+  cpf: string,
+  rg: string,
   datadeexpedicaorg: Date,
   estadodeexpedicaorg: string,
   estadonascimento: Date,
@@ -123,6 +125,7 @@ async function createTeacher(
       !id_professor ||
       !nome ||
       !cpf ||
+      !rg ||
       !datanasc ||
       !email ||
       !estado ||
@@ -140,30 +143,34 @@ async function createTeacher(
     }
 
     if (!validateTeacher) return (resposta = "O dado enviado é inválido.");
+    else {
+      await db.query(
+        `INSERT INTO professor(
+              id_professor,
+              nome, 
+              datanasc,
+              email,
+              estado,
+              municipio,
+              rua, 
+              bairro,
+              numero,
+              rg,
+              cpf,
+              datadeexpedicaorg,
+              estadodeexpedicaorg,
+              estadonascimento,
+              cidadedenascimento) 
+              VALUES($1, $2, $3 , $4, $5, $6, $7, $8, $9, $10, $11, $12, $13, $14, $15)`[
+          parseInt(id_professor)
+        ]
+      );
+    }
 
-    await db.query(
-      `INSERT INTO teacher(
-        id_professor
-        nome, 
-        cpf,
-        datanasc,
-        email,
-        estado,
-        municipio,
-        rua, 
-        bairro,
-        numero,
-        datadeexpedicaorg,
-        estadodeexpedicaorg,
-        estadonascimento,
-        cidadedenascimento) 
-        VALUES($1, $2, $3 , $4, $5, $6, $7, $8, $9, $10, $11, $12, $13, $14,15)`[
-        parseInt(id_professor)
-      ]
-    );
     resposta = "O cadastro de professor foi realizado";
     return resposta;
   } catch (error) {
+    console.error(error);
     return `Erro ao cadastrar o professor 88`;
   }
 }
@@ -212,14 +219,15 @@ export const teacherService = {
   createTeacher: (
     id_professor: string,
     nome: string,
-    cpf: string,
     datanasc: string,
     email: string,
     estado: string,
+    municipio: string,
     rua: string,
     bairro: string,
-    municipio: string,
-    numero: number,
+    numero: string,
+    cpf: string,
+    rg: string,
     datadeexpedicaorg: Date,
     estadodeexpedicaorg: string,
     estadonascimento: Date,
@@ -228,14 +236,15 @@ export const teacherService = {
     createTeacher(
       id_professor,
       nome,
-      cpf,
       datanasc,
       email,
       estado,
+      municipio,
       rua,
       bairro,
-      municipio,
       numero,
+      rg,
+      cpf,
       datadeexpedicaorg,
       estadodeexpedicaorg,
       estadonascimento,
@@ -244,14 +253,15 @@ export const teacherService = {
   updateTeacher: (
     id_professor: string,
     nome: string,
-    cpf: string,
     datanasc: string,
     email: string,
     estado: string,
+    municipio: string,
     rua: string,
     bairro: string,
-    municipio: string,
-    numero: number,
+    numero: string,
+    cpf: string,
+    rg: string,
     datadeexpedicaorg: Date,
     estadodeexpedicaorg: string,
     estadonascimento: Date,
@@ -260,14 +270,15 @@ export const teacherService = {
     updateTeacher(
       id_professor,
       nome,
-      cpf,
       datanasc,
       email,
       estado,
+      municipio,
       rua,
       bairro,
-      municipio,
       numero,
+      rg,
+      cpf,
       datadeexpedicaorg,
       estadodeexpedicaorg,
       estadonascimento,
