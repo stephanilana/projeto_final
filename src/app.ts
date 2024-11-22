@@ -10,6 +10,7 @@ import teacherRouter from "./routes/teacher.routes";
 import subjectsRouter from './routes/subjects.routes'
 import classesRouter from './routes/classes.routes'
 import courseSyllabus from './routes/course-syllabus.routes'
+import usuario from './routes/usuario.routes'
 import notesRouter from './routes/notes.routes'
 import responsibleRouter from './routes/responsible.routes'
 import activiesRouter from './routes/activies.routes'
@@ -37,6 +38,7 @@ app.use(lessonPlanRouter)
 app.use(courseRouter)
 app.use(subjectsRouter)
 app.use(courseSyllabus)
+app.use(usuario)
 app.use(notesRouter)
 app.use(responsibleRouter)
 app.use(activiesRouter)
