@@ -3,7 +3,7 @@ const app = express()
 import { response } from 'express';
 import { db } from '../config/database';
 
-async function createUser(id_usuario: string, email: string, senha: string, id_aluno: string, id_professor: string, id_pedagogo: string): Promise<any> {
+ async function createUser(id_usuario: string, email: string, senha: string, id_aluno: string, id_professor: string, id_pedagogo: string): Promise<any> {
     let res;
     try { 
         if (!email || !senha) { 
@@ -16,10 +16,10 @@ async function createUser(id_usuario: string, email: string, senha: string, id_a
             parseInt(id_usuario),
             email,
             senha,
-            parseInt(id_aluno), /* id do aluno existente tem que pegar */
+            parseInt(id_aluno),
             id_professor,
             id_pedagogo
-            ]
+            ]   
         );
         const response = await getUser(id_usuario);
         return response;
@@ -29,14 +29,9 @@ async function createUser(id_usuario: string, email: string, senha: string, id_a
         return res;
     }
 }
-
+ 
 async function updateUser(id_usuario: string, email: string, senha: string,  id_aluno: string, id_professor: string, id_pedagogo: string): Promise<string>{
     try {
-        let resposta = "";
-        if (!id_usuario || !email) {
-            resposta = 'ID, email são obrigatórios.';
-            return resposta;
-        }
         const response = await db.query(
             "UPDATE usuario SET email = $1, senha = $3, id_aluno = $4, id_professor = $5, id_pedagogo = $6 WHERE id_usuario = $2",
             [
@@ -49,26 +44,27 @@ async function updateUser(id_usuario: string, email: string, senha: string,  id_
             ]
         );
         const user = await getUser(id_usuario);
-        return user; 
+        return user;
     }
      catch (error) {
         console.error('Erro ao atualizar usuario:', error);
         return 'Erro ao atualizar usuario'; 
     }
 } 
-/* async function deleteUser(id: string): Promise<boolean>{
+    async function deleteUser(id_usuario: string): Promise<string>{
     try {                                            
         const response = await db.query(
             "DELETE FROM usuario WHERE id_usuario = $1",
-            [id]
+            [
+            parseInt(id_usuario)
+            ]
         )
-        if(response){
-            return true;
-        }
+        return 'usuario deletado com sucesso';
     } catch (error) {
         throw new Error("Falha ao excluir usuario");
+        return 'falha ao excluir usuario';
     }
-} */
+} 
 async function getUser(id_usuario: string): Promise<any> {
     let resposta;
     try {                                      
@@ -86,6 +82,6 @@ async function getUser(id_usuario: string): Promise<any> {
 export const usuarioService = {
     createUser: (id_usuario: string, email: string, senha: string, id_aluno: string, id_professor: string, id_pedagogo: string) => createUser(id_usuario, email, senha, id_aluno, id_professor, id_pedagogo),
     updateUser: (id_usuario: string, email: string, senha: string, id_aluno: string, id_professor: string, id_pedagogo: string) => updateUser(id_usuario, email, senha, id_aluno, id_professor, id_pedagogo), 
-    /* deleteUser: (id: string) => deleteUser(id), */
+    deleteUser: (id_usuario: string) => deleteUser(id_usuario),
     getUser: (id_usuario: string) => getUser(id_usuario)
 }

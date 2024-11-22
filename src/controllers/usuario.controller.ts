@@ -23,7 +23,7 @@ const usuarioController = {
             if(!retorno){
                  res.status(500).send(`Não foi possivel buscar o usuario`);
             }else{
-                  res.status(200).send(`Usuario buscado com sucesso`);
+                  res.status(200).send(id_usuario);
             }
             console.log(id_usuario)
         }
@@ -33,14 +33,14 @@ const usuarioController = {
         }
     },
 
-/*     deleteUser: async(req: Request, res: Response): Promise<void> => {
-        const {id} = req.body;
+     deleteUser: async(req: Request, res: Response): Promise<void> => {
+        const {id_usuario} = req.params;
         try{
-            const retorno = await usuarioService.deleteUser(id);
+            const retorno = await usuarioService.deleteUser(id_usuario);
             if(!retorno){
                  res.status(500).send(`Não foi possivel deletar o usuario`);
             }else{
-                  res.status(200).send(`O usuario com id: ${id} foi deletado com sucesso`);
+                  res.status(200).send(`O usuario com id: ${id_usuario} foi deletado com sucesso`);
             }
         }
         catch(error){
@@ -48,10 +48,10 @@ const usuarioController = {
             res.status(500).send( 'Ocorreu um erro no servidor ao tentar deletar o usuário.');
         }
     },
- */
+ 
      updateUser: async(req: Request, res: Response): Promise<void> => {
-        const {id_usuario, email, senha, id_aluno, id_professor, id_pedagogo} = req.body;
-        const id = req.params.id_usuario;
+        const {id_usuario} = req.params;
+        const {email, senha, id_aluno, id_professor, id_pedagogo} = req.body;
         try{
             const retorno = await usuarioService.updateUser(id_usuario, email, senha, id_aluno, id_professor, id_pedagogo);
             console.log(retorno)
