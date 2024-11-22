@@ -12,5 +12,7 @@ router.delete('/turmas/:id', turmasController.deleteClass)
 router.post('/turmas/:id/adicionarAlunos', turmasController.addStudentsToClass)
 
 router.get('/turmas/:id/listarAlunos', turmasController.liststudentsinClass)
+router.get('/turmas/:id_turma/listar-materias', turmasController.listSubjectsInClass);
+
 
 export default router

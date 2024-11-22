@@ -194,6 +194,34 @@ async function verificaridExistente(id_turma: number): Promise<boolean> {
     return false
   }
 }
+async function listSubjectsInClass(turmaId: number): Promise<{ subjects: number[] }> {
+  try {
+    
+    const idExiste = await verificaridExistente(turmaId);
+    if (!idExiste) {
+      throw new Error(`Turma ${turmaId} nao encontrada.`)
+    }
+
+    const result = await db.query(
+      'SELECT id_materia FROM materiaturma WHERE id_turma = $1',
+      [turmaId]
+    );
+
+    const subjectIds = result.rows.map((row) => row.id_materia);
+
+    if (subjectIds.length === 0) {
+      throw new Error('Nenhuma materia cadastrada para esta turma.');
+    }
+
+    return { subjects: subjectIds }
+  } catch (error) {
+    console.error('Erro ao listar matérias na turma:', error)
+    throw error
+  }
+}
+
+
+
 
 export const classesService = {
   createClass,
@@ -202,5 +230,6 @@ export const classesService = {
   addStudentsToClass,
   verificaridExistente,
   getClassesbyid,
-  liststudentsinClass
+  liststudentsinClass,
+  listSubjectsInClass
 }
