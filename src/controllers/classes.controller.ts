@@ -121,6 +121,20 @@ const classesController = {
       res.status(500).send('Ocorreu um erro')
     }
   },
+  getClassesbyid: async (req: Request, res: Response): Promise<void> => {
+    const {id_turma} = req.params
+    try {
+      const result = await classesService.getClassesbyid(id_turma)
+      if(!result){
+        res.status(500).send('Turma nao encontrada')
+      }else{
+      res.status(200).send(result)}
+    }catch(error){
+      console.error('Erro ao buscar a turma:', error)
+      res.status(500).send('Ocorreu um erro')
+    }
+  },
+  
 
   addStudentsToClass: async (req: Request, res: Response): Promise<void> => {
     const { id_turma } = req.params
