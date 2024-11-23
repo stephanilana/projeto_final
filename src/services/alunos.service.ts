@@ -1,82 +1,167 @@
-import { db } from '../config/database';
- 
-async function createAluno(nome: string, cpf: string): Promise<string>{
-    try {
-        if (!nome || !cpf) {
-            const resposta = 'Nome e CPF são obrigatórios.';
-            return resposta;
-        }
-        const response = await db.query(
-        "INSERT INTO aluno (id, nome, cpf, rg) VALUES ($4, $1, $2, $3)",
-        [
-            nome,
-            cpf,
-        ]
-        );
-         return response.rows[0];
-    } catch (error) {
-        console.error('Erro ao criar aluno:', error);
-        return 'Erro ao cadastrar aluno'; 
-    }
-}
-async function updateAluno(id: string, nome: string, cpf: string): Promise<string>{
+import {db} from '../config/database';
+
+async function createAluno(id: string, nomeCompleto: string, email: string, estadodeexpedicaorg: string, estado: string, municipio: string, rua: string, bairro: number, numero: number, dataDeNascimento: Date, cpf: string, rg: string, dataExpedicaoRg: Date, estadoDeNascimento: string, cidadeDeNascimeto: string,): Promise<string> {
     try {
         let resposta = "";
- 
-        if (!id || !nome || !cpf) {
-            resposta = 'ID, Nome e CPF são obrigatórios.';
+        if (!id 
+            || !nomeCompleto 
+            || !email 
+            || !estado 
+            || !municipio 
+            || !rua 
+            || !bairro 
+            || !numero
+            || !dataDeNascimento 
+            || !cpf 
+            || !rg 
+            || !dataExpedicaoRg 
+            || !estadoDeNascimento
+            || !estadodeexpedicaorg
+            || !cidadeDeNascimeto) {
+            resposta = 'Todos os campos são obrigatórios para cadastrar o aluno.';
+            return resposta;
+        }
+
+        await db.query(
+            "INSERT INTO alunos (id_aluno, nome, data_nasc, email, estado, municipio, rua, bairro, numero, rg, datadeexpedicaorg, estadodeexpedicaorg, estadonascimento, cidadenascimento, cpf) VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13, $14, $15)",
+            [
+                id,
+                nomeCompleto,
+                dataDeNascimento, 
+                email,
+                estado,
+                municipio,
+                rua,
+                bairro,
+                numero,
+                rg, 
+                dataExpedicaoRg,
+                estadodeexpedicaorg,
+                estadoDeNascimento,
+                cidadeDeNascimeto,
+                cpf,
+            ]
+            );
+            resposta = await getStudent(id);
+            return resposta;
+        
+    } catch (error) {
+        console.error('Erro ao criar aluno:', error);
+        return 'Erro ao cadastrar aluno';
+    }
+}
+async function updateAluno(id: string, nomeCompleto: string, cpf: string, email: string, telefone: string, estado: string, municipio: string, rua: string, bairro: string, numeroDaCasa: number, dataDeNascimento: string, rg: string, dataExpedicaoRg: string, estadoDeNascimento: string, cidadeDeNascimeto: string): Promise<string> {
+    try {
+        let resposta = "";
+        if (!id || !nomeCompleto || !cpf || !email || !telefone || !estado || !municipio || !rua || !bairro || !numeroDaCasa || !dataDeNascimento || !rg || !estadoDeNascimento || !cidadeDeNascimeto || !dataExpedicaoRg) {
+            resposta = 'Todos os campos são obrigatórios para cadastrar o aluno.';
+            return resposta;
+        }
+        await db.query(
+            "INSERT INTO alunos (id_aluno, nome, data_nasc, email, estado, municipio, rua, bairro, numero, rg, datadeexpedicaorg, estadodeexpedicaorg, estadonascimento, cidadenascimento, cpf) VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13, $14, $15)",
+            [
+                id,
+                nomeCompleto,
+                email,
+                telefone,
+                estado,
+                municipio,
+                rua,
+                bairro, 
+                numeroDaCasa,
+                dataDeNascimento, 
+                cpf,
+                rg,
+                dataExpedicaoRg, 
+                estadoDeNascimento,
+                cidadeDeNascimeto
+
+                ]
+            );
+            resposta = await getStudent(id);
+            return resposta;
+
+    } catch (error) {
+        console.error('Erro ao atualizar aluno:', error);
+        return 'Erro ao atualizar aluno';
+    }
+}
+
+async function deleteStudent(id: string): Promise<string> {
+    try {
+        let resposta = '';
+        if (!id){
+            resposta = 'O id é obrigatório para deletar o aluno.';
             return resposta;
         }
         const response = await db.query(
-        "UPDATE aluno SET nome = $1, cpf = $2 WHERE idaluno = $3",
-        [nome, cpf, id]
-        );
-        const aluno =await buscarAlunoPorId(id);
-        return aluno;
+            "INSERT INTO aluno (id_aluno) VALUES ($1)",
+            [
+                id,
+                ]
+            );
+            resposta = "Aluno deletado com sucesso";
+            return response.rows[0], resposta;
+            
     } catch (error) {
-        console.error('Erro ao atualizar aluno:', error);
-        return 'Erro ao atualizar aluno'; 
+        console.log(error)
+        return 'Erro ao deletar o aluno';
     }
 }
-async function listarAlunos() : Promise<string>{
+
+async function getStudent(id: string): Promise<string> {
     try {
-    const response = await db.query(
-      "SELECT * FROM alunos ORDER BY name ASC"
-    );
-    return response.rows[0];
-    } catch (err) {
-        throw new Error("Falha ao buscar alunos");
-    }  
-}
- 
-async function buscarAlunoPorId(idaluno: string) : Promise<string>{
-    try {
-    const response = await db.query(
-      "SELECT * FROM alunos WHERE idaluno = $1",
-      [idaluno]
-    );
-    return response.rows[0];
-  } catch (err) {
-    throw new Error("Falha ao buscar aluno");
-  } 
-}
- 
-async function deleteAluno(id: string): Promise<boolean>{
-    try {
-    const response = await db.query(
-      "DELETE FROM alunos WHERE idaluno = $1",
-      [id]
-    );
-    if(response){
-        return true;
+        let resposta = "";
+        if (!id) {
+            resposta = 'ID é obrigatório';
+            return resposta;
+        }
+        const response = await db.query(
+            "select * from alunos where id_aluno = $1",
+            [
+                parseInt(id),
+                ]
+            );
+            return response.rows[0];
+
+    } catch (error) {
+        console.error('Erro ao buscar o aluno:', error);
+        return 'Erro ao buscar o aluno';
     }
-    return false;
-  } catch (err) {
-    throw new Error("Falha ao excluir aluno");
-  }
 }
- 
+
 export const alunoService = {
-    createAluno: (nome: string, cpf: string) => createAluno(nome, cpf),
-    updateAluno: (id: string, nome: string, cpf: string) => updateAluno(id, nome, cpf)
-};
+    createAluno: (id : string,
+        nomeCompleto: string, 
+        email: string,
+        estadodeexpedicaorg: string, 
+        estado: string, 
+        municipio: string, 
+        rua: string, 
+        bairro: number, 
+        numero: number, 
+        dataDeNascimento: Date, 
+        cpf: string, 
+        rg: string, 
+        dataExpedicaoRg: Date, 
+        estadoDeNascimento: string, 
+        cidadeDeNascimeto: string,
+        ) => createAluno(id, nomeCompleto, email, estadodeexpedicaorg, estado, municipio, rua, bairro, numero, dataDeNascimento, cpf,rg, dataExpedicaoRg, estadoDeNascimento, cidadeDeNascimeto),
+    updateAluno: (id: string,
+        nomeCompleto: string, 
+        cpf: string, 
+        email: string, 
+        telefone: string, 
+        estado: string, 
+        municipio: string, 
+        rua: string, 
+        bairro: string,
+        numeroDaCasa: number,
+        dataDeNascimento: string, 
+        rg: string, 
+        dataExpedicaoRg: string,
+        estadoDeNascimento: string, 
+        cidadeDeNascimeto: string) =>updateAluno(id, nomeCompleto, cpf, email, telefone, estado, municipio, rua, bairro, numeroDaCasa, dataDeNascimento, rg, dataExpedicaoRg, estadoDeNascimento, cidadeDeNascimeto),
+    deleteStudent: (id: string) => deleteStudent(id),
+    getStudent: (id: string) => getStudent(id),
+}
