@@ -122,9 +122,9 @@ const classesController = {
     }
   },
   getClassesbyid: async (req: Request, res: Response): Promise<void> => {
-    const { id } = req.params
+    const {id} = req.params
     try {
-      const result = await classesService.getClassesbyid(id)
+      const result = await classesService.getClassesbyid(parseInt(id))
       if(!result){
         res.status(500).send('Turma nao encontrada')
       }else{
@@ -137,7 +137,7 @@ const classesController = {
   
 
   addStudentsToClass: async (req: Request, res: Response): Promise<void> => {
-    const { id_turma } = req.params
+    const { id } = req.params
     const { studentIds } = req.body
 
     try {
@@ -146,7 +146,7 @@ const classesController = {
         return
       }
 
-      const result = await classesService.addStudentsToClass(studentIds, parseInt(id_turma))
+      const result = await classesService.addStudentsToClass(studentIds, parseInt(id))
       res.status(200).send(result)
     } catch (erro) {
       console.error('Erro ao adicionar alunos a turma:', erro)
