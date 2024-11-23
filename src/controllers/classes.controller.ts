@@ -122,9 +122,9 @@ const classesController = {
     }
   },
   getClassesbyid: async (req: Request, res: Response): Promise<void> => {
-    const {id_turma} = req.params
+    const { id } = req.params
     try {
-      const result = await classesService.getClassesbyid(id_turma)
+      const result = await classesService.getClassesbyid(id)
       if(!result){
         res.status(500).send('Turma nao encontrada')
       }else{
@@ -155,13 +155,13 @@ const classesController = {
   },
 
   liststudentsinClass: async (req: Request, res: Response): Promise<void> => {
-    const { id_turma } = req.params
+    const { id } = req.params
     try {
-      if (!id_turma) {
+      if (!id) {
         res.status(400).send('ID da turma e obrigatorio')
         return
       }
-      const result = await classesService.liststudentsinClass(parseInt(id_turma, 10));
+      const result = await classesService.liststudentsinClass(parseInt(id, 10));
       res.status(200).send(result)
     } catch (erro) {
       console.error('Erro ao listar alunos da turma:', erro)
