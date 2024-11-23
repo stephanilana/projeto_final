@@ -42,7 +42,7 @@ app.use(usuario)
 app.use(notesRouter)
 app.use(responsibleRouter)
 app.use(activiesRouter)
-app.use(commentsRouter)
+// app.use(commentsRouter)
 app.use(formRoutes)
 app.use(schoolCallRouter)
 
