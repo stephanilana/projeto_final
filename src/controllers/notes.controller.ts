@@ -18,11 +18,18 @@ const noteController = {
     }
   },
 
-  getAverageByStudentId: async (req: Request, res: Response): Promise<void> => {
+  getAverageByStudentAndSubject: async (
+    req: Request,
+    res: Response
+  ): Promise<void> => {
     const studentId = Number(req.params.studentId)
+    const subjectId = Number(req.params.subjectId)
 
     try {
-      const average = await notaService.getAverageByStudentId(studentId)
+      const average = await notaService.getAverageByStudentAndSubject(
+        studentId,
+        subjectId
+      )
 
       if (isNaN(average)) {
         res.status(404).send('Nenhuma nota encontrada para calcular a média.')
@@ -30,8 +37,8 @@ const noteController = {
         res.status(200).json({ average })
       }
     } catch (error) {
-      console.error('Erro ao calcular a média das notas do aluno:', error)
-      res.status(500).send('Erro ao calcular a média das notas do aluno.')
+      console.error('Erro ao calcular a média do aluno para a matéria:', error)
+      res.status(500).send('Erro ao calcular a média do aluno para a matéria.')
     }
   },
 

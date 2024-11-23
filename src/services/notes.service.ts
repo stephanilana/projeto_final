@@ -91,16 +91,21 @@ async function getNotesBySubject(
   }
 }
 
-async function getAverageByStudentId(studentId: number): Promise<number> {
+async function getAverageByStudentAndSubject(
+  studentId: number,
+  subjectId: number
+): Promise<number> {
   try {
-    if (!studentId) {
-      console.error('id_aluno é obrigatório para calcular a média.')
+    if (!studentId || !subjectId) {
+      console.error(
+        'id_aluno e id_materia são obrigatórios para calcular a média.'
+      )
       return NaN
     }
 
     const result = await db.query(
-      'SELECT AVG(nota) AS media FROM atividade_aluno WHERE id_aluno = $1',
-      [studentId]
+      'SELECT AVG(nota) AS media FROM atividade_aluno WHERE id_aluno = $1 AND id_materia = $2',
+      [studentId, subjectId]
     )
 
     if (result.rows.length === 0 || result.rows[0].media === null) {
@@ -137,10 +142,8 @@ async function getAverageBySubject(subjectId: number): Promise<number> {
 
 export const notaService = {
   getNotesByStudentId: (studentId: number) => getNotesByStudentId(studentId),
-  getAverageByStudentId: (studentId: number) =>
-    getAverageByStudentId(studentId),
-
+  getAverageByStudentAndSubject: (studentId: number, subjectId: number) =>
+    getAverageByStudentAndSubject(studentId, subjectId),
   getNotesBySubject: (subjectId: number) => getNotesBySubject(subjectId),
-
   getAverageBySubject: (subjectId: number) => getAverageBySubject(subjectId),
 }
