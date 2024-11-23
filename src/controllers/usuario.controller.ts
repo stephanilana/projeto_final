@@ -3,9 +3,9 @@ import { usuarioService } from '../services/usuario.service';
 
 const usuarioController = {
     CreateUser: async (req: Request, res: Response): Promise<void> => { 
-        const { id_usuario, email, senha, id_aluno, id_professor, id_pedagogo } = req.body;
+        const { id_usuario, email, senha, id_aluno, id_professor, id_pedagogo, tipo } = req.body;
         try {
-            const retorno = await usuarioService.createUser(id_usuario, email, senha,  id_aluno, id_professor, id_pedagogo);
+            const retorno = await usuarioService.createUser(id_usuario, email, senha,  id_aluno, id_professor, id_pedagogo, tipo);
             if (!retorno) {
                 res.status(500).send('Não foi possível cadastrar o usuário.');
             } else {
@@ -51,9 +51,14 @@ const usuarioController = {
  
      updateUser: async(req: Request, res: Response): Promise<void> => {
         const {id_usuario} = req.params;
-        const {email, senha, id_aluno, id_professor, id_pedagogo} = req.body;
+        const {email, senha} = req.body;
+
         try{
-            const retorno = await usuarioService.updateUser(id_usuario, email, senha, id_aluno, id_professor, id_pedagogo);
+            const retorno = await usuarioService.updateUser(
+                id_usuario,
+                email,
+                senha
+            );
             console.log(retorno)
             if(!retorno){
                  res.status(500).send(`Não foi possivel atualizar o usuario`);
