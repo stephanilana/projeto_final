@@ -3,19 +3,19 @@ import { schoolCallService } from '../services/school-call.service'
 
 const schoolCallController = {
   createSchoolCall: async (req: Request, res: Response): Promise<void> => {
-    const { aluno_id, status, id_chamada, materia_id, data } = req.body
+    const { id_aluno, status, id_chamada, id_materia, data } = req.body
     try {
       const retorno = await schoolCallService.createSchoolCall(
         id_chamada,
-        materia_id,
+        id_materia,
         data,
-        aluno_id,
+        id_aluno,
         status
       )
       if (!retorno) {
         res.status(500).send('Não foi possível criar a chamada.')
       } else {
-        res.status(201).send('Chamada criada com sucesso.')
+        res.status(201).send(retorno)
       }
     } catch (error) {
       console.error('Erro ao criar a chamada:', error)
@@ -25,9 +25,9 @@ const schoolCallController = {
 
   updateSchoolCall: async (req: Request, res: Response): Promise<void> => {
     const { status } = req.body
-    const aluno_id = Number(req.params.id)
+    const id_aluno = Number(req.params.id)
     try {
-      const ret = await schoolCallService.updateSchoolCall(aluno_id, status)
+      const ret = await schoolCallService.updateSchoolCall(id_aluno, status)
       if (!ret) {
         res.status(404).send('Chamada não encontrada para atualização.')
       } else {
@@ -40,9 +40,9 @@ const schoolCallController = {
   },
 
   deleteSchoolCall: async (req: Request, res: Response): Promise<void> => {
-    const aluno_id = Number(req.params.id)
+    const id_chamada = Number(req.params.id)
     try {
-      const ret = await schoolCallService.removeSchoolCall(aluno_id)
+      const ret = await schoolCallService.removeSchoolCall(id_chamada)
       if (!ret) {
         res.status(404).send('Chamada não encontrada para remoção.')
       } else {
@@ -55,9 +55,42 @@ const schoolCallController = {
   },
 
   getSchoolCall: async (req: Request, res: Response): Promise<void> => {
-    const aluno_id = Number(req.params.id)
+    const id_chamada = Number(req.params.id)
     try {
-      const ret = await schoolCallService.getSchoolCallById(aluno_id)
+      const ret = await schoolCallService.getSchoolCallById(id_chamada)
+      if (!ret) {
+        res.status(404).send('Chamada não encontrada.')
+      } else {
+        res.status(200).json(ret)
+      }
+    } catch (error) {
+      console.error('Erro ao buscar a chamada:', error)
+      res.status(500).send('Erro interno do servidor ao buscar a chamada.')
+    }
+  },
+
+  getSchoolCallBySubject: async (
+    req: Request,
+    res: Response
+  ): Promise<void> => {
+    const id_materia = Number(req.params.id)
+    try {
+      const ret = await schoolCallService.getSchoolCallBySubject(id_materia)
+      if (!ret) {
+        res.status(404).send('Chamada não encontrada.')
+      } else {
+        res.status(200).json(ret)
+      }
+    } catch (error) {
+      console.error('Erro ao buscar a chamada:', error)
+      res.status(500).send('Erro interno do servidor ao buscar a chamada.')
+    }
+  },
+
+  getSchoolCallByClass: async (req: Request, res: Response): Promise<void> => {
+    const id_turma = Number(req.params.id)
+    try {
+      const ret = await schoolCallService.getSchoolCallByClass(id_turma)
       if (!ret) {
         res.status(404).send('Chamada não encontrada.')
       } else {

@@ -4,45 +4,45 @@ import { teacherService } from "../services/teacher.service";
 const teachersController = {
   createTeacher: async (req: Request, res: Response): Promise<void> => {
     const {
-      idteacher,
+      id_professor,
       nome,
       cpf,
+      datanasc,
       email,
-      telefone,
       estado,
       rua,
       bairro,
       municipio,
       numero,
-      datadenascimento,
-      RG,
-      datadeespedicao,
-      naturalidade,
+      datadeexpedicaorg,
+      estadodeexpedicaorg,
+      estadonascimento,
+      cidadedenascimento,
     } = req.body;
     try {
       const retorno = await teacherService.createTeacher(
-        idteacher,
+        id_professor,
         nome,
         cpf,
+        datanasc,
         email,
-        telefone,
         estado,
         rua,
         bairro,
         municipio,
         numero,
-        datadenascimento,
-        RG,
-        datadeespedicao,
-        naturalidade
+        datadeexpedicaorg,
+        estadodeexpedicaorg,
+        estadonascimento,
+        cidadedenascimento
       );
       if (!retorno) {
         res.status(500).send("Não foi possível cadastrar o professor.");
       } else {
-        res.status(200).send("Cadastro realizado com sucesso");
+        res.status(200).send(retorno);
       }
     } catch (error) {
-      console.error("Erro ao cadastrar aluno:", error);
+      console.error("Erro ao cadastrar professor:", error);
       res
         .status(500)
         .send("Ocorreu um erro no servidor ao tentar cadastrar o professor.");
@@ -51,38 +51,38 @@ const teachersController = {
 
   updateTeacher: async (req: Request, res: Response): Promise<void> => {
     const {
-      idteacher,
+      id_professor,
       nome,
       cpf,
+      datanasc,
       email,
-      telefone,
       estado,
       rua,
       bairro,
       municipio,
       numero,
-      datadenascimento,
-      RG,
-      datadeespedicao,
-      naturalidade,
+      datadeexpedicaorg,
+      estadodeexpedicaorg,
+      estadonascimento,
+      cidadedenascimento,
     } = req.body;
     const id = req.params.id;
     try {
       const ret = await teacherService.updateTeacher(
-        idteacher,
+        id_professor,
         nome,
         cpf,
+        datanasc,
         email,
-        telefone,
         estado,
         rua,
         bairro,
         municipio,
         numero,
-        datadenascimento,
-        RG,
-        datadeespedicao,
-        naturalidade
+        datadeexpedicaorg,
+        estadodeexpedicaorg,
+        estadonascimento,
+        cidadedenascimento
       );
       if (!ret) {
         res.status(500).send("Não foi possível atualizar o professor.");
@@ -98,39 +98,9 @@ const teachersController = {
   },
 
   deleteTeacher: async (req: Request, res: Response): Promise<void> => {
-    const {
-      idteacher,
-      nome,
-      cpf,
-      email,
-      telefone,
-      estado,
-      rua,
-      bairro,
-      municipio,
-      numero,
-      datadenascimento,
-      RG,
-      datadeespedicao,
-      naturalidade,
-    } = req.body;
+    const { idteacher } = req.params;
     try {
-      const ret = await teacherService.deleteTeacher(
-        idteacher,
-        nome,
-        cpf,
-        email,
-        telefone,
-        estado,
-        rua,
-        bairro,
-        municipio,
-        numero,
-        datadenascimento,
-        RG,
-        datadeespedicao,
-        naturalidade
-      );
+      const ret = await teacherService.deleteTeacher(idteacher);
       if (!ret) {
         res.status(500).send("Não foi possível excluir o professor.");
       } else {
