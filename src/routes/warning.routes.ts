@@ -1,4 +1,4 @@
-import { Router } from 'express'
+import Router from 'express-promise-router'
 import warningController from '../controllers/warning.controller'
 
 const router = Router()

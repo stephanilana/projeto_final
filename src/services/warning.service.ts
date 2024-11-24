@@ -5,6 +5,7 @@ async function createWarning(
   id_materia: number,
   id_usuario: number
 ): Promise<string> {
+  console.log('createWarning chamada')
   if (!mensagem) {
     return 'Digite uma mensagem.'
   }
@@ -75,7 +76,8 @@ async function deleteWarning(id_aviso: number): Promise<string> {
 }
 
 export const warningService = {
-  createWarning,
+  createWarning: (message: string, id_materia: number, id_usuario: number) =>
+    createWarning(message, id_materia, id_usuario),
   updateWarning,
   getWarnings: (subjectId: number) => getWarnings(subjectId),
   deleteWarning,
