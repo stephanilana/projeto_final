@@ -5,4 +5,8 @@ const router = Router();
 
 router.post("/teacher", teachersController.createTeacher);
 router.put("/teacher/:id", teachersController.updateTeacher);
-router.delete("/teacher/:id", teachersController.deleteTeacher);
+router.delete("/teacher/:idteacher", teachersController.deleteTeacher);
+router.get("/teacher/:idteacher", teachersController.getTeacher);
+router.get("/teacher", teachersController.getAllTeachers);
+
+export default router;
