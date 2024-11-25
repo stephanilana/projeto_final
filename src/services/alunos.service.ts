@@ -53,12 +53,26 @@ async function createAluno(id: string, nomeCompleto: string, email: string, esta
 async function updateAluno(id: string, nomeCompleto: string, cpf: string, email: string, telefone: string, estado: string, municipio: string, rua: string, bairro: string, numeroDaCasa: number, dataDeNascimento: string, rg: string, dataExpedicaoRg: string, estadoDeNascimento: string, cidadeDeNascimeto: string): Promise<string> {
     try {
         let resposta = "";
-        if (!id || !nomeCompleto || !cpf || !email || !telefone || !estado || !municipio || !rua || !bairro || !numeroDaCasa || !dataDeNascimento || !rg || !estadoDeNascimento || !cidadeDeNascimeto || !dataExpedicaoRg) {
+        if (!id 
+            || !nomeCompleto
+            || !cpf
+            || !email 
+            || !telefone 
+            || !estado 
+            || !municipio 
+            || !rua 
+            || !bairro 
+            || !numeroDaCasa 
+            || !dataDeNascimento 
+            || !rg 
+            || !estadoDeNascimento 
+            || !cidadeDeNascimeto 
+            || !dataExpedicaoRg) {
             resposta = 'Todos os campos são obrigatórios para cadastrar o aluno.';
             return resposta;
         }
         await db.query(
-            "INSERT INTO alunos (id_aluno, nome, data_nasc, email, estado, municipio, rua, bairro, numero, rg, datadeexpedicaorg, estadodeexpedicaorg, estadonascimento, cidadenascimento, cpf) VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13, $14, $15)",
+            "UPDATE alunos (id_aluno, nome, data_nasc, email, estado, municipio, rua, bairro, numero, rg, datadeexpedicaorg, estadodeexpedicaorg, estadonascimento, cidadenascimento, cpf) VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13, $14, $15)",
             [
                 id,
                 nomeCompleto,
@@ -95,7 +109,7 @@ async function deleteStudent(id: string): Promise<string> {
             return resposta;
         }
         const response = await db.query(
-            "INSERT INTO aluno (id_aluno) VALUES ($1)",
+            "DELETE alunos (id_aluno) VALUES ($1)",
             [
                 id,
                 ]
