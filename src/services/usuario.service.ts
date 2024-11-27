@@ -5,13 +5,43 @@ import { db } from '../config/database';
 
 
  
-    async function createUser(id_usuario: string, email: string, senha: string, id_aluno: string, id_professor: string, id_pedagogo: string, tipo: string): Promise<any> {
+    async function createUser(
+        id_usuario: string,
+        email: string,
+        senha: string,
+        id_aluno: string | null,
+        id_professor: string | null,
+        id_pedagogo: string | null,
+        tipo: string): Promise<any> {
         let res;
         try { 
             if (!email || !senha) { 
                 res = 'Campo obrigatório';
                 return res;
             }
+
+            if (id_aluno) {
+                tipo = 'aluno';
+                if(id_professor || id_pedagogo){
+                    return "erro"
+                }
+            }
+             else if (id_professor) {
+                tipo = 'professor';
+                if(id_aluno || id_pedagogo){
+                    return "Erro"
+                }
+            } 
+            else if (id_pedagogo) {
+                tipo = 'pedagogo';
+                if(id_aluno || id_professor){
+                    return "Erro"
+                }
+            } else {
+                res = 'É necessário informar pelo menos um papel (aluno, professor ou pedagogo)';
+                return res;
+            }
+
             await db.query(
                 "INSERT INTO usuario (id_usuario, email, senha, id_aluno, id_professor, id_pedagogo, tipo) VALUES ($1, $2, $3, $4, $5, $6, $7)",
                 [
