@@ -78,10 +78,26 @@ const courseController = {
       console.error('Erro ao listar cursos:', error);
       res.status(500).send('Ocorreu um erro');
     }
-  }
+  },
+
+  AlunosnoCurso: async (req: Request, res: Response): Promise<void> => {
+    const { id } = req.params
+    try {
+      const alunos = await cursoService.AlunosnoCurso(id)
+      if (!alunos) {
+        res.status(500).send('Curso nao encontrado.')
+      } else {
+        res.status(200).send(alunos)
+      }
+    } catch (error) {
+      console.error('Erro ao buscar alunos do curso:', error)
+      res.status(500).send('Ocorreu um erro')
+    }
+  },
+}
  
 
-}
+
 
     
       

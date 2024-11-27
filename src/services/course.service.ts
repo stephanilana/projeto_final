@@ -137,6 +137,30 @@ async function listarCursos(idCurso?: string): Promise<string | any[]> {
     return 'Erro ao buscar cursos'
   }}
 
+  async function AlunosnoCurso(id_aluno: string): Promise<any> {
+    try{
+      if(!id_aluno){
+        return "ID do aluno e obrigatório"
+      }
+      let cursos = []
+      const query = "SELECT * FROM alunosturma WHERE id_aluno = $1"
+      const alunosturma = await db.query(query, [id_aluno])
+      for (let i = 0; i < alunosturma.rows.length; i++)
+      {
+        const queryTurma = "SELECT * from turmas WHERE id_turma = $1"
+        const turma = await db.query(queryTurma, [alunosturma.rows[i].id_turma])
+        cursos.push(turma.rows[0].id_curso)
+      }
+      return cursos;
+   
+   }catch(error){
+     console.error("Erro ao buscar alunos no curso:", error)
+     return "Erro ao buscar alunos no curso"
+   }
+     
+    }
+
+
 
 
 async function verificarIdExistente(idCurso: string): Promise<boolean> {
@@ -165,6 +189,7 @@ export const cursoService = {
   deletarCurso,
   atualizarCurso,
   listarCursos,
-  verificarIdExistente
+  verificarIdExistente,
+  AlunosnoCurso
 
 }
