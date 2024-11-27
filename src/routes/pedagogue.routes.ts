@@ -3,9 +3,9 @@ import pedagogosController from '../controllers/pedagogue.controller';
 
 const router = Router();
 
-router.post('/pedagogos', pedagogosController.createPedagogue);
-router.put('/pedagogos/:id', pedagogosController.updatePedagogue);
-router.delete('/pedagogos/:id', pedagogosController.deletePedagogue);
-router.get('/pedagogos/:id', pedagogosController.getPedagogue);
+router.post('/pedagogo', pedagogosController.createPedagogue);
+router.put('/pedagogo/:id', pedagogosController.updatePedagogue);
+router.delete('/pedagogo/:id', pedagogosController.deletePedagogue);
+router.get('/pedagogo/:id', pedagogosController.getPedagogue);
 
 export default router;
