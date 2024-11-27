@@ -3,7 +3,7 @@ import { usuarioService } from '../services/usuario.service';
 
 const usuarioController = {
     CreateUser: async (req: Request, res: Response): Promise<void> => { 
-        const { id_usuario, email, senha, id_aluno, id_professor, id_pedagogo, tipo } = req.body;
+        const { id_usuario, email, senha, id_aluno, id_professor, id_pedagogo, tipo} = req.body;
         try {
             const retorno = await usuarioService.createUser(id_usuario, email, senha,  id_aluno, id_professor, id_pedagogo, tipo);
             if (!retorno) {

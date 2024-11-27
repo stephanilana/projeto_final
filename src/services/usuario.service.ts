@@ -3,34 +3,35 @@ const app = express()
 import { response } from 'express';
 import { db } from '../config/database';
 
- async function createUser(id_usuario: string, email: string, senha: string, id_aluno: string, id_professor: string, id_pedagogo: string, tipo: string): Promise<any> {
-    let res;
-    try { 
-        if (!email || !senha || !id_usuario || !tipo) { 
-            res = 'Campo obrigatório';
+
+ 
+    async function createUser(id_usuario: string, email: string, senha: string, id_aluno: string, id_professor: string, id_pedagogo: string, tipo: string): Promise<any> {
+        let res;
+        try { 
+            if (!email || !senha) { 
+                res = 'Campo obrigatório';
+                return res;
+            }
+            await db.query(
+                "INSERT INTO usuario (id_usuario, email, senha, id_aluno, id_professor, id_pedagogo, tipo) VALUES ($1, $2, $3, $4, $5, $6, $7)",
+                [
+                parseInt(id_usuario),
+                email,
+                senha,
+                id_aluno,
+                id_professor,
+                id_pedagogo,
+                tipo
+                ]   
+            );
+            const response = await getUser(id_usuario);
+            return response;
+        } catch (error) {
+            console.error(error);
+            res = "Ocorreu um erro ao criar o usuario";
             return res;
         }
-        await db.query(
-            "INSERT INTO usuario (id_usuario, email, senha, id_aluno, id_professor, id_pedagogo, tipo) VALUES ($1, $2, $3, $4, $5, $6, $7)",
-            [
-            parseInt(id_usuario),
-            email,
-            senha,
-            parseInt(id_aluno),
-            parseInt(id_professor),
-            id_pedagogo,
-            tipo
-            ]   
-        );
-        const response = await getUser(id_usuario);
-        return response;
-    } catch (error) {
-        console.error(error);
-        res = "Ocorreu um erro ao criar o usuario";
-        return res;
     }
-}
- 
 async function updateUser(id_usuario: string, email: string, senha: string): Promise<string>{
     try {
         const response = await db.query(
