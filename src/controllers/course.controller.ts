@@ -27,7 +27,7 @@ const courseController = {
   
       if (!cursoExiste) {
         res.status(404).send('Curso nao encontrado.')
-        return;
+        return
       }
   
      
@@ -61,20 +61,26 @@ const courseController = {
     }
   },
 
-  getCourseById: async (req: Request, res: Response): Promise<void> => {
-    const { id } = req.params
+  listarCursos: async (req: Request, res: Response): Promise<void> => {
+    const { id } = req.params;
     try {
-      const retorno = await cursoService.buscarCursoPorId(id)
-      if (!retorno) {
-        res.status(500).send('Curso não encontrado.')
-      } else {
-        res.status(200).send(retorno)
+      const retorno = await cursoService.listarCursos(id);
+ 
+      if (!retorno || retorno.length === 0) {
+       
+        res.status(404).send('Nenhum curso encontrado para o ID fornecido.');
+        return;
       }
+ 
+     
+      res.status(200).json(retorno);
     } catch (error) {
-      console.error('Erro ao buscar curso:', error)
-      res.status(500).send('Ocorreu um erro no servidor ao tentar buscar o curso.')
+      console.error('Erro ao listar cursos:', error);
+      res.status(500).send('Ocorreu um erro');
     }
-  },
+  }
+ 
+
 }
 
     
