@@ -17,6 +17,7 @@ import responsibleRouter from './routes/responsible.routes';
 import activiesRouter from './routes/activies.routes';
 import formRoutes from './routes/form.routes';
 import schoolCallRouter from './routes/school-call.routes';
+import warningsRouter from './routes/warning.routes';
 
 dotenv.config();
 const app = express();
@@ -40,8 +41,9 @@ app.use(usuario);
 app.use(notesRouter);
 app.use(responsibleRouter);
 app.use(activiesRouter);
-
 app.use(formRoutes);
 app.use(schoolCallRouter);
+app.use(warningsRouter);
+
 
 export default app;
