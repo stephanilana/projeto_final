@@ -3,44 +3,74 @@ const app = express()
 import { response } from 'express';
 import { db } from '../config/database';
 
- async function createUser(id_usuario: string, email: string, senha: string, id_aluno: string, id_professor: string, id_pedagogo: string): Promise<any> {
-    let res;
-    try { 
-        if (!email || !senha) { 
-            res = 'Campo obrigatório';
+
+ 
+    async function createUser(
+        id_usuario: string,
+        email: string,
+        senha: string,
+        id_aluno: string | null,
+        id_professor: string | null,
+        id_pedagogo: string | null,
+        tipo: string): Promise<any> {
+        let res;
+        try { 
+            if (!email || !senha) { 
+                res = 'Campo obrigatório';
+                return res;
+            }
+
+            if (id_aluno) {
+                tipo = 'aluno';
+                if(id_professor || id_pedagogo){
+                    return "erro"
+                }
+            }
+             else if (id_professor) {
+                tipo = 'professor';
+                if(id_aluno || id_pedagogo){
+                    return "Erro"
+                }
+            } 
+            else if (id_pedagogo) {
+                tipo = 'pedagogo';
+                if(id_aluno || id_professor){
+                    return "Erro"
+                }
+            } else {
+                res = 'É necessário informar pelo menos um papel (aluno, professor ou pedagogo)';
+                return res;
+            }
+
+            await db.query(
+                "INSERT INTO usuario (id_usuario, email, senha, id_aluno, id_professor, id_pedagogo, tipo) VALUES ($1, $2, $3, $4, $5, $6, $7)",
+                [
+                parseInt(id_usuario),
+                email,
+                senha,
+                id_aluno,
+                id_professor,
+                id_pedagogo,
+                tipo
+                ]   
+            );
+            const response = await getUser(id_usuario);
+            return response;
+        } catch (error) {
+            console.error(error);
+            res = "Ocorreu um erro ao criar o usuario";
             return res;
         }
-        await db.query(
-            "INSERT INTO usuario (id_usuario, email, senha, id_aluno, id_professor, id_pedagogo) VALUES ($1, $2, $3, $4, $5, $6)",
-            [
-            parseInt(id_usuario),
-            email,
-            senha,
-            parseInt(id_aluno),
-            id_professor,
-            id_pedagogo
-            ]   
-        );
-        const response = await getUser(id_usuario);
-        return response;
-    } catch (error) {
-        console.error(error);
-        res = "Ocorreu um erro ao criar o usuario";
-        return res;
     }
-}
- 
-async function updateUser(id_usuario: string, email: string, senha: string,  id_aluno: string, id_professor: string, id_pedagogo: string): Promise<string>{
+async function updateUser(id_usuario: string, email: string, senha: string, trocardesenha: boolean | null): Promise<string>{
     try {
         const response = await db.query(
-            "UPDATE usuario SET email = $1, senha = $3, id_aluno = $4, id_professor = $5, id_pedagogo = $6 WHERE id_usuario = $2",
+            "UPDATE usuario SET email = $1, senha = $3, trocardesenha = $4 WHERE id_usuario = $2",
             [
                 email,
                 parseInt(id_usuario),
                 senha,
-                parseInt(id_aluno),
-                parseInt(id_professor),
-                parseInt(id_pedagogo)
+                trocardesenha
             ]
         );
         const user = await getUser(id_usuario);
@@ -80,8 +110,8 @@ async function getUser(id_usuario: string): Promise<any> {
 }
 
 export const usuarioService = {
-    createUser: (id_usuario: string, email: string, senha: string, id_aluno: string, id_professor: string, id_pedagogo: string) => createUser(id_usuario, email, senha, id_aluno, id_professor, id_pedagogo),
-    updateUser: (id_usuario: string, email: string, senha: string, id_aluno: string, id_professor: string, id_pedagogo: string) => updateUser(id_usuario, email, senha, id_aluno, id_professor, id_pedagogo), 
+    createUser: (id_usuario: string, email: string, senha: string, id_aluno: string, id_professor: string, id_pedagogo: string, tipo: string) => createUser(id_usuario, email, senha, id_aluno, id_professor, id_pedagogo, tipo),
+    updateUser: (id_usuario: string, email: string, senha: string, trocardesenha: boolean) => updateUser(id_usuario, email, senha, trocardesenha), 
     deleteUser: (id_usuario: string) => deleteUser(id_usuario),
     getUser: (id_usuario: string) => getUser(id_usuario)
 }
