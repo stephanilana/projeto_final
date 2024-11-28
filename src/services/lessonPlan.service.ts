@@ -6,8 +6,8 @@ interface PlanoDeAula {
     id_turma: string;
     id_materia: string;
     data_aula: string;
-    datainicio: string;
-    datafim: string;
+    inicio_aula: string;
+    fim_aula: string;
     conteudoformativo: string;
     mododeensino: string;
     recursosdidaticos: string;
@@ -18,8 +18,8 @@ interface Materia {
     id_curso: string;
     id_professor: string;
     nome_materia: string;
-    datainicio: string;
-    datafim: string;
+    inicio_aula: string;
+    fim_aula: string;
     ementa: string;
 }
 
@@ -28,8 +28,8 @@ export async function createLessonPlan(
     id_turma: string,
     id_materia: string,
     data_aula: string,
-    datainicio: string,
-    datafim: string,
+    inicio_aula: string,
+    fim_aula: string,
     conteudoformativo: string,
     mododeensino: string,
     recursosdidaticos: string
@@ -40,8 +40,8 @@ export async function createLessonPlan(
             !id_turma ||
             !id_materia ||
             !data_aula ||
-            !datainicio ||
-            !datafim ||
+            !inicio_aula ||
+            !fim_aula ||
             !conteudoformativo ||
             !mododeensino ||
             !recursosdidaticos
@@ -56,9 +56,9 @@ export async function createLessonPlan(
 
         const novoPlanoDeAula = await db.query(
             `INSERT INTO planoaula 
-            (id_professor, id_turma, id_materia, data_aula, datainicio, datafim, conteudoformativo, mododeensino, recursosdidaticos) 
+            (id_professor, id_turma, id_materia, data_aula, inicio_aula, fim_aula, conteudoformativo, mododeensino, recursosdidaticos) 
             VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9) RETURNING id_planoaula`,
-            [id_professor, id_turma, id_materia, data_aula, datainicio, datafim, conteudoformativo, mododeensino, recursosdidaticos]
+            [id_professor, id_turma, id_materia, data_aula, inicio_aula, fim_aula, conteudoformativo, mododeensino, recursosdidaticos]
         );
 
         return `Plano de aula criado com sucesso. ID: ${novoPlanoDeAula.rows[0].id_planoaula}`;
@@ -78,8 +78,8 @@ export async function getLessonPlan(id_planoaula: string): Promise<string> {
             id_turma,
             id_materia,
             data_aula,
-            datainicio,
-            datafim,
+            inicio_aula,
+            fim_aula,
             conteudoformativo,
             mododeensino,
             recursosdidaticos,
@@ -95,8 +95,8 @@ export async function getLessonPlan(id_planoaula: string): Promise<string> {
             Turma: ${id_turma}
             Matéria: ${nome_materia}
             Data: ${data_aula}
-            Início: ${datainicio}
-            Fim: ${datafim}
+            Início: ${inicio_aula}
+            Fim: ${fim_aula}
             Conteúdo Formativo: ${conteudoformativo}
             Modo de Ensino: ${mododeensino}
             Recursos Didáticos: ${recursosdidaticos}
@@ -113,8 +113,8 @@ export async function updateLessonPlan(
     id_turma: string,
     id_materia: string,
     data_aula: string,
-    datainicio: string,
-    datafim: string,
+    inicio_aula: string,
+    fim_aula: string,
     conteudoformativo: string,
     mododeensino: string,
     recursosdidaticos: string
@@ -126,8 +126,8 @@ export async function updateLessonPlan(
             !id_turma ||
             !id_materia ||
             !data_aula ||
-            !datainicio ||
-            !datafim ||
+            !inicio_aula ||
+            !fim_aula ||
             !conteudoformativo ||
             !mododeensino ||
             !recursosdidaticos
@@ -140,10 +140,10 @@ export async function updateLessonPlan(
 
         await db.query(
             `UPDATE planoaula 
-            SET id_professor = $1, id_turma = $2, id_materia = $3, data_aula = $4, datainicio = $5, datafim = $6, 
+            SET id_professor = $1, id_turma = $2, id_materia = $3, data_aula = $4, inicio_aula = $5, fim_aula = $6, 
             conteudoformativo = $7, mododeensino = $8, recursosdidaticos = $9 
             WHERE id_planoaula = $10`,
-            [id_professor, id_turma, id_materia, data_aula, datainicio, datafim, conteudoformativo, mododeensino, recursosdidaticos, id_planoaula]
+            [id_professor, id_turma, id_materia, data_aula, inicio_aula, fim_aula, conteudoformativo, mododeensino, recursosdidaticos, id_planoaula]
         );
 
         return `Plano de aula atualizado com sucesso. ID: ${id_planoaula}`;
