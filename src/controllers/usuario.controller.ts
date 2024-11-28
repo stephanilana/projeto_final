@@ -51,13 +51,14 @@ const usuarioController = {
  
      updateUser: async(req: Request, res: Response): Promise<void> => {
         const {id_usuario} = req.params;
-        const {email, senha} = req.body;
+        const {email, senha, trocardesenha} = req.body;
 
         try{
             const retorno = await usuarioService.updateUser(
                 id_usuario,
                 email,
-                senha
+                senha,
+                trocardesenha
             );
             console.log(retorno)
             if(!retorno){

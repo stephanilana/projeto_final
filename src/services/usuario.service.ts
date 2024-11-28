@@ -62,14 +62,15 @@ import { db } from '../config/database';
             return res;
         }
     }
-async function updateUser(id_usuario: string, email: string, senha: string): Promise<string>{
+async function updateUser(id_usuario: string, email: string, senha: string, trocardesenha: boolean | null): Promise<string>{
     try {
         const response = await db.query(
-            "UPDATE usuario SET email = $1, senha = $3 WHERE id_usuario = $2",
+            "UPDATE usuario SET email = $1, senha = $3, trocardesenha = $4 WHERE id_usuario = $2",
             [
                 email,
                 parseInt(id_usuario),
-                senha
+                senha,
+                trocardesenha
             ]
         );
         const user = await getUser(id_usuario);
@@ -110,7 +111,7 @@ async function getUser(id_usuario: string): Promise<any> {
 
 export const usuarioService = {
     createUser: (id_usuario: string, email: string, senha: string, id_aluno: string, id_professor: string, id_pedagogo: string, tipo: string) => createUser(id_usuario, email, senha, id_aluno, id_professor, id_pedagogo, tipo),
-    updateUser: (id_usuario: string, email: string, senha: string) => updateUser(id_usuario, email, senha), 
+    updateUser: (id_usuario: string, email: string, senha: string, trocardesenha: boolean) => updateUser(id_usuario, email, senha, trocardesenha), 
     deleteUser: (id_usuario: string) => deleteUser(id_usuario),
     getUser: (id_usuario: string) => getUser(id_usuario)
 }
