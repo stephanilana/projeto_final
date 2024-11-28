@@ -7,6 +7,7 @@ const alunosController = {
       id_aluno,
       nome,
       email,
+      data_nasc,
       estado,
       municipio,
       rua,
@@ -19,24 +20,24 @@ const alunosController = {
       estadonascimento,
       cidadenascimento,
     } = req.body;
-    console.log(req.body);
 
     try {
       const retorno = await alunoService.createStudent(
         id_aluno,
         nome,
         email,
+        data_nasc,
         estado,
         municipio,
         rua,
         bairro,
         numero,
+        cpf,
         rg,
         datadeexpedicaorg,
         estadodeexpedicaorg,
         estadonascimento,
-        cidadenascimento,
-        cpf
+        cidadenascimento
       );
       if (!retorno) {
         res.status(500).send("Não foi possível cadastrar o aluno.");
@@ -53,9 +54,9 @@ const alunosController = {
 
   updateStudent: async (req: Request, res: Response): Promise<void> => {
     const {
-      id_aluno,
       nome,
       email,
+      data_nasc,
       estado,
       municipio,
       rua,
@@ -68,28 +69,29 @@ const alunosController = {
       estadonascimento,
       cidadenascimento,
     } = req.body;
-    const id = req.params.id;
+    const { id } = req.params;
     try {
       const ret = await alunoService.updateStudent(
         id,
         nome,
         email,
+        data_nasc,
         estado,
         municipio,
         rua,
         bairro,
         numero,
-        cpf,
         rg,
         datadeexpedicaorg,
         estadodeexpedicaorg,
         estadonascimento,
-        cidadenascimento
+        cidadenascimento,
+        cpf
       );
       if (!ret) {
         res.status(500).send("Não foi possível atualizar o aluno.");
       } else {
-        res.status(200).send("Atualização realizada com sucesso");
+        res.status(200).send(ret);
       }
     } catch (error) {
       console.error("Erro ao atualizar aluno:", error);

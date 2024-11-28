@@ -36,6 +36,7 @@ async function createStudent(
   id_aluno: string,
   nome: string,
   email: string,
+  data_nasc: string,
   estado: string,
   municipio: string,
   rua: string,
@@ -54,6 +55,7 @@ async function createStudent(
       !id_aluno ||
       !nome ||
       !email ||
+      !data_nasc ||
       !estado ||
       !municipio ||
       !rua ||
@@ -76,6 +78,7 @@ async function createStudent(
                       id_aluno,
                       nome,
                       email,
+                      data_nasc,
                       estado,
                       municipio,
                       rua,
@@ -87,11 +90,12 @@ async function createStudent(
                       estadonascimento,
                       cidadenascimento,
                       cpf)
-                  VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13, $14)`,
+                  VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13, $14, $15)`,
           [
             parseInt(id_aluno),
             nome,
             email,
+            data_nasc,
             estado,
             municipio,
             rua,
@@ -107,6 +111,7 @@ async function createStudent(
         );
       }
     }
+
     resposta = await getStudent(id_aluno);
     return resposta;
   } catch (error) {
@@ -119,6 +124,7 @@ async function updateStudent(
   id_aluno: string,
   nome: string,
   email: string,
+  data_nasc: string,
   estado: string,
   municipio: string,
   rua: string,
@@ -137,6 +143,7 @@ async function updateStudent(
       !id_aluno ||
       !nome ||
       !email ||
+      !data_nasc ||
       !estado ||
       !municipio ||
       !rua ||
@@ -169,7 +176,8 @@ async function updateStudent(
             datadeexpedicaorg = $11,
             estadodeexpedicaorg = $12,
             estadonascimento = $13,
-            cidadenascimento = $14
+            cidadenascimento = $14,
+            data_nasc = $15
           WHERE id_aluno = $1`,
           [
             parseInt(id_aluno),
@@ -186,6 +194,7 @@ async function updateStudent(
             estadodeexpedicaorg,
             estadonascimento,
             cidadenascimento,
+            data_nasc,
           ]
         );
       }
@@ -219,19 +228,19 @@ async function getStudent(id_aluno: string): Promise<string> {
     }
 
     const resposta = await db.query(
-      "SELECT * FROM professor WHERE id_professor = $1",
+      "SELECT * FROM alunos WHERE id_aluno = $1",
       [parseInt(id_aluno)]
     );
 
     if (resposta.rows.length === 0) {
-      return `Professor com ID ${id_aluno} não encontrado.`;
+      return `aluno com ID ${id_aluno} não encontrado.`;
     }
 
-    const professor = resposta.rows[0];
-    return professor;
+    const aluno = resposta.rows[0];
+    return aluno;
   } catch (erro) {
-    console.error("Erro ao buscar professor:", erro);
-    return "Erro ao buscar professor.";
+    console.error("Erro ao buscar aluno:", erro);
+    return "Erro ao buscar aluno.";
   }
 }
 
@@ -239,17 +248,17 @@ async function deleteStudent(id_aluno: string) {
   try {
     let resposta = "";
     if (!id_aluno) {
-      resposta = "Professor não enontrado";
+      resposta = "Aluno não enontrado";
       return resposta;
     } else {
-      await db.query("DELETE FROM professor WHERE id_professor = $1", [
+      await db.query("DELETE FROM alunos WHERE id_aluno = $1", [
         parseInt(id_aluno),
       ]);
-      return "Professor removido com seucesso.";
+      return "Aluno removido com seucesso.";
     }
   } catch (error) {
-    console.log(`Erro ao cadastrar o professor`, error);
-    return `Erro ao cadastrar professor`;
+    console.log(`Erro ao excluir aluno`, error);
+    return `Erro ao excluir aluno`;
   }
 }
 
@@ -260,68 +269,3 @@ export const alunoService = {
   getStudent,
   getAllStudent,
 };
-
-// id_aluno: string,
-// nome: string,
-// data_nasc: Date,
-// email: string,
-// estado: string,
-// municipio: string,
-// rua: string,
-// bairro: string,
-// numero: number,
-// rg: string,
-// datadeexpedicaorg: Date,
-// estadodeexpedicaorg: string,
-// estadonascimento: string,
-// cidadenascimento: string,
-// cpf: string
-
-// if (
-//   !id_aluno ||
-//   !nome ||
-//   !data_nasc ||
-//   !email ||
-//   !estado ||
-//   !municipio ||
-//   !rua ||
-//   !bairro ||
-//   !numero ||
-//   !rg ||
-//   !datadeexpedicaorg ||
-//   !estadodeexpedicaorg ||
-//   !estadonascimento ||
-//   !cidadenascimento ||
-//   !cpf
-
-// id_aluno,
-// nome,
-// email,
-// estado,
-// municipio,
-// rua,
-// bairro,
-// numero,
-// rg,
-// datadeexpedicaorg,
-// estadodeexpedicaorg,
-// estadonascimento,
-// cidadenascimento,
-// cpf)
-// VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13, $14, $15)`,
-
-//  parseInt(id_aluno), // Convertendo o ID para número, se necessário
-//           nome,
-//           data_nasc,
-//           email,
-//           estado,
-//           municipio,
-//           rua,
-//           bairro,
-//           numero,
-//           rg,
-//           datadeexpedicaorg,
-//           estadodeexpedicaorg,
-//           estadonascimento,
-//           cidadenascimento,
-//           cpf,
