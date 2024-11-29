@@ -140,7 +140,7 @@ async function listarCursos(idCurso?: string): Promise<string | any[]> {
   async function AlunosnoCurso(id_aluno: string): Promise<any> {
     try{
       if(!id_aluno){
-        return "ID do aluno e obrigatório"
+        return "ID do aluno e obrigatorio"
       }
       let cursos = []
       const query = "SELECT * FROM alunosturma WHERE id_aluno = $1"
@@ -180,8 +180,6 @@ async function verificarIdExistente(idCurso: string): Promise<boolean> {
   }
   
 }
-
-
 
 
 export const cursoService = {
