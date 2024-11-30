@@ -108,10 +108,26 @@ async function getUser(id_usuario: string): Promise<any> {
         return 'Erro ao buscar o usuario'; 
     }
 }
+async function requestPasswordList(trocardesenha: boolean): Promise<any> {
+    let resposta;
+    try {
+       const response = await db.query(
+        "SELECT * FROM usuario WHERE trocardesenha = $1",
+        [
+         trocardesenha
+        ]
+       )
+       return response.rows;
+    } catch (error) {
+        console.error('Erro ao buscar o usuario:', error);
+        return 'Erro ao buscar o usuario'; 
+    }
+}
 
 export const usuarioService = {
     createUser: (id_usuario: string, email: string, senha: string, id_aluno: string, id_professor: string, id_pedagogo: string, tipo: string) => createUser(id_usuario, email, senha, id_aluno, id_professor, id_pedagogo, tipo),
     updateUser: (id_usuario: string, email: string, senha: string, trocardesenha: boolean) => updateUser(id_usuario, email, senha, trocardesenha), 
     deleteUser: (id_usuario: string) => deleteUser(id_usuario),
-    getUser: (id_usuario: string) => getUser(id_usuario)
+    getUser: (id_usuario: string) => getUser(id_usuario),
+    requestPasswordList: (trocardesenha: boolean) => requestPasswordList(trocardesenha)
 }
