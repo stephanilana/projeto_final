@@ -23,13 +23,31 @@ const usuarioController = {
             if(!retorno){
                  res.status(500).send(`Não foi possivel buscar o usuario`);
             }else{
-                  res.status(200).send(id_usuario);
+                  res.status(200).send(retorno);
             }
-            console.log(id_usuario)
+            console.log(retorno)
         }
         catch(error){
             console.error('Erro ao buscar usuário:', error);
             res.status(500).send( 'Ocorreu um erro no servidor ao tentar buscar o usuário.');
+        }
+    },
+
+    requestPasswordList: async(req: Request, res: Response): Promise<void> => {
+        const {trocardesenha} = req.params;
+        const trocaSenhaBool = trocardesenha === 'true';
+            try{
+            const retorno = await usuarioService.requestPasswordList(trocaSenhaBool);
+            if(retorno.length === 0){
+                 res.status(500).send(`Não foi possivel solicitar a troca de senha`);
+            }else{
+                  res.status(200).send(retorno);
+                  console.log(retorno)
+            }
+        }
+        catch(error){
+            console.error('Erro ao solicitar a troca de senha:', error);
+            res.status(500).send( 'Ocorreu um erro no servidor ao tentar solicitar a troca de senha.');
         }
     },
 
