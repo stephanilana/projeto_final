@@ -112,7 +112,22 @@ async function requestPasswordList(trocardesenha: boolean): Promise<any> {
     let resposta;
     try {
        const response = await db.query(
-        "SELECT * FROM usuario WHERE trocardesenha = $1",
+        `SELECT
+        u.id_usuario,
+        a.nome AS nome_aluno, 
+        c.nome_curso
+     FROM 
+        usuario u
+     JOIN 
+        alunos a ON u.id_aluno = a.id_aluno
+     JOIN
+        alunosturma at ON a.id_aluno = at.id_aluno
+     JOIN
+        turmas t ON at.id_turma = t.id_turma
+     JOIN
+        curso c ON t.id_curso = c.id_curso
+     WHERE
+        u.trocardesenha = $1`,
         [
          trocardesenha
         ]
