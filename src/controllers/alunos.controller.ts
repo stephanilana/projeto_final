@@ -19,6 +19,27 @@ const alunosController = {
       estadodeexpedicaorg,
       estadonascimento,
       cidadenascimento,
+
+      id_responsavel,
+      tipo_responsavel,
+      nome_responsavel,
+      email_responsavel,
+      telefone_responsavel,
+      estado_responsavel,
+      municipio_responsavel,
+      rua_responsavel,
+      bairro_responsavel,
+      numero_responsavel,
+      dataNascimento_responsavel,
+      cpf_responsavel,
+      rg_responsavel,
+      documentos_responsavel,
+
+      id_usuario,
+      senha,
+      id_professor,
+      id_pedagogo,
+      tipo,
     } = req.body;
 
     try {
@@ -37,7 +58,28 @@ const alunosController = {
         datadeexpedicaorg,
         estadodeexpedicaorg,
         estadonascimento,
-        cidadenascimento
+        cidadenascimento,
+
+        id_responsavel,
+        tipo_responsavel,
+        nome_responsavel,
+        email_responsavel,
+        telefone_responsavel,
+        estado_responsavel,
+        municipio_responsavel,
+        rua_responsavel,
+        bairro_responsavel,
+        numero_responsavel,
+        dataNascimento_responsavel,
+        cpf_responsavel,
+        rg_responsavel,
+        documentos_responsavel,
+
+        id_usuario,
+        senha,
+        id_professor,
+        id_pedagogo,
+        tipo
       );
       if (!retorno) {
         res.status(500).send("Não foi possível cadastrar o aluno.");

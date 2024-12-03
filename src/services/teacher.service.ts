@@ -1,4 +1,5 @@
 import { db } from "../config/database";
+import { usuarioService } from "./usuario.service";
 
 function validateEmail(email: string) {
   const re = /\S+@\S+\.\S+/;
@@ -47,7 +48,13 @@ async function createTeacher(
   datadeexpedicaorg: Date,
   estadodeexpedicaorg: string,
   estadonascimento: Date,
-  cidadedenascimento: string
+  cidadedenascimento: string,
+
+  id_usuario: string,
+  senha: string,
+  id_aluno: string,
+  id_pedagogo: string,
+  tipo: string
 ): Promise<string> {
   try {
     let resposta = "";
@@ -111,6 +118,15 @@ async function createTeacher(
         ]
       );
     }
+    usuarioService.createUser(
+      id_usuario,
+      email,
+      senha,
+      id_professor,
+      id_aluno,
+      id_pedagogo,
+      tipo
+    );
 
     resposta = await getTeacher(id_professor);
     return resposta;
@@ -175,7 +191,7 @@ async function updateTeacher(
               cpf = $11, 
               rg = $10, 
               datadeexpedicaorg = $12, 
-              estadodeexpedicaorg = $13, 
+              estadodeexpedicaorg = $13,
               estadonascimento = $14, 
               cidadedenascimento = $15
             WHERE id_professor = $1`,
@@ -198,6 +214,7 @@ async function updateTeacher(
           ]
         );
       }
+
       resposta = await getTeacher(id_professor);
       return resposta;
     }
@@ -278,7 +295,13 @@ export const teacherService = {
     datadeexpedicaorg: Date,
     estadodeexpedicaorg: string,
     estadonascimento: Date,
-    cidadedenascimento: string
+    cidadedenascimento: string,
+
+    id_usuario: string,
+    senha: string,
+    id_aluno: string,
+    id_pedagogo: string,
+    tipo: string
   ) =>
     createTeacher(
       id_professor,
@@ -295,7 +318,13 @@ export const teacherService = {
       datadeexpedicaorg,
       estadodeexpedicaorg,
       estadonascimento,
-      cidadedenascimento
+      cidadedenascimento,
+
+      id_usuario,
+      senha,
+      id_aluno,
+      id_pedagogo,
+      tipo
     ),
   updateTeacher: (
     id_professor: string,

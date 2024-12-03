@@ -1,4 +1,6 @@
 import { db } from "../config/database";
+import { responsibleService } from "./responsible.service";
+import { usuarioService } from "./usuario.service";
 
 function validateEmail(email: string) {
   const re = /\S+@\S+\.\S+/;
@@ -47,7 +49,28 @@ async function createStudent(
   datadeexpedicaorg: Date,
   estadodeexpedicaorg: string,
   estadonascimento: Date,
-  cidadenascimento: string
+  cidadenascimento: string,
+
+  id_responsavel: string,
+  tipo_responsavel: string,
+  nome_responsavel: string,
+  email_responsavel: string,
+  telefone_responsavel: string,
+  estado_responsavel: string,
+  municipio_responsavel: string,
+  rua_responsavel: string,
+  bairro_responsavel: string,
+  numero_responsavel: string,
+  dataNascimento_responsavel: string,
+  cpf_responsavel: string,
+  rg_responsavel: string,
+  documentos_responsavel: string,
+
+  id_usuario: string,
+  senha: string,
+  id_pedagogo: string,
+  tipo: string,
+  id_professor: string
 ): Promise<string> {
   try {
     let resposta = "";
@@ -111,6 +134,31 @@ async function createStudent(
         );
       }
     }
+    usuarioService.createUser(
+      id_usuario,
+      email,
+      senha,
+      id_professor,
+      id_aluno,
+      id_pedagogo,
+      tipo
+    );
+    responsibleService.createResponsable(
+      id_responsavel,
+      tipo_responsavel,
+      nome_responsavel,
+      email_responsavel,
+      telefone_responsavel,
+      estado_responsavel,
+      municipio_responsavel,
+      rua_responsavel,
+      bairro_responsavel,
+      numero_responsavel,
+      dataNascimento_responsavel,
+      cpf_responsavel,
+      rg_responsavel,
+      documentos_responsavel
+    );
 
     resposta = await getStudent(id_aluno);
     return resposta;
@@ -251,7 +299,7 @@ async function getDocStudent(id_aluno: string): Promise<string> {
     }
 
     const resposta = await db.query(
-      `SELECT nome FROM docalunos WHERE id_aluno = ${id_aluno}`,
+      `SELECT nome FROM docalunos WHERE id_aluno = ${id_aluno}`
     );
 
     if (resposta.rows.length === 0) {

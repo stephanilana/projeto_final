@@ -19,6 +19,12 @@ const teachersController = {
       estadodeexpedicaorg,
       estadonascimento,
       cidadedenascimento,
+
+      id_usuario,
+      senha,
+      id_aluno,
+      id_pedagogo,
+      tipo,
     } = req.body;
     try {
       const retorno = await teacherService.createTeacher(
@@ -36,7 +42,13 @@ const teachersController = {
         datadeexpedicaorg,
         estadodeexpedicaorg,
         estadonascimento,
-        cidadedenascimento
+        cidadedenascimento,
+
+        id_usuario,
+        senha,
+        id_aluno,
+        id_pedagogo,
+        tipo
       );
       if (!retorno) {
         res.status(500).send("Não foi possível cadastrar o professor.");
